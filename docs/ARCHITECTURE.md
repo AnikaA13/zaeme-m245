@@ -1,5 +1,25 @@
 # Architektur
 
+## Browseranwendung ab Task 006
+
+React Router führt Gäste auf `/welcome`, `/auth/login`, `/auth/register`, `/auth/confirm` und `/auth/forgot-password`. Das SDK verwaltet die Sitzung. Bei PKCE verarbeitet die Anwendung genau einen Code über `exchangeCodeForSession`. Die automatische URL-Erkennung ist ausgeschaltet. Der Browser entfernt Query und Fragment vor dem Austausch. Nur der vom SDK beim erfolgreichen Austausch bestätigte Recovery-Vorgang öffnet das Passwortformular für das zugehörige Konto. Nach Neuladen dieses Formulars braucht es einen neuen Link. [Supabase PKCE](https://supabase.com/docs/guides/auth/sessions/pkce-flow)
+
+`/profile/setup` legt den Anzeigenamen mit Version 0 an. `/` zeigt nach abgeschlossener Zugangsprüfung das Onboarding oder den persönlichen Start. `/household/create`, `/join` und `/household` verwenden die generierten Typen. Der Client liest zuerst das eigene Profil und die eigene Mitgliedschaft, anschliessend den autorisierten Haushalt mit eingebetteten Mitgliedern und Anzeigenamen. Die bestätigte Rolle stammt aus dem Vergleich mit dem gelesenen Owner. Fehler unterbrechen den Zugriff bis zur erfolgreichen Wiederholung.
+
+Ein zentraler Sitzungsspeicher verwirft laufende Lesevorgänge beim Kontowechsel. Schreibanfragen sind an die Sitzung und Mitgliedschaftsgeneration gebunden. Der Abgleich läuft nach Mutationen, bei Fokus, Sichtbarkeit, Wiederverbindung und alle 30 Sekunden im sichtbaren Dokument. Gleichzeitige Lesevorgänge werden zusammengeführt. Der SDK-Callback plant die Datenabfrage ausserhalb des Auth-Callbacks ein. Beim Logout verschwindet die private Ansicht vor dem Netzaufruf. Bei fehlender Serverbestätigung verwirft die App die lokale Sitzung und weist darauf hin. Bereits ausgestellte JWTs haben ihre eigene Gültigkeitsdauer.
+
+Eine Einladungsabsicht bleibt im RAM. Für die Rückkehr aus einer Bestätigungsmail darf der ursprüngliche Tab Zweck, Code, Zieladresse und Ablaufzeit für höchstens 15 Minuten in `sessionStorage` halten. Die Rückkehr übernimmt den Eintrag einmalig und prüft die bestätigte Identität. Nach Abbruch, Kontowechsel oder Beitritt wird er verworfen. Auf einem anderen Gerät den ursprünglichen Link erneut öffnen. Der Rohcode einer neu erstellten Einladung ist ausschliesslich in der geöffneten Erstellungsansicht verfügbar.
+
+## Freigabe für gehostete Authentifizierung
+
+**NOT RUN.** Vor einer kontrollierten HTTPS-Abnahme sind folgende Schritte erforderlich.
+
+1. Separates Supabase-Testprojekt anlegen. PostgreSQL-Version, Berechtigungen der Migrationsrolle und tatsächlich exponierte Data-API-Schemas prüfen. Migrationen und Autorisierungstests dort ausführen.
+2. E-Mail-Bestätigung aktivieren, Passwortminimum auf acht Zeichen abstimmen und Rate-Limits passend zum Testbetrieb setzen. SMTP-Anbieter, Absenderdomain und Zustellbarkeit prüfen.
+3. Stabilen HTTPS-Ursprung für die Vercel-Testumgebung festlegen. Site URL exakt setzen. Nur die vollständigen URLs für `/auth/callback` und `/auth/reset-password` freigeben. Für Produktion Ursprung und Schlüssel getrennt konfigurieren.
+4. In Vercel nur öffentliche URL und Publishable Key für das Frontend setzen. Bundle und Logging von Proxy, Auth und Data API auf Zugangsdaten, Anfrageinhalte und Callback-URLs prüfen.
+5. Mit echten zugestellten Bestätigungs- und Recovery-Mails sowie zwei getrennten Browserkontexten prüfen. Geräteabnahme und SMTP-Zustellung separat dokumentieren.
+
 ## Implementierter Stand 005
 
 PostgREST exponiert `public`. Zwei Migrationen erstellen vier Fachtabellen, zwei interne Tabellen und elf gesicherte Datenbankoperationen. Der künftige Browserclient liest die eigene Mitgliedschaft mit ihrer Generation und übermittelt diesen Kontext bei Änderungen. PostgreSQL prüft die Berechtigung in jeder Transaktion. Die generierten TypeScript-Typen beschreiben das Schema. Grants und RLS bestimmen, welche Felder und Zeilen ein Client nutzen darf.

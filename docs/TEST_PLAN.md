@@ -1,12 +1,20 @@
 # Testplan
 
+## Task 006 · reproduzierbarer lokaler Lauf
+
+`npm ci`, `npm run db:start`, `npx playwright install chromium` und `npm run test:browser` ausführen. Port 5173 muss frei sein. Der Test verwendet vier eigene Browserkontexte und zufällige Konten unter `example.invalid`. Alle vier registrieren sich über das Formular. Der Runner liest ihre tatsächlichen lokalen E-Mails und öffnet die Links im zugehörigen Kontext. Er schliesst Browser und Vite und entfernt die Konten, ihre Haushalte und die erfassten Nachrichten. Er schreibt weder Traces noch Screenshots.
+
+Die Szenarien A–J decken Bestätigung, persistenten Login, Haushaltsgründung, drei Mitgliedschaften, Isolation, Widerruf, Entfernung, Kontowechsel, Passwortwechsel, Austritt und Auflösung ab. Eine verzögerte echte Profilantwort prüft den Wechsel im selben Dokument. Die mobilen Prüfungen messen Überlauf und sichtbare Bedienflächen bei 320, 375, 390, 430 und 1280 CSS-Pixeln sowie 100 und 200 Prozent Schriftgrösse.
+
+Ergänzend `npm run test` für isolierte Zustands- und Protokolltests und die drei DB-Regressionsbefehle gemäss README ausführen. Manuell auf iOS und Android die Texteingabe mit geöffneter Tastatur, Fokus nach Dialogen, Screenreader-Ausgabe, Teilen und Zwischenablage prüfen. Für Hosted-Tests gilt die separate [Freigabeliste](ARCHITECTURE.md).
+
 ## Ausführbare Prüfungen für 005
 
 `npm run db:test` führt die pgTAP-Suite in einer zurückgerollten Transaktion aus. `npm run db:test:api` erstellt synthetische Konten für den jeweiligen Lauf, meldet sie mit Passwort an und ruft PostgREST mit den ausgestellten Tokens auf. Die Admin-API dient nur der Fixture-Erstellung. SQL kontrolliert Endzustände und setzt Ablaufzeitpunkte. Für einen Ablaufversuch hält eine separate psql-Verbindung die Haushaltszeile gesperrt. Der Test weist den tatsächlich wartenden Beitritt über `pg_blocking_pids` nach.
 
 Zu TT01/02/07/12/16/17/19 liegen Teilnachweise für Haushalte vor. Linux-Wiederholung, Auth-Mailversand, Oberflächen und spätere Bestands-/Reservationsfälle haben eigene Nachweise. [Testergebnisse](TEST_REPORT.md)
 
-## Aktuell
+## Historischer Prüfplan der M0-Hülle
 
 - `npm run test` führt die Tests einmal aus. Die zwei Rauchtests prüfen
   die sichtbare Überschrift, den Entwicklungsstatus und die Rückkehrmöglichkeit

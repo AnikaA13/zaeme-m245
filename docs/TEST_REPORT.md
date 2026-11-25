@@ -1,4 +1,39 @@
-# Prüfbericht · Task 005
+# Prüfbericht
+
+## Task 006 · lokaler Browser und Datenbank
+
+Ausgangsstand war `main` auf `0fb8398` mit dem bereits integrierten Task 005. Der neue Branch basiert direkt auf `4936f3f`. Drei unversionierte Projektlogos lagen bereits vor. Das verwendete grosse SVG stimmt mit dem eingebetteten Prototyp-Logo überein. Der Stash zeigte auf `68bebc9`.
+
+Windows, Node 24.14.1, npm 11.21.3, Supabase CLI 2.122.1, PostgreSQL-Image 17.11.0.006, GoTrue 2.197.0, PostgREST 16.5 und Mailpit 1.31.3. Chromium for Testing 159.0.8154.6 lief über Playwright 1.65.1. Vite bestätigte `http://127.0.0.1:5173/`. Die drei veröffentlichten Dienste bestanden die bestehende Loopback-Prüfung.
+
+| Prüfung                                                                                         | Status  | Beobachtung                                                                                                                                            |
+| ----------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm ci`                                                                                        | PASS    | Exit 0, 278 Pakete, npm meldete keine bekannten Schwachstellen.                                                                                        |
+| `npm run test`                                                                                  | PASS    | Exit 0, 19 Prüfungen in fünf Dateien mit Standard-Workern. Isolierte Protokoll-, Zustands- und Komponententests.                                       |
+| `npm run db:start`, `npm run db:test`                                                           | PASS    | Je Exit 0, 140 pgTAP-Prüfungen.                                                                                                                        |
+| `npm run db:test:api`                                                                           | PASS    | Exit 0, elf fachliche Szenarien, Node meldete zwölf bestandene Tests inklusive übergeordnetem Test.                                                    |
+| `npm run db:types:check`                                                                        | PASS    | Exit 0, generierte Typen stimmen mit der lokalen Datenbank überein.                                                                                    |
+| `npm run test:browser`                                                                          | PASS    | Exit 0, A–J und zusätzlicher Logout-Fehlerfall. Vier synthetische Konten, echte Formulare, Auth, Mailpit und PostgREST. Fixture-Bereinigung bestätigt. |
+| Erneuter Reset und Upgrade                                                                      | NOT RUN | Es gab keine neue Migration. Der Nachweis aus 005 steht unten.                                                                                         |
+| Hosted SMTP, Preview-HTTPS, Remote-CI, physische Geräte, Screenreader, vollständige MVP-Abnahme | NOT RUN | Separate Freigaben erforderlich.                                                                                                                       |
+
+**Browserbelege.** A öffnete eine tatsächlich erneut versandte Bestätigungsmail nach Ablauf des UI-Cooldowns. B prüfte Gründung, Owner, Reload und Namensänderung. C hielt die erfolgreiche Serverantwort bei der Einladungserstellung einmal zurück. Das Formular zeigte den Rohcode erst nach identischer Wiederholung. Ein zweites Konto übernahm den Fragmentcode und trat nach Vorschau bewusst bei. D fügte das dritte Konto per manuellem Code hinzu. E prüfte den zweiten Haushalt sowohl im DOM als auch über einen tatsächlichen RLS-Lesezugriff. F bestätigte den Widerruf und die Ablehnung des Codes. G erhielt mit der alten Mitgliedschaft vom Server FORBIDDEN und verlor die Haushaltsansicht. H wechselte im selben Dokument das Konto, während eine echte frühere Profilantwort zurückgehalten wurde. I öffnete die Recovery-Mail, setzte das Passwort, prüfte Ablehnung des alten und Anmeldung mit dem neuen Passwort sowie die bereinigte URL. J prüfte Abbruch und Bestätigung des Austritts, anschliessende Auflösung und erneute Anmeldung des Owners. Bei simuliertem HTTP 503 am Logout blieb der lokale Zugriff auch beim direkten Aufruf gesperrt.
+
+**Darstellung.** Der Browser mass auf Willkommen, Registrierung, Profilanlage, Einladung, Haushaltsansicht und Passwortreset bei 320/375/390/430/1280 CSS-Pixeln und 100/200 Prozent Schriftgrösse. Geprüft wurden horizontaler Überlauf und mindestens 44 × 44 CSS-Pixel für die sichtbaren Links, Schaltflächen, Eingaben und Aufklappfelder. Die Suite bedient Formulare über zugängliche Namen. Zwischenablage, Betriebssystem-Teildialog, assistive Technologie und Bildschirmtastatur auf echten Geräten bleiben manuell zu prüfen.
+
+**Erstläufe.** Der erste Browserlauf endete bei A mit einem Timeout (Exit 1). Der Wiederholungslauf bestand A–J. Ein erster Typecheck scheiterte an der generischen SDK-Rückgabe. Der Parser prüft die tatsächliche Composite-Antwort jetzt zur Laufzeit. Ein Lintlauf meldete fehlende Browser-Globals in den Playwright-Callbacks. Die Korrektur ist auf das Testskript begrenzt.
+
+Ein weiterer Lauf deckte nach der Verschärfung der Ablaufprüfung einen Fehler in C auf (Exit 1). Beim Übergang von der Vorschau zur Bestätigung hatte ein zweiter Abgleich ohne E-Mail-Adresse die befristete Absicht verworfen. Der Abgleich erhält jetzt die Adresse aus der aktiven SDK-Sitzung. Der anschliessende Lauf bestand A–J und den zusätzlichen Logout-Fehlerfall (Exit 0).
+
+**Qualitäts- und Sicherheitsprüfungen.** `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run build`, `git diff --check` und `git diff --cached --check` bestanden jeweils mit Exit 0. Vite 8.3.8 verarbeitete 79 Module und meldete die Grössenwarnung für den JavaScript-Chunk mit 506.82 kB (147.89 kB gzip). Die sieben lokalen Builddateien und der vorgemerkte Diff enthielten keinen der verglichenen privilegierten Werte. Der Build enthielt den öffentlichen Schlüssel und keinen der geprüften Fixture-, SQL-Bereinigungs- oder Mailpit-Marker. Die Schlussabfragen fanden null Task-006-Konten und null zugehörige Mailpit-Treffer.
+
+## Änderungsumfang 006
+
+Unter `src/features/auth` liegen Auth-Formulare, Sitzungslogik, Einladungsabsicht und Sitzungstests. `src/features/household` enthält Laden, Onboarding, Profil-, Mitglieder- und Einladungsverwaltung. `src/lib/supabase`, `src/lib/operations` und `src/components/ui` enthalten Client, Protokoll, Ausführung, Tests und zugängliche Formulare. `Welcome.tsx` ersetzt die Entwicklungsstartseite. Anwendungshülle, Routentests, Einstieg, globale Stile und HTML-Kopf sind angepasst.
+
+Weitere Änderungen betreffen das eingebundene Projektlogo, Paketdefinition und Lockfile, Vite- und Supabase-Konfiguration, die öffentliche Umgebungsvorlage, den Browser-Runner, README und die sieben Dokumente zu Architektur, Entscheidungen, Änderungsprotokoll, Projektstand, Anforderungsstand, Testplan und Prüfbericht.
+
+## Historischer Prüfbericht · Task 005
 
 **25. November 2026 · Task 005 im isolierten lokalen Supabase-Stack vollständig verifiziert und bereit zum technischen Review.** Beide Migrationen bestanden den frischen Reset und das Upgrade von einer nachgewiesen leeren Fachgrundlage. Windows veröffentlichte die drei Testports im Schlusslauf ausschliesslich auf 127.0.0.1. Remote-CI und die späteren Hosting-Prüfungen stehen aus.
 
