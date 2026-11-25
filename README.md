@@ -14,7 +14,7 @@ bereiten den Betrieb vor. Supabase Auth, PostgreSQL und PostgREST tragen die lok
 
 ## Lokal starten
 
-Die M0-Oberfläche läuft unabhängig von der Datenbank. Für die lokale Haushaltsdatenbank werden Node 24, npm 11 und eine lokale Linux-Docker-Engine benötigt. API, PostgreSQL und Testpostfach verwenden die Ports 54321, 54322 und 54324. Die erste Ausführung lädt die Service-Images.
+Für Auth und Haushalte werden Node 24, npm 11 und eine lokale Linux-Docker-Engine benötigt. API, PostgreSQL und Mailpit verwenden die Loopback-Ports 54321, 54322 und 54324. Die erste Ausführung lädt die Service-Images. Die folgenden Datenbankbefehle umfassen auch die separaten Regressionstests.
 
 ```sh
 npm ci
@@ -37,10 +37,10 @@ Für die separate Prüfung des Upgrade-Pfads setzt `npm run db:upgrade:check` da
 
 ### Frontend
 
-Vorausgesetzt werden Git, Node.js 24 und npm 11. Führe im Repository aus:
+Nach `npm ci` und `npm run db:start` die Vorlage `.env.example` nach `.env.local` kopieren. Der folgende Befehl gibt ausschliesslich den öffentlichen Schlüssel des identifizierten lokalen Stacks aus. Diesen als `VITE_SUPABASE_PUBLISHABLE_KEY` übernehmen und die App starten.
 
 ```sh
-npm ci
+node --input-type=module -e "import {localStatus} from './scripts/database/local.mjs'; const s=localStatus(); console.log(s.PUBLISHABLE_KEY || s.ANON_KEY)"
 npm run dev
 ```
 
@@ -62,20 +62,9 @@ blockiert, verwende dort `npm.cmd`. `npm ci` installiert die in
 
 ## Umgebung und aktueller Umfang
 
-Der Entwicklungsstartbildschirm braucht keine Umgebungsdatei und kein
-Supabase-Projekt. Beim späteren Anschluss kann `.env.example` nach `.env.local`
-kopiert und mit der öffentlichen Projekt-URL sowie dem Publishable Key befüllt
-werden. Vite kann `VITE_*`-Werte im Browser-Bundle veröffentlichen. Halte
-Service-Role-Schlüssel und andere Geheimnisse aus allen `VITE_*`-Variablen
-heraus. Lokale Umgebungsdateien sind von Git ausgeschlossen.
-[Supabase-Dokumentation zu API-Schlüsseln](https://supabase.com/docs/guides/getting-started/api-keys)
+Vite verwendet `http://127.0.0.1:5173` mit festem Port. Bestätigung und Passwortreset kehren auf genau diesen Ursprung zurück. Auth-Sitzung, Profil, Einladungen und Haushaltsverwaltung sind angeschlossen. Die Warnfrist ist lesbar. Vorrat, Einkauf, Reservationen, Realtime und Installation folgen in späteren Aufgaben.
 
-Die Oberfläche umfasst den Entwicklungsstartbildschirm, einen Hinweis bei
-unbekannten Adressen und eine Fehleransicht. Auth, Haushalte und Warnfrist
-sind serverseitig vorbereitet. Ihre Bedienoberflächen und die Synchronisierung
-stehen aus. Die PWA-Grundlage besteht aus dem
-Web-App-Manifest. Die Installierbarkeit ist offen und es gibt keinen Offlinebetrieb.
-Den aktuellen Prüfstand findest du in [PROJECT_STATUS.md](docs/PROJECT_STATUS.md).
+Für die Browserprüfung den Entwicklungsserver beenden, den lokalen Datenbankstack laufen lassen und `npx playwright install chromium` sowie `npm run test:browser` ausführen. Der Test startet Vite selbst auf Port 5173, verwendet Mailpit und räumt seine synthetischen Konten auf. Unit-Tests mit `npm run test` benötigen keinen laufenden Stack. [Prüfstand](docs/TEST_REPORT.md) · [Hosting-Voraussetzungen](docs/ARCHITECTURE.md)
 
 ## CI
 

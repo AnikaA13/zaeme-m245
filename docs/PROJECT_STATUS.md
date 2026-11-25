@@ -1,5 +1,11 @@
 # Projektstand
 
+## Task 006 · lokale Auth- und Haushaltsoberfläche
+
+Der Branch `feature/m2-auth-households` basiert direkt auf `4936f3f`. Die Anwendung unterstützt Registrierung, E-Mail-Bestätigung, Passwortreset, Profilpflege und den vollständigen Lebenszyklus der Haushaltsmitgliedschaft. Der Browserlauf mit vier getrennten Konten prüfte den Beitritt zu dritt, einen zweiten isolierten Haushalt, Entzug und Auflösung. Die lokale Abnahme gilt für Windows, Chromium und den isolierten Stack. Hosted SMTP, HTTPS-Preview, echte Mobilgeräte und Screenreader bleiben offen. [Prüfbericht](TEST_REPORT.md)
+
+Nach technischem Review kann 007 den Vorrat und die transaktionale Freigabe von Reservationen bei Entfernung und Austritt ergänzen. Bis dahin gilt für F02 nur der geprüfte Haushaltsumfang. F19 zeigt die gespeicherte Warnfrist an.
+
 ## Task 005 · lokal verifiziert
 
 Architekturcommit `e766d28`, Implementierung auf `feature/m1-database-foundation`. Frischer Reset und separater Upgrade vom leeren Backend bestanden. Nach geprüfter Loopback-Bindung bestanden 140 pgTAP-Prüfungen, elf fachliche HTTP-Szenarien und der Typvergleich. Die M0-Oberfläche verwendet die RPCs noch nicht. Remote-CI und die späteren Hosting-Prüfungen sind offen.

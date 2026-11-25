@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 006 · Anmeldung und Haushalte
+
+Echte E-Mail-Flows, Profilpflege, Startansicht und Haushaltsverwaltung im Frontend ergänzt. Einladungen lassen sich erstellen, teilen, prüfen, einlösen und widerrufen. Die Haushaltsansicht verwendet RLS-Daten und prüft den Zugang erneut. Lokale Auth-Konfiguration und typisierter Client sind auf Vite abgestimmt. Neu sind das verifizierte Projektlogo sowie Protokoll-, Sitzungs-, Komponenten- und Chromium-Tests mit Mailpit. [Testbericht](TEST_REPORT.md)
+
 ## Task 005 · lokale Haushaltsdatenbank
 
 Zwei Migrationen führen Profile, Haushalte, Mitgliedschaften, Einladungen, Versuchszähler und Operationsquittungen ein. Elf typisierte RPCs steuern Zugriff und Warnfrist. Neu sind eine gepinnte Entwicklungs-CLI, generierte Datenbanktypen, pgTAP-, API- und Konkurrenztests und ein separater Linux-Workflow. Nach Umstellung und Prüfung der tatsächlichen Host-Portbindung bestand der lokale Abschlusslauf. [Nachweise](TEST_REPORT.md)

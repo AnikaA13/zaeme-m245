@@ -1,5 +1,13 @@
 # Technische Entscheidungen
 
+## Task 006 · Auth, Absichten und Wiederholung
+
+- Der typisierte Supabase-Client 2.119.2 (MIT, Node ab 22) nutzt im Browser PKCE und die SDK-Sitzungspersistenz. Playwright 1.65.1 (Apache-2.0, Node ab 20) läuft ausschliesslich im Testprozess. Node 24 erfüllt beide Anforderungen.
+- Der lokale Ursprung ist `http://127.0.0.1:5173`. Die Rückwege für Bestätigung und Wiederherstellung haben exakte Pfade. Das UI prüft neue Passwörter auf acht Zeichen, die lokale Auth-Konfiguration setzt dieselbe Mindestlänge. Das lokale Mailpit-Budget erlaubt wiederholte Läufe.
+- Der Client erzeugt UUIDv7 mit 48 Zeitbits, Versions- und Variantenbits sowie kryptografischem Zufall. Er hält die normalisierte Absicht und ID während einer ungeklärten Anfrage im RAM. Vor der manuellen Wiederholung erfolgt ein Abgleich. Eine geänderte Eingabe, Identität oder Generation begründet keine automatische Wiederholung. Entfernung bindet auch die Generation der bestätigten Zielperson.
+- Einladungen verwenden 32 Zufallsbytes. Nur deren SHA-256 als hexadezimales PostgreSQL-bytea geht an den Erstellungs-RPC. Der 43-stellige Code wird nach bestätigter Speicherung angeboten. Vorschau und Beitritt erfolgen per POST und benötigen zwei bewusste Aktionen. Die vorhandenen Migrationen blieben gültig.
+- Das eingebundene Projektlogo stimmt mit dem Original-SVG im lokalen Prototyp überein. Die spätere Warnfristbearbeitung und Realtime bleiben Task 009 zugeordnet.
+
 ## Task 005 · Präzisierungen des Datenbankvertrags
 
 Die Entfernung bindet zusätzlich die Generation der Zielperson. So kann eine verspätete Bestätigung des Owners nach erneutem Beitritt keine neue Mitgliedschaft löschen. Der API-Test prüft genau diesen Ablauf.
