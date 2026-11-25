@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 005 · lokale Haushaltsdatenbank
+
+Zwei Migrationen führen Profile, Haushalte, Mitgliedschaften, Einladungen, Versuchszähler und Operationsquittungen ein. Elf typisierte RPCs steuern Zugriff und Warnfrist. Neu sind eine gepinnte Entwicklungs-CLI, generierte Datenbanktypen, pgTAP-, API- und Konkurrenztests und ein separater Linux-Workflow. Nach Umstellung und Prüfung der tatsächlichen Host-Portbindung bestand der lokale Abschlusslauf. [Nachweise](TEST_REPORT.md)
+
 ## Task 003 · M0-Release
 
 - Geprüfte Anwendungsgrundlage, Sperrdatei und CI-Workflow für den
@@ -28,3 +32,9 @@
   Supabase-Umgebungsvariablen als Vorlage hinzugefügt.
 - Installationsanleitung, Architektur, Entscheidungen, Rahmenanforderungen,
   UX-Stand und Testplan dokumentiert.
+
+## Task 004 · Spezifikation und Architekturplanung
+
+- Navigation, Reservierungsrechte, Vollverbrauch, Validierung, Fristen, Installation und P0/P1-Abnahme auf die PO-Entscheide abgestimmt. Anforderungs-IDs und historische Testbeobachtungen erhalten.
+- Schema, RLS, sichere Einladungen, RPCs, Gleichzeitigkeit und Synchronisierung zur Prüfung dokumentiert. Tasks 005–011, Abnahmetests und Anforderungsnachweise zugeordnet.
+- M0-Merge und lokale Herkunft des Mobile-Prototyps dokumentiert. Der Änderungsumfang besteht aus Projektdokumentation und Repository-Anweisungen.

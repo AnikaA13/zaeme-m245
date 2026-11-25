@@ -10,9 +10,32 @@ machen.
 React, TypeScript im Strict-Modus, Vite und React Router bilden das Frontend.
 Vitest und React Testing Library dienen für Tests, ESLint und Prettier für
 Codequalität und Formatierung. Ein Web-App-Manifest und die Vercel-Konfiguration
-bereiten den Betrieb vor. Als Backend ist Supabase vorgesehen.
+bereiten den Betrieb vor. Supabase Auth, PostgreSQL und PostgREST tragen die lokale Haushaltsdatenbank.
 
 ## Lokal starten
+
+Die M0-Oberfläche läuft unabhängig von der Datenbank. Für die lokale Haushaltsdatenbank werden Node 24, npm 11 und eine lokale Linux-Docker-Engine benötigt. API, PostgreSQL und Testpostfach verwenden die Ports 54321, 54322 und 54324. Die erste Ausführung lädt die Service-Images.
+
+```sh
+npm ci
+npx --no-install supabase --version
+npm run db:start
+npm run db:migrate
+npm run db:reset
+npm run db:test
+npm run db:test:api
+npm run db:types
+npm run db:types:check
+npm run db:stop
+```
+
+`db:migrate` wendet ausstehende Migrationen lokal an. `db:reset` ersetzt den Inhalt der Wegwerfdatenbank und spielt alle Migrationen erneut ein. Das Skript prüft Projekt-ID, fehlende Remote-Verknüpfung, lokalen Docker-Endpunkt, Containerlabel, API- und DB-Adresse und Portbindungen. `db:types` schreibt die Typen nach `src/database.types.ts`. `db:stop` erhält den lokalen Datenstand. API-Tests entfernen ihre synthetischen Konten nach jedem Lauf.
+
+Falls der Start eine allgemeine Portbindung meldet, in Docker Desktop unter **Settings → Resources → Network** die Standard-Portbindung auf **localhost** setzen, anwenden und den Start wiederholen. Diese Einstellung betrifft den Rechner. Alternativ dieselben Befehle auf einem isolierten Linux-Rechner mit Docker Engine ausführen. [Testbericht](docs/TEST_REPORT.md) · [Docker-Netzwerk](https://docs.docker.com/desktop/features/networking/) · [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
+
+Für die separate Prüfung des Upgrade-Pfads setzt `npm run db:upgrade:check` das verifizierte Wegwerfprojekt auf die leere Auth-Grundlage zurück, prüft diesen Zwischenstand und wendet die Migrationen mit `migration up --local` an. Dieser Test benötigt Node ab 24.4 und ersetzt die lokalen Testdaten.
+
+### Frontend
 
 Vorausgesetzt werden Git, Node.js 24 und npm 11. Führe im Repository aus:
 
@@ -47,9 +70,10 @@ Service-Role-Schlüssel und andere Geheimnisse aus allen `VITE_*`-Variablen
 heraus. Lokale Umgebungsdateien sind von Git ausgeschlossen.
 [Supabase-Dokumentation zu API-Schlüsseln](https://supabase.com/docs/guides/getting-started/api-keys)
 
-Der aktuelle Umfang umfasst den Entwicklungsstartbildschirm, einen Hinweis bei
-unbekannten Adressen und eine Fehleransicht. Anmeldung, Haushalte, Datenspeicherung
-und Synchronisation sind ausstehend. Die PWA-Grundlage besteht aus dem
+Die Oberfläche umfasst den Entwicklungsstartbildschirm, einen Hinweis bei
+unbekannten Adressen und eine Fehleransicht. Auth, Haushalte und Warnfrist
+sind serverseitig vorbereitet. Ihre Bedienoberflächen und die Synchronisierung
+stehen aus. Die PWA-Grundlage besteht aus dem
 Web-App-Manifest. Die Installierbarkeit ist offen und es gibt keinen Offlinebetrieb.
 Den aktuellen Prüfstand findest du in [PROJECT_STATUS.md](docs/PROJECT_STATUS.md).
 
