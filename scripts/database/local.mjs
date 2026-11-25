@@ -1,19 +1,64 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { readFileSync, existsSync } from 'node:fs';
+import {
+  readFileSync,
+  existsSync,
+  mkdirSync,
+  symlinkSync,
+  writeFileSync,
+  realpathSync,
+} from 'node:fs';
+import { basename, resolve } from 'node:path';
 import process from 'node:process';
 
-export const project = 'zaeme-task005-local';
+// Eigener Namensraum für parallele Arbeitskopien mit Suffix -taskNNN.
+const task = basename(process.cwd()).match(/-task([0-9]{3})$/i)?.[1] ?? '005';
+const offset = (Number(task) - 5) * 500;
+assert.ok(offset >= 0 && 54329 + offset <= 65535);
+export const project = 'zaeme-task' + task + '-local';
+const workdir = offset ? resolve('.local-stack') : process.cwd();
+const apiPort = 54321 + offset;
+const dbPort = 54322 + offset;
 export const network = project + '-loopback';
 export const container = 'supabase_db_' + project;
-export const api = 'http://127.0.0.1:54321';
+export const api = 'http://127.0.0.1:' + apiPort;
+function prepareWorkdir() {
+  if (!offset) return;
+  const dir = resolve(workdir, 'supabase');
+  mkdirSync(dir, { recursive: true });
+  const config = readFileSync('supabase/config.toml', 'utf8')
+    .replace(
+      'project_id = "zaeme-task005-local"',
+      'project_id = "' + project + '"',
+    )
+    .replace(
+      /^(# )?((?:\w+_)?port = )(5432\d|8083)$/gm,
+      (_, comment, key, port) =>
+        (comment ?? '') + key + (Number(port) + offset),
+    );
+  const configPath = resolve(dir, 'config.toml');
+  if (!existsSync(configPath) || readFileSync(configPath, 'utf8') !== config)
+    writeFileSync(configPath, config);
+  for (const name of ['migrations', 'tests']) {
+    const source = resolve('supabase', name);
+    const link = resolve(dir, name);
+    if (!existsSync(link)) symlinkSync(source, link, 'junction');
+    assert.equal(realpathSync(link), realpathSync(source));
+  }
+}
 export function cli(...args) {
   const networkArgs = ['start', 'db', 'test'].includes(args[0])
     ? ['--network-id', network]
     : [];
   return execFileSync(
     process.execPath,
-    ['node_modules/supabase/dist/supabase.js', ...args, ...networkArgs],
+    [
+      'node_modules/supabase/dist/supabase.js',
+      ...args,
+      ...networkArgs,
+      '--workdir',
+      workdir,
+    ],
     {
       encoding: 'utf8',
       maxBuffer: 16 * 1024 * 1024,
@@ -25,6 +70,7 @@ export function docker(...args) {
   return execFileSync('docker', args, { encoding: 'utf8' }).trim();
 }
 export function localEngine() {
+  prepareWorkdir();
   assert.match(
     readFileSync('supabase/config.toml', 'utf8'),
     /^project_id = "zaeme-task005-local"$/m,
@@ -39,6 +85,27 @@ export function localEngine() {
     false,
     'Verknüpftes Projekt',
   );
+  for (const marker of ['project-ref', 'linked-project.json'])
+    assert.ok(
+      !existsSync(resolve(workdir, 'supabase', '.temp', marker)),
+      'Verknüpftes Projekt',
+    );
+  const config = readFileSync(resolve(workdir, 'supabase/config.toml'), 'utf8');
+  assert.ok(config.split(/\r?\n/).includes('project_id = "' + project + '"'));
+  for (const [section, port] of [
+    ['api', apiPort],
+    ['db', dbPort],
+  ]) {
+    assert.equal(
+      Number(
+        config
+          .split('[' + section + ']')[1]
+          .split(/^\[/m)[0]
+          .match(/^port = (\d+)$/m)?.[1],
+      ),
+      port,
+    );
+  }
   const contextEndpoint = docker(
     'context',
     'inspect',
@@ -73,6 +140,14 @@ export function checkBindings() {
       const ports = JSON.parse(
         docker('inspect', '--format', '{{json .NetworkSettings.Ports}}', name),
       );
+      if (name === container)
+        assert.ok(
+          ports['5432/tcp']?.some((b) => Number(b.HostPort) === dbPort),
+        );
+      if (name === 'supabase_kong_' + project)
+        assert.ok(
+          ports['8000/tcp']?.some((b) => Number(b.HostPort) === apiPort),
+        );
       for (const bindings of Object.values(ports ?? {})) {
         for (const b of bindings ?? []) {
           assert.match(b.HostPort, /^[0-9]{1,5}$/);
@@ -88,7 +163,7 @@ export function checkBindings() {
         }
       }
     }
-    assert.ok(published.has(54321) && published.has(54322));
+    assert.ok(published.has(apiPort) && published.has(dbPort));
     if (process.platform === 'win32') {
       const query =
         'Get-NetTCPConnection -ErrorAction Stop -State Listen -LocalPort ' +
@@ -128,7 +203,7 @@ export function localStatus() {
   assert.equal(status.API_URL, api);
   const db = new URL(status.DB_URL);
   assert.equal(db.hostname, '127.0.0.1');
-  assert.equal(db.port, '54322');
+  assert.equal(db.port, String(dbPort));
   assert.equal(db.pathname, '/postgres');
   return status;
 }

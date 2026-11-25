@@ -95,3 +95,71 @@ Nach Akteursperre Quittung auf (user_id,op) prüfen. SHA-256 über kanonische st
 | OWNER_BOUND / ALREADY_MEMBER                | «Der Haushalt kann so nicht verlassen oder aufgelöst werden.» / «Du gehörst bereits zu einem Haushalt.»                                                |
 | INVITE_INVALID / RATE_LIMITED / HASH_EXISTS | «Diese Einladung ist ungültig oder abgelaufen.» / «Bitte versuche es später erneut.» / Neuen Einladungsschlüssel erzeugen.                             |
 | OP_MISMATCH / OP_EXPIRED / RETRY            | «Diese Anfrage passt nicht zur ursprünglichen Aktion.» / «Bitte prüfe den aktuellen Stand.» / «Bitte versuche es erneut.»                              |
+
+## Implementierter Vertrag für 007
+
+Alle fünf Einstiege liegen in `public` und liefern genau einen `public.rpc_result`. Voraussetzung sind bestätigte Anmeldung, aktueller Haushalt `h` und dessen eigene Mitgliedschaftsgeneration `g`. Pro Benutzerabsicht eine UUIDv7 `op` erzeugen. PostgREST erhält benannte JSON-Felder.
+
+Im generierten TypeScript entsprechen die Rückgaben `Database['public']['CompositeTypes']['rpc_result']`. Auf `ok === true` prüfen. Die API kann Fachfehler mit HTTP 200 transportieren. Für aktive Chargen gilt `Database['public']['Views']['active_inventory']['Row']`. Der Generator markiert berechnete Mengen als nullable. Ohne Reservierungen liefert die SQL-Sicht 0 für die reservierten Mengen.
+
+```sql
+create_item(op uuid, h uuid, g uuid, fields jsonb, ack jsonb)
+edit_item(op uuid, h uuid, g uuid, id uuid, fields jsonb, v bigint, ack jsonb)
+set_reservation(op uuid, h uuid, g uuid, id uuid, desired jsonb, v bigint)
+consume_item(op uuid, h uuid, g uuid, id uuid, amount jsonb, unit text,
+             confirm_full jsonb, confirmed_v bigint default null)
+delete_item(op uuid, h uuid, g uuid, id uuid, v bigint, confirm jsonb)
+```
+
+**Typen am HTTP-Rand.** UUIDs sind Strings. `amount`, `desired` und `fields.quantity` sind Dezimalstrings mit ASCII-Ziffern, optional Punkt und ein bis drei Nachkommastellen. Kein Vorzeichen, Exponent, Komma oder Leerraum. Maximal 9999, Zähleinheiten mathematisch ganzzahlig. Führende Nullen und zulässige nachgestellte Nullen werden für die Quittung entfernt. `"01.500"` und `"1.5"` bezeichnen dieselbe Menge. Auch eine vierte Null nach dem Punkt ist ungültig. `ack`, `confirm` und `confirm_full` sind echte JSON-Booleans. SQL-`jsonb` erhält den JSON-Typ bis zur Prüfung. Die generierten `Json`-Argumente sind entsprechend breiter als der fachliche Vertrag. Ungültige UUIDs und unpassende RPC-Argumentnamen können bereits einen HTTP-Transportfehler ergeben.
+
+```ts
+type Context = { op: string; h: string; g: string };
+type Fields = {
+  name: string;
+  quantity: string;
+  unit: 'Stück' | 'Packung' | 'kg' | 'Liter';
+  category:
+    | 'Früchte/Gemüse'
+    | 'Fleisch/Fisch'
+    | 'Brot/Backwaren'
+    | 'Trockenwaren'
+    | 'Getränke'
+    | 'Milchprodukte'
+    | 'Sonstiges';
+  location:
+    'Kühlschrank' | 'Gefrierfach' | 'Vorratsschrank' | 'Sonstiges' | null;
+  expiry_date: string | null;
+  date_type: 'MHD' | 'Verbrauchsdatum' | 'unbekannt' | null;
+  barcode: string | null;
+};
+type Create = Context & {
+  fields: Pick<Fields, 'name'> & Partial<Omit<Fields, 'name'>>;
+  ack: boolean;
+};
+type Edit = Context & { id: string; fields: Fields; v: number; ack: boolean };
+type Reserve = Context & { id: string; desired: string; v: number };
+type Consume = Context & {
+  id: string;
+  amount: string;
+  unit: Fields['unit'];
+} & (
+    | { confirm_full: false; confirmed_v?: never }
+    | { confirm_full: true; confirmed_v: number }
+  );
+type Delete = Context & { id: string; v: number; confirm: boolean };
+```
+
+| Einstieg                      | Wirkung und Rückgabe                                                                                                                                                                                                            | Fachkonflikte                              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `create_item` · F03/F05/F10   | Pflichtname trimmen, fehlende Felder gemäss Datenmodell ergänzen, separate Charge anlegen. Quittung mit ID und Version 1.                                                                                                       | INVALID, DATE_ACK                          |
+| `edit_item` · F03/F07/F10/F17 | Alle acht editierbaren Felder einschliesslich NULL übermitteln. Unter Sperre Version und Reservierungen prüfen. Jede erfolgreiche Bearbeitung erhöht die Version.                                                               | INVALID, DATE_ACK, STALE, RESERVED         |
+| `set_reservation` · F17       | Eigene absolute Menge auf höchstens Bestand minus fremde Summe setzen. Null löscht die eigene Zeile. Ein bereits erfüllter Zielwert, auch Freigabe ohne Zeile, quittiert die aktuelle Version ohne Änderung.                    | INVALID, STALE, INSUFFICIENT               |
+| `consume_item` · F07/F17      | Teilverbrauch additiv in angezeigter Einheit. Eigene Reservierung zuerst abbauen. Beim Vollverbrauch muss die bestätigte Menge dem Gesamtbestand und `confirmed_v` der aktuellen Version entsprechen. Neue Version zurückgeben. | INVALID, STALE, INSUFFICIENT, CONFIRM_FULL |
+| `delete_item` · F07           | Aktive, unreservierte Charge bei passender Version nach Bestätigung löschen. Quittung mit ID, ohne Version.                                                                                                                     | INVALID, CONFIRM_REQUIRED, STALE, RESERVED |
+
+Ein Bestätigungsdialog bindet `id`, `unit`, `amount` und `confirmed_v` an den gezeigten Zustand. Ändert sich dieser Zustand, muss die UI neu laden und erneut fragen. Bei einem gewöhnlichen Teilverbrauch `confirmed_v` weglassen. Falls dieser inzwischen den Vorrat leeren würde, antwortet die Datenbank mit CONFIRM_FULL und lässt den Bestand unverändert. Eine erfolgreiche Wiederholung mit identischen Parametern liefert die gespeicherte Quittung.
+
+Alle Mutationen verwenden die bestehende Konto- und Haushaltssperre, danach die Chargensperre. Berechtigung und Generation werden unter der Haushaltssperre erneut gelesen. Fehler liefern `ok=false` und `code`, Erfolg liefert `ok=true`, `code=null`, `id` und gegebenenfalls `version`. Die übrigen Felder des bestehenden Ergebnistyps sind NULL. Gemeinsame Fehler sind AUTH_REQUIRED, FORBIDDEN, INVALID, OP_MISMATCH, OP_EXPIRED und RETRY. Eine unbekannte oder fremde Charge liefert im berechtigten Kontext NOT_FOUND. Bei fachlichem Konflikt die angezeigten Daten neu laden. Die bestehende Zeitgrenze und Bereinigung der Quittungen gelten auch für 007.
+
+Ein neues oder geändertes Datum wird als echtes ISO-Kalenderdatum gegen den aktuellen Tag in Europe/Zurich geprüft. Bis einschliesslich fünf Kalenderjahre ist keine Rückfrage nötig, bis einschliesslich zwanzig Jahre ist darüber `ack=true` erforderlich. Die Datenbank begrenzt beim Addieren von Jahren den Schalttag auf das Monatsende. Ein unverändertes Datum erfordert keine zweite Bestätigung. Der Fingerabdruck enthält Datum und Bestätigung.

@@ -123,3 +123,9 @@ Im Checkout fehlt die Originalmarke als einsetzbares Asset. Unter `~/Downloads/H
 ### Tatsächliche Prüfung der Review-Arbeitskopie
 
 Formatprüfung, ESLint, Typprüfung und Produktionsbuild erfolgreich. Der Standardaufruf von Vitest endete vor Testbeginn mit spawn EPERM. Im dokumentierten Thread-Pool bestanden alle drei bestehenden M0-Tests. Diese Läufe prüfen die vorhandene Anwendungshülle. Die Fachverträge wurden ausschliesslich als Dokumentation geprüft.
+
+## Task 007 · Gemeinsamer Vorrat und Reservierungen
+
+Auf dem M1-Merge `0fb8398` sind zwei weitere Migrationen lokal installiert und geprüft. Mehrere Mitglieder können dieselbe Charge lesen, eigene Mengen reservieren und freie oder selbst reservierte Mengen verbrauchen. Ein explizit bestätigter Vollverbrauch ist an die angezeigte Menge, Einheit und Version gebunden. Austritt und Entfernung geben betroffene Reservierungen im selben Commit frei. Bestand und Quittung bleiben bei Abbruch konsistent.
+
+Der technische Teilstand für F02/F03/F05/F07/F10/F17 ist lokal mit PostgreSQL, GoTrue und PostgREST belegt. Die Abnahmen der Oberfläche, Synchronisierung zwischen Geräten, Hosting und Nutzertests einschliesslich G01–G08 stehen aus. Task 006 bleibt ein separater Integrationsstand. Task 008 kann den [Schreibvertrag](RPC_SPEC.md) und den [Lesevertrag](DATABASE_SPEC.md) verwenden. [Nachweismatrix](IMPLEMENTATION_STATUS.md) · [Testbericht](TEST_REPORT.md)

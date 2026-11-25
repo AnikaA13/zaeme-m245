@@ -61,3 +61,10 @@ PO-Entscheide definieren den Produktumfang. Die technische Architektur ist zur P
 | Unterschiedliche Zeit- und Bedienziele                                                | G01–G08 sind die vorgeschlagenen Messziele. Keine Umdeutung historischer Testdaten.                                                                                                  | MVP Abschnitt 1                      |
 
 Architekturvorschlag: Ein Owner-Fremdschlüssel pro Haushalt, Datenbankgrenze für alle Mutationen, kurze Serialisierung je Haushalt, Versionsprüfung für absolute Änderungen und befristete Quittungen. Ein separater Revisionszähler erlaubt Refetch ohne Veröffentlichung privater Fachzeilen. Gründe und Tests in [Datenmodell](DATABASE_SPEC.md), [RPC-Verträgen](RPC_SPEC.md) und [Systemarchitektur](ARCHITECTURE.md).
+
+## 007 · Bestätigung, Eingabetypen und Lesesicht
+
+- Der Vollverbrauch bindet die Menge, Einheit und sichtbare Chargenversion an den Dialog. Dies verhindert eine frühere Bestätigung nach zwischenzeitlichem Verbrauch, Bearbeiten oder Reservieren. Teilverbrauch bleibt additiv.
+- Mengen und Bestätigungen verwenden SQL-`jsonb` an der API-Grenze. Damit kann die Funktion JSON-Dezimaltext und JSON-Boolean prüfen, bevor PostgreSQL skalare Eingaben umwandelt. Der fachliche TypeScript-Vertrag bleibt eng. [RPC-Vertrag](RPC_SPEC.md)
+- `active_inventory` summiert Reservierungen per Charge im selben SQL-Snapshot. Die Invoker-Sicht erhält die RLS-Prüfung und liefert vollständige Summen auch bei paginierter Personenliste. Ein zusätzlicher Speicher für Summen entfällt.
+- Austritt und Entfernung sperren die betroffenen Chargen in UUID-Reihenfolge. Sie erhöhen nach der Freigabe deren Version. Dies macht veraltete Dialoge erkennbar. Die bestehenden Signaturen und die Mitgliedschaftsgeneration von 005 bleiben erhalten.

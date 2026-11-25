@@ -42,3 +42,9 @@ Zwei Migrationen führen Profile, Haushalte, Mitgliedschaften, Einladungen, Vers
 - Navigation, Reservierungsrechte, Vollverbrauch, Validierung, Fristen, Installation und P0/P1-Abnahme auf die PO-Entscheide abgestimmt. Anforderungs-IDs und historische Testbeobachtungen erhalten.
 - Schema, RLS, sichere Einladungen, RPCs, Gleichzeitigkeit und Synchronisierung zur Prüfung dokumentiert. Tasks 005–011, Abnahmetests und Anforderungsnachweise zugeordnet.
 - M0-Merge und lokale Herkunft des Mobile-Prototyps dokumentiert. Der Änderungsumfang besteht aus Projektdokumentation und Repository-Anweisungen.
+
+## 25. November 2026 · Task 007
+
+- Chargen und eigene Reservierungen mit Haushalts-RLS, exakten Mengen, Metadatenprüfung, Versionen und fünf transaktionalen RPCs ergänzt. Aktive Lesesicht mit persönlichen und gemeinsamen Mengen hinzugefügt.
+- Austritt und Entfernung geben die Reservierungen der betroffenen Person atomar frei. Der bestätigte Vollverbrauch prüft die beobachtete Chargenversion.
+- Datenbanktypen generiert. Isolierte lokale Stack-Konfiguration, Upgradeprüfung mit Bestandsdaten, gemeinsame F10-Fixtures, pgTAP-, Rollback- und HTTP-Konkurrenztests ergänzt. [Prüfnachweis](TEST_REPORT.md)
