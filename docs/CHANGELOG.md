@@ -28,3 +28,9 @@
   Supabase-Umgebungsvariablen als Vorlage hinzugefügt.
 - Installationsanleitung, Architektur, Entscheidungen, Rahmenanforderungen,
   UX-Stand und Testplan dokumentiert.
+
+## Task 004 · Spezifikation und Architekturplanung
+
+- Navigation, Reservierungsrechte, Vollverbrauch, Validierung, Fristen, Installation und P0/P1-Abnahme auf die PO-Entscheide abgestimmt. Anforderungs-IDs und historische Testbeobachtungen erhalten.
+- Schema, RLS, sichere Einladungen, RPCs, Gleichzeitigkeit und Synchronisierung zur Prüfung dokumentiert. Tasks 005–011, Abnahmetests und Anforderungsnachweise zugeordnet.
+- M0-Merge und lokale Herkunft des Mobile-Prototyps dokumentiert. Der Änderungsumfang besteht aus Projektdokumentation und Repository-Anweisungen.

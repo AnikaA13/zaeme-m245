@@ -99,3 +99,15 @@ CI-Lauf ist über den zugehörigen Pull Request zu prüfen.
 M0 ist aus lokaler technischer Sicht zur Freigabe bereit. Der empfohlene
 nächste Meilenstein nach der Freigabe ist M1 mit Authentifizierung,
 Haushaltsmitgliedschaft und überprüfter Datenisolation per RLS.
+
+## Task 004 · Spezifikation und Architekturreview
+
+PR #1 ist mit 690c769 auf main gemergt. Zweiter Elternteil ist der geprüfte M0-Stand a7ca126; beide Commits haben denselben Dateibaum. Sechs erfolgreiche CI-Prüfungen und drei bestandene M0-Tests sind aus der Release-Übergabe bekannt. Die vorhandene Foundation umfasst weiterhin Startansicht, Routing, Fehlergrenze und Manifest.
+
+Die PO-Entscheide vom 25.11. einschliesslich fünf Navigationseinträgen sind in MVP, UX und Handoff abgeglichen. Die Gruppe prüft die Spezifikation noch. [Umsetzungsstatus](IMPLEMENTATION_STATUS.md) und [Umsetzungsplan](IMPLEMENTATION_PLAN.md) führen die Architektur zur Prüfung. Auth, Datenbank, RLS, Realtime, Kamera, Lookup, gemeinsame Liste und PWA-Installation sind geplant. Es gibt noch keine Produkt- oder Geräteabnahme.
+
+Im Checkout fehlt die Originalmarke als einsetzbares Asset. Unter `~/Downloads/Hoehle-der-Loewen-final (1)/Hoehle-der-Loewen/Prototyp/zaeme_mobile.html` wurde der historische Quelltext mit eingebettetem SVG, simuliertem Scan und localStorage geprüft. Die lokale OneDrive-Kopie war bytegleich. Die Aufgabenstellung V2026-02 lag unter Downloads vor. Testprotokolle wurden in diesem Task nicht neu ausgewertet. Docker-Client vorhanden, Engine nicht erreichbar, Supabase CLI im PATH nicht gefunden. Der nächste Umsetzungsschritt setzt Architekturreview und eine isolierte Testumgebung voraus.
+
+### Tatsächliche Prüfung der Review-Arbeitskopie
+
+Formatprüfung, ESLint, Typprüfung und Produktionsbuild erfolgreich. Der Standardaufruf von Vitest endete vor Testbeginn mit spawn EPERM. Im dokumentierten Thread-Pool bestanden alle drei bestehenden M0-Tests. Diese Läufe prüfen die vorhandene Anwendungshülle. Die Fachverträge wurden ausschliesslich als Dokumentation geprüft.
