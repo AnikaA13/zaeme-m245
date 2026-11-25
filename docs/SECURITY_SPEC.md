@@ -1,5 +1,11 @@
 # Zugriff auf Haushaltsdaten
 
+## Geprüfte Implementierung 005
+
+Die laufende API meldete `PGRST_DB_SCHEMAS=public`. `authenticated` liest Profile, Haushalte und Mitgliedschaften durch RLS. Alle sechs Tabellen verweigern direkte Clientmutationen einschliesslich TRUNCATE. Einladungen und interne Tabellen haben kein Client-SELECT. Die parameterlosen Helfer `private.eligible_actor()` und `private.my_household()` gehören `zaeme_reader`. Seine Mitgliedschaftspolicy filtert unmittelbar nach `auth.uid()`. Die private Security-Barrier-Sicht `confirmed_self` prüft `auth.users.email_confirmed_at IS NOT NULL` für genau diese ID. Der Leser erhält keine Berechtigung auf `auth.users`. Die Migrationsrolle besitzt dort lokal SELECT ohne Weitergaberecht. [Supabase Auth](https://supabase.com/docs/guides/auth/users)
+
+Die elf RPCs gehören `zaeme_writer`. Diese Rolle erhält explizite Tabellen- und Spaltenrechte, etwa UPDATE auf Warnfrist, Version und Zeitstempel eines Haushalts. Beide Funktionsrollen sind NOLOGIN, NOINHERIT und NOBYPASSRLS. Keine Clientrolle ist Mitglied. Definer-Funktionen setzen einen leeren Suchpfad. Die Tabellen gehören einer anderen Rolle. Jede Funktion prüft ihre fachlichen Rechte. Die Freigaben erfolgen innerhalb der Migration. [Berechtigungs- und Protokollprüfungen](TEST_REPORT.md)
+
 Architekturvorschlag. Jede Anfrage nutzt das JWT der angemeldeten Person. PostgreSQL ermittelt auth.uid() und liest die aktuelle Mitgliedschaft. Eine mitgelieferte Haushalts-ID begrenzt den beabsichtigten Kontext zusätzlich. Nach einem Haushaltswechsel darf ein alter Tab seine Eingabe keinem neuen Haushalt zuordnen.
 
 ## Lesematrix und Schreibrechte

@@ -1,5 +1,7 @@
 # Anforderungen
 
+F01, F02, F19, NF01, NF02, NF09, NF12 und NF13 haben Teilnachweise aus Task 005. [Anforderungsmatrix](IMPLEMENTATION_STATUS.md) · [Testbericht](TEST_REPORT.md)
+
 ## Projektrahmen
 
 - zäme ist ein Schulprojekt für die GBS-Höhle der Löwen in der Schweiz.

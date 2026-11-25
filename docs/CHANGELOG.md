@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 005 · lokale Haushaltsdatenbank
+
+Zwei Migrationen führen Profile, Haushalte, Mitgliedschaften, Einladungen, Versuchszähler und Operationsquittungen ein. Elf typisierte RPCs steuern Zugriff und Warnfrist. Neu sind eine gepinnte Entwicklungs-CLI, generierte Datenbanktypen, pgTAP-, API- und Konkurrenztests und ein separater Linux-Workflow. Nach Umstellung und Prüfung der tatsächlichen Host-Portbindung bestand der lokale Abschlusslauf. [Nachweise](TEST_REPORT.md)
+
 ## Task 003 · M0-Release
 
 - Geprüfte Anwendungsgrundlage, Sperrdatei und CI-Workflow für den

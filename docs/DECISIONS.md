@@ -1,5 +1,15 @@
 # Technische Entscheidungen
 
+## Task 005 · Präzisierungen des Datenbankvertrags
+
+Die Entfernung bindet zusätzlich die Generation der Zielperson. So kann eine verspätete Bestätigung des Owners nach erneutem Beitritt keine neue Mitgliedschaft löschen. Der API-Test prüft genau diesen Ablauf.
+
+- Eine zufällige Generation bindet Requests und Quittungen an den konkreten Beitritt. Austritt und Auflösung liefern eine eigene inhaltslose Abschlussbestätigung.
+- Eine private Sicht überbrückt das fehlende GRANT OPTION der Migrationsrolle auf Auth-Daten. Ihr einziges mögliches Ergebnis ist die eigene bestätigte ID. Der RPC-Besitzer erhält kein Auth-Leserecht.
+- Eine JSON-Zahl am Warnfrist-Einstieg erlaubt INVALID auch für falsche Eingabetypen. Das persistente Feld bleibt INTEGER.
+- PostgreSQL 17.11 hat lokal kein `pg_catalog.uuidv7()`. Die DB prüft Version, Variante und 48 Zeitbits. Der Testclient setzt die Zeitbits und verwendet Web Crypto für die Zufallsbits. [RFC 9562, Abschnitt 5.7](https://www.rfc-editor.org/rfc/rfc9562.html#section-5.7)
+- CLI 2.122.1 ist die einzige zusätzliche direkte Entwicklungsabhängigkeit. Die zunächst geprüfte Version 2.95.3 zog ein von npm audit beanstandetes tar-Paket nach. Beim endgültigen Lockfile meldete npm ci null bekannte Schwachstellen. Die Portprüfung stoppt einen Stack mit allgemeiner Host-Bindung. [Testbericht](TEST_REPORT.md)
+
 | Entscheidung                        | Begründung                                                         |
 | ----------------------------------- | ------------------------------------------------------------------ |
 | React, Vite und striktes TypeScript | Unterstützen eine statische SPA und frühe Typprüfung.              |

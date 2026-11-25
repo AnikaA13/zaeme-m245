@@ -1,5 +1,11 @@
 # Testplan
 
+## Ausführbare Prüfungen für 005
+
+`npm run db:test` führt die pgTAP-Suite in einer zurückgerollten Transaktion aus. `npm run db:test:api` erstellt synthetische Konten für den jeweiligen Lauf, meldet sie mit Passwort an und ruft PostgREST mit den ausgestellten Tokens auf. Die Admin-API dient nur der Fixture-Erstellung. SQL kontrolliert Endzustände und setzt Ablaufzeitpunkte. Für einen Ablaufversuch hält eine separate psql-Verbindung die Haushaltszeile gesperrt. Der Test weist den tatsächlich wartenden Beitritt über `pg_blocking_pids` nach.
+
+Zu TT01/02/07/12/16/17/19 liegen Teilnachweise für Haushalte vor. Linux-Wiederholung, Auth-Mailversand, Oberflächen und spätere Bestands-/Reservationsfälle haben eigene Nachweise. [Testergebnisse](TEST_REPORT.md)
+
 ## Aktuell
 
 - `npm run test` führt die Tests einmal aus. Die zwei Rauchtests prüfen

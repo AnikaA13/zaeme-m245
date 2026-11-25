@@ -1,5 +1,11 @@
 # Architektur
 
+## Implementierter Stand 005
+
+PostgREST exponiert `public`. Zwei Migrationen erstellen vier Fachtabellen, zwei interne Tabellen und elf gesicherte Datenbankoperationen. Der künftige Browserclient liest die eigene Mitgliedschaft mit ihrer Generation und übermittelt diesen Kontext bei Änderungen. PostgreSQL prüft die Berechtigung in jeder Transaktion. Die generierten TypeScript-Typen beschreiben das Schema. Grants und RLS bestimmen, welche Felder und Zeilen ein Client nutzen darf.
+
+Die SPA verwendet weiterhin den M0-Einstieg. 006 übernimmt Auth und Haushaltsoberflächen. 007 erweitert Austritt und Entfernung gemeinsam mit den Reservationen. 009 ergänzt Einkauf und Realtime. Die weiteren Abschnitte dokumentieren M0 und die Zielarchitektur. [Nachweis](TEST_REPORT.md)
+
 ## Implementierte Grundlage
 
 ```text

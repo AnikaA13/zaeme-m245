@@ -8,6 +8,15 @@
     "npm": "11.x"
   },
   "scripts": {
+    "db:start": "node scripts/database/command.mjs start",
+    "db:reset": "node scripts/database/command.mjs reset",
+    "db:migrate": "node scripts/database/command.mjs migrate",
+    "db:upgrade:check": "node scripts/database/command.mjs upgrade-check",
+    "db:test": "node scripts/database/command.mjs sql",
+    "db:test:api": "node --test scripts/database/api.mjs",
+    "db:types": "node scripts/database/command.mjs types",
+    "db:types:check": "node scripts/database/command.mjs types-check",
+    "db:stop": "node scripts/database/command.mjs stop",
     "dev": "vite",
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
@@ -37,6 +46,7 @@
     "globals": "^16.5.0",
     "jsdom": "^28.0.0",
     "prettier": "^3.6.2",
+    "supabase": "2.122.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.0",
     "vite": "^8.0.10",

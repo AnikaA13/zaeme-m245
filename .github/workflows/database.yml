@@ -1,0 +1,29 @@
+name: Datenbankprüfung
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  database:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+          cache: npm
+      - run: npm ci
+      - run: npm run db:start
+      - run: npm run db:reset
+      - run: npm run db:upgrade:check
+      - run: npm run db:test
+      - run: npm run db:test:api
+      - run: npm run db:types:check
+      - if: always()
+        run: npm run db:stop

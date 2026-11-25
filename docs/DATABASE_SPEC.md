@@ -1,5 +1,14 @@
 # Datenmodell für den gemeinsamen Haushalt
 
+## Ausgeführte Migrationen 005
+
+1. `20261125000100_household_schema.sql` erstellt `profiles`, `households`, `household_members`, `household_invites`, `private.operation_results` und `private.invite_attempts` mit den unten spezifizierten Schlüsseln, Checks und Indizes. Alle sechs gehören `postgres` und verwenden RLS. Die private Sicht `confirmed_self` projiziert höchstens die eigene bestätigte Konto-ID.
+2. `20261125000200_household_rpc.sql` erstellt Ergebnistypen, private Routinen und elf öffentliche RPCs. SHA-256, UUIDv4 und Transaktionssperren sind PostgreSQL-Kernfunktionen. Nur die SQL-Tests benötigen pgTAP.
+
+`household_members.generation uuid NOT NULL DEFAULT gen_random_uuid()` kennzeichnet jeden Beitritt. `private.operation_results.generation uuid` hält den damaligen Kontext fest. Historische Quittungen dürfen die Haushaltsauflösung bis zur Bereinigung überleben. Die Auflösung entfernt die abhängigen Fachzeilen. Vor einer administrativen Kontolöschung ist Austritt oder bestätigte Auflösung erforderlich. Danach entfernt der Auth-FK das Profil und seine Quittungen. Verbleibende Urheberschaften werden NULL.
+
+Vorrat, Reservationen, Einkauf und Signale im folgenden Gesamtentwurf sind spätere Migrationen. [Prüfungen](TEST_REPORT.md)
+
 Architekturvorschlag für 005, 007 und 009. Die Tabellen gehören zu PostgreSQL. Die Zugriffsmatrix steht in [SECURITY_SPEC.md](SECURITY_SPEC.md), die zulässigen Schreibpfade in [RPC_SPEC.md](RPC_SPEC.md).
 
 ## Spalten und Schlüssel

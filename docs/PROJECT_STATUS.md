@@ -1,5 +1,11 @@
 # Projektstand
 
+## Task 005 · lokal verifiziert
+
+Architekturcommit `e766d28`, Implementierung auf `feature/m1-database-foundation`. Frischer Reset und separater Upgrade vom leeren Backend bestanden. Nach geprüfter Loopback-Bindung bestanden 140 pgTAP-Prüfungen, elf fachliche HTTP-Szenarien und der Typvergleich. Die M0-Oberfläche verwendet die RPCs noch nicht. Remote-CI und die späteren Hosting-Prüfungen sind offen.
+
+Nach dem technischen Review umfasst 006 Registrierung, Bestätigung, Sitzung, Passwortwiederherstellung und Haushaltsoberflächen. Parallel können Zwei-Browser-Testfälle, Mail-Rückkehr und Fixtures für 007 vorbereitet werden. [Testbericht](TEST_REPORT.md)
+
 ## Task 001
 
 Die technische Grundlage von zäme ist im Repository eingerichtet. Das

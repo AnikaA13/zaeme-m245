@@ -1,8 +1,34 @@
 # RPC-Verträge und Transaktionsgrenzen
 
+## Verbindliche SQL-Signaturen für 005
+
+Alle Funktionen liegen in `public` und liefern je einen `public.rpc_result`. PostgREST nimmt benannte JSON-Parameter entgegen. Pro Namen gibt es eine Signatur.
+
+```sql
+save_profile(op uuid, name text, v bigint, h uuid default null, g uuid default null)
+create_household(op uuid, name text)
+create_invite(op uuid, h uuid, g uuid, hash bytea)
+list_invites(h uuid)
+revoke_invite(op uuid, h uuid, g uuid, id uuid)
+preview_invite(token text)
+join_household(op uuid, token text)
+leave_household(op uuid, h uuid, g uuid, confirm boolean)
+remove_member(op uuid, h uuid, g uuid, target uuid, target_g uuid)
+dissolve_household(op uuid, h uuid, g uuid, confirm boolean)
+set_warning_days(op uuid, h uuid, g uuid, days jsonb, v bigint)
+```
+
+`h` und `g` stammen aus der aktuell gelesenen eigenen Mitgliedschaft. Bei einem Profil ohne Haushalt dürfen beide fehlen. Die Warnfrist nimmt eine JSON-Zahl entgegen. Typ, Ganzzahligkeit und Bereich werden vor der INTEGER-Konvertierung geprüft. Text, NULL und Bruchteile liefern INVALID. Den Einladungsdigest als bytea-Hexdarstellung im JSON-String senden. Vorschau und Einlösung verwenden POST und übermitteln das Token im Body.
+
+Der SQL-Verbundtyp enthält `ok boolean, code text, id uuid, version bigint, expires_at timestamptz, household_name text, invites public.invite_metadata[], retry_after integer`. Unbenutzte Felder sind NULL. Einladungsmetadaten enthalten ausschliesslich ID, Erstellzeit, Verfall und Widerruf. Die Vorschau belegt nur ok und Haushaltsname. Austritt und Auflösung quittieren ausschliesslich den Abschluss, auch bei Wiederholung. RATE_LIMITED liefert ganze Wartesekunden. Fachfehler sind normale Ergebnisse. Falsch typisierte Transportparameter wie ungültige UUIDs kann PostgREST bereits vor Ausführung ablehnen.
+
+Bei Anlage und Beitritt speichert die Quittung die neue Generation. Alte Generationen können nach Wiederbeitritt weder einen früheren Erfolg lesen noch eine bisher ungesendete Haushaltsänderung ausführen. SHA-256 bindet die kanonische serverseitige JSONB-Darstellung von RPC, Kontext und Nutzwerten. Das Token fliesst nur als Digest ein. Pro Bereinigung werden maximal 32 alte Zeilen je interner Tabelle mit SKIP LOCKED entfernt. Für 007 stehen `private.start_operation` und `private.finish` zur Verfügung. Die folgende Tabelle enthält fachliche Kurzformen und spätere Operationen.
+
 Architekturvorschlag. Direktes Lesen gemäss [Zugriffsmatrix](SECURITY_SPEC.md). **Ein RPC-Aufruf ist eine Datenbanktransaktion.** Die folgenden Signaturen beschreiben API-Eingaben, keine Migration. Alle verlangen eine gültige auth.uid(). Kein Aufruf nimmt die handelnde user_id entgegen.
 
 ## Gemeinsame Parameter und Ergebnisse
+
+Für `remove_member` bezieht sich `target_g` auf die beim Bestätigen sichtbare Mitgliedschaft der Zielperson. Ein nach deren Austritt und Wiederbeitritt erstmals zugestellter Auftrag trifft keine aktuelle Zeile und liefert NOT_FOUND. Die schreibenden Einstiegspunkte bilden SQLSTATE 40P01 und 40001 bei einem Abbruch innerhalb der Funktion auf RETRY ab. Ein Abbruch auf Transaktionsebene erfordert ebenfalls die Wiederholung mit derselben Absicht.
 
 Jede Mutation erhält zusätzlich op uuid (UUIDv7, neu pro Benutzerabsicht). Alle Mutationen im bestehenden Haushalt erhalten zusätzlich h uuid als erwarteten Kontext. IDs sind uuid, v ist expected_version bigint, confirm und ack sind boolean ohne implizite Bestätigung. Pflichtfelder dürfen nicht NULL sein. Rollen M/O bedeuten aktuelles Mitglied inklusive Owner bzw. ausschliesslich Owner. Akteur, Zeitstempel, Versionszähler, Rollen und Status werden serverseitig gesetzt. Rückgabe als typisiertes Ergebnis mit ok und minimaler Quittung (id, gegebenenfalls version) oder stabilem Fehlercode. Detaildaten nach Erfolg neu laden.
 
