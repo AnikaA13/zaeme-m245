@@ -1,0 +1,19 @@
+:root {
+  --color-violet-dark: #1c1840;
+  --color-purple: #4b3fa8;
+  --color-mint: #7ad3a8;
+  --color-cream: #fbf9f1;
+  --color-coral: #ff7a7a;
+
+  --color-page: var(--color-cream);
+  --color-text: var(--color-violet-dark);
+  --color-action: var(--color-purple);
+  --color-focus: var(--color-purple);
+  --font-body: system-ui, sans-serif;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --radius-panel: 1rem;
+  --width-panel: 34rem;
+}

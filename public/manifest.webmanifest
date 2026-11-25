@@ -1,0 +1,11 @@
+{
+  "id": "/",
+  "name": "zäme",
+  "short_name": "zäme",
+  "lang": "de-CH",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#1C1840",
+  "background_color": "#FBF9F1"
+}

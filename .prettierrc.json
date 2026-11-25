@@ -1,0 +1,4 @@
+{
+  "singleQuote": true,
+  "overrides": [{ "files": "*.webmanifest", "options": { "parser": "json" } }]
+}
