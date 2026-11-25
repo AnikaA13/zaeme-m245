@@ -1,5 +1,63 @@
 # Prüfbericht
 
+## 25. November 2026 · Integration 007.1
+
+### Herkunft und Umgebung
+
+`git fetch origin` und `git ls-remote --heads origin` bestätigten die folgenden Quellen auf `github.com/AnikaA13/zaeme-m245`. Der ursprüngliche Task-007-Checkout war sauber, mit einem Worktree und ohne Stash.
+
+| Referenz                                   | Commit                                     | Integration                                             |
+| ------------------------------------------ | ------------------------------------------ | ------------------------------------------------------- |
+| `origin/main`                              | `0fb839823fa9f0a187ed57c7f6c65b6bba842901` | Basis von `integration/m3-auth-inventory`               |
+| `origin/feature/m2-auth-households`        | `e7db7f4c8ecbfabb0f2c3339c28c0556209fe351` | Merge `edfb035`, gemeinsamer Vorfahr mit main `4936f3f` |
+| `origin/feature/m3-inventory-reservations` | `7ddd46be6ffdae5cf1fdce1ab087e1d6c15bfa8d` | Merge `2ecec7a`, basiert direkt auf `0fb8398`           |
+
+Beide lokalen Merges erhalten die Quellcommits als Eltern. Zwei Textkonflikte wurden einzeln zusammengeführt. Das README verbindet die Voraussetzungen für Auth und Vorrat mit den getrennten Testports. Die Umsetzungsmatrix übernimmt die geprüften Auth-, Haushalts-, Darstellungs- und Backendnachweise je Anforderungs-ID. Die historischen Berichte 005–007 folgen unten. Lockfile, Logo, Vite- und Auth-Konfiguration entsprechen 006. Migrationen, Validierungsfixtures sowie SQL- und HTTP-Suites entsprechen 007.
+
+Windows, Node 24.14.1, npm 11.21.3, Docker Engine 29.4.3, Supabase CLI 2.122.1, supabase-js 2.119.2 und Playwright 1.65.1. Die Prozessauswahl `ZAEME_TEST_STACK=integration` bezeichnet ausschliesslich `zaeme-integration-0071`. Windows meldete für API 55821, PostgreSQL 55822 und Mailpit 55824 nur `127.0.0.1`. Docker bestätigte Containername, Projektlabel, Volume und separates Netzwerk. Die Quellstacks waren gestoppt, ihre Volumes vorhanden. Die drei fremden laufenden Container wurden nicht bedient.
+
+### Ausgeführte Prüfungen
+
+| Befehl                                       | Beobachtung                                                                                                                                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm ci`                                     | Exit 0, 278 installierte Pakete, npm-Audit meldete 0 bekannte Schwachstellen. Die Warnung zur vorhandenen ESLint-Version bleibt bestehen.                                   |
+| `npm run db:start`, `npm run db:reset`       | Loopbackprüfung und Neuinstallation aller vier Migrationen bestanden.                                                                                                       |
+| `npm run db:upgrade:check`                   | Bei 005 begonnener Upgrade mit vorhandenen Profil-, Haushalts-, Mitgliedschafts- und Einladungsdaten bestanden.                                                             |
+| `npm run db:test`                            | 243 pgTAP-Prüfungen in drei Dateien bestanden. Die echte Rücknahme nach simuliertem SQLSTATE 40001 umfasst Anlage, Verbrauch, Freigabe, Austritt und Entfernung.            |
+| `npm run db:test:api`                        | 21 fachliche HTTP-Szenarien bestanden. Node zählt mit der umschliessenden Prüfung 22. Darin 14 kontrollierte Vorratsrennen mit nachgewiesenen wartenden Datenbanksitzungen. |
+| `npm run db:types`, `npm run db:types:check` | Haushalt und Vorrat aus dem laufenden Schema generiert und unabhängig erneut verglichen. Das Ergebnis ist identisch zur Typdatei aus 007.                                   |
+| `npm run lint`, `npm run typecheck`          | Exit 0. Die fünf Vorrats-RPCs sind über die explizite Mutationsliste erreichbar.                                                                                            |
+| `npm run test`                               | 35 bestandene Unit-/Komponententests in sieben Dateien, Standard-Worker. Die historischen 19 Tests aus 006 bleiben enthalten.                                               |
+| `npm run build`                              | Vite 8.3.8, 79 Module. JavaScript 510,55 kB, gzip 149,04 kB. CSS 3,05 kB, gzip 1,11 kB. Vite meldet die bestehende Chunkgrenze von 500 kB.                                  |
+
+`npm run test:browser` bestand im Abschlusslauf alle 17 ausgewiesenen Szenarien. Dazu gehören A–J, der Logout-Fehlerfall, drei separate Haushalts-/Vorratsszenarien, die Auflösungsprüfung innerhalb von J, die verspätete Mutation, die PKCE-Negativfälle und der Kontowechsel während der Registrierung. Bei Letzterem hielt Playwright die echte GoTrue-Antwort zurück, während im zweiten Tab die Anmeldung eines anderen Kontos gelang. Im ursprünglichen Tab blieb dessen Profil sichtbar. Die verspätete Antwort löste keine Navigation zur Bestätigungsseite aus.
+
+`npm run format:check` und `git diff --check` bestanden. 59 Integrationsdateien und Build-Artefakte wurden gemeinsam auf die konkreten privaten Schlüsselwerte des lokalen Stacks geprüft, ohne Treffer. Die Datenbank-CI enthält jetzt den sequenziellen Chromium-Lauf nach den SQL-, HTTP- und Typprüfungen. Der GitHub-Lauf steht bis zur Veröffentlichung und PR-Erstellung aus.
+
+Die Migrationen sind `20261125000100_household_schema.sql`, `20261125000200_household_rpc.sql`, `20261125000300_inventory_schema.sql` und `20261125000400_inventory_rpc.sql`. Der Regressionslauf erforderte keine SQL-Korrektur.
+
+### Browser, Auth und Freigabe von Reservierungen
+
+Die bestehenden Chromium-Szenarien A–J mit Mailpit und der simulierte Logout-Fehler wurden gegen die integrierte Datenbank ausgeführt. Sie umfassen auch die identische Wiederholung einer tatsächlich gespeicherten Einladung nach unterdrückter Antwort, einen zweiten isolierten Haushalt und die bisherigen responsiven Prüfungen. Vorratsfixtures stammen aus echten öffentlichen RPC-Aufrufen. Austritt, Entfernung, Beitritt und Auflösung erfolgten über die Haushaltsoberfläche.
+
+| Vorgang                   | Beobachtung                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mitglied tritt aus        | Zwei von zwölf Stück waren reserviert. Nach dem bestätigten Austritt zeigte SQL zwölf Stück, keine Reservierung und eine um eins höhere Version. Der Browser zeigte Onboarding, das alte JWT las keine Charge und die Mutation lieferte FORBIDDEN.                                                                                                                                                                  |
+| Owner entfernt Mitglied   | Drei und vier Stück auf zwei Chargen wurden freigegeben. Beide Bestände blieben bei zwölf, beide Versionen stiegen um eins. Die Reservierungen von Owner und anderem Mitglied (eins bzw. zwei Stück) blieben erhalten. Fokus löste die Berechtigungsprüfung aus.                                                                                                                                                    |
+| Mitglied tritt erneut bei | Gleicher Haushalt, neue Generation. Die alte Reservationsquittung und ein neuer Verbrauch mit alter Generation lieferten FORBIDDEN. Eine Entfernung mit alter Zielgeneration lieferte NOT_FOUND.                                                                                                                                                                                                                    |
+| Owner löst auf            | Die letzte eigene Reservierung war unmittelbar vor Bestätigung vorhanden. Danach fehlten beide Chargen, alle Reservierungen und der Haushalt. SQL fand das Konto und sein Profil. Reload und erneute Anmeldung führten ins Onboarding.                                                                                                                                                                              |
+| Sicht und Seitengrenze    | Eine Ergebniszeile mit Seitengrösse eins enthielt die Summe beider Reservierungen der ersten Charge. Gesamt reserviert vier, davon eins selbst, acht frei und neun persönlich verbrauchbar.                                                                                                                                                                                                                         |
+| Verzögerte Mutation       | Die erfolgreiche Antwort einer Profiländerung wurde zurückgehalten. Nach Logout und Anmeldung als anderes Konto blieben Name und Route korrekt, die frühere Erfolgsmeldung erschien nicht. Der Unit-Test wechselt zusätzlich die Generation während der Nachprüfung einer Vorratsquittung.                                                                                                                          |
+| Callback                  | Echte Bestätigung und Recovery gelangen. Das installierte SDK gibt den beim Anfordern gespeicherten Verifier-Zusatz im Feld `redirectType` zurück. Bei beiden vertauschten Routen gelang der echte Codeaustausch mit HTTP 200, die Anwendung wies die Route dennoch zurück. Ein frischer Browser ohne Verifier und ein bereits verbrauchter Link erhielten keine Passwortmaske. Query und Fragment wurden entfernt. |
+
+Ein Zwischenlauf erreichte bei der vierten Registrierung die Bestätigungsseite nicht innerhalb des Zeitlimits. Die Ursache liess sich aus diesem Lauf nicht eindeutig bestimmen. Der Test prüft die GoTrue-Antwort jetzt direkt. Der anschliessende vollständige Wiederholungslauf bestand.
+
+### Grenzen
+
+Vor dem Abschluss waren Testkonten, Fachzeilen, Quittungen und Mailpit-Nachrichten entfernt. GoTrue enthielt noch zwei PKCE- und 57 Audit-Zeilen. Ein letzter geprüfter Reset im selben Wegwerfstack bereinigte diese Metadaten. Zwölf Tabellen einschliesslich der Auth-Tabellen und das Postfach hatten danach jeweils null Einträge. Nach `npm run db:stop` liefen für das Integrationsprojekt null Container und auf seinen drei Ports null Host-Listener. Die drei übrigen Container liefen weiter.
+
+Lokale Prüfungen mit synthetischen Konten belegen die beschriebenen Datenbank- und Browserabläufe. Remote-CI, Hosted SMTP, HTTPS, physische Mobilgeräte, Screenreader, Kamera, Installation und Nutzerabnahme bleiben offen. Für die Geräteprüfung reale Mailrückkehr testen, auf iOS Safari und Android Chrome die Systemtastatur, Freigabe und Installation bedienen und die Resultate je Gerät dokumentieren. Der nächste Implementierungsschritt ist die Vorratsoberfläche gemäss [Task-008-Vertrag](TASK_008_VERTRAG.md).
+
 ## Task 006 · lokaler Browser und Datenbank
 
 Ausgangsstand war `main` auf `0fb8398` mit dem bereits integrierten Task 005. Der neue Branch basiert direkt auf `4936f3f`. Drei unversionierte Projektlogos lagen bereits vor. Das verwendete grosse SVG stimmt mit dem eingebetteten Prototyp-Logo überein. Der Stash zeigte auf `68bebc9`.

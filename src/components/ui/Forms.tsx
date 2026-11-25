@@ -5,10 +5,15 @@ import {
   type FormEvent,
   type ReactNode,
 } from 'react';
-import { FlowError, FormError } from '../../lib/operations/protocol';
+import {
+  FlowError,
+  FormError,
+  PendingDecision,
+} from '../../lib/operations/protocol';
 export function useAction() {
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(''),
+    [decision, setDecision] = useState<PendingDecision | null>(null),
     [until, setUntil] = useState(0);
   const lock = useRef(false),
     mounted = useRef(true);
@@ -32,10 +37,12 @@ export function useAction() {
     lock.current = true;
     setBusy(true);
     setMessage('');
+    setDecision(null);
     try {
       await fn();
     } catch (e) {
       if (mounted.current) {
+        if (e instanceof PendingDecision) setDecision(e);
         setMessage(
           e instanceof FormError
             ? e.message
@@ -56,6 +63,22 @@ export function useAction() {
       <>
         {busy && <p role="status">Wird verarbeitet …</p>}
         {message && <p role="alert">{message}</p>}
+        {decision && (
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => {
+              if (
+                window.confirm(
+                  'Hast du den aktuellen Stand geprüft und möchtest du die frühere Anfrage abschliessen?',
+                )
+              )
+                void run(async () => decision.resolve());
+            }}
+          >
+            Frühere Anfrage abschliessen
+          </button>
+        )}
       </>
     ),
   };

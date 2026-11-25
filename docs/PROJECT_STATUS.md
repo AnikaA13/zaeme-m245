@@ -1,5 +1,11 @@
 # Projektstand
 
+## Task 007.1 · integrierter Stand
+
+Auf `integration/m3-auth-inventory` sind die Auth- und Haushaltsoberfläche von 006 und die Vorratsdatenbank von 007 zusammengeführt. Die vier Migrationen gelten unverändert. Für Abnahmeumfang, Prüfbefunde und offene Umgebungstests gilt der [aktuelle Prüfbericht](TEST_REPORT.md). Die nachfolgenden Aufgabenstände dokumentieren ihre jeweiligen historischen Prüfumgebungen.
+
+F03, F05, F07, F10 und F17 benötigen noch die Vorratsoberfläche. F04 Realtime, F06 Kamerascan, F09 Einkauf, F15 physische Installation sowie Hosted SMTP, HTTPS, physische Geräte und Nutzertests bleiben offen. [Übergabe für 008](TASK_008_VERTRAG.md)
+
 ## Task 006 · lokale Auth- und Haushaltsoberfläche
 
 Der Branch `feature/m2-auth-households` basiert direkt auf `4936f3f`. Die Anwendung unterstützt Registrierung, E-Mail-Bestätigung, Passwortreset, Profilpflege und den vollständigen Lebenszyklus der Haushaltsmitgliedschaft. Der Browserlauf mit vier getrennten Konten prüfte den Beitritt zu dritt, einen zweiten isolierten Haushalt, Entzug und Auflösung. Die lokale Abnahme gilt für Windows, Chromium und den isolierten Stack. Hosted SMTP, HTTPS-Preview, echte Mobilgeräte und Screenreader bleiben offen. [Prüfbericht](TEST_REPORT.md)

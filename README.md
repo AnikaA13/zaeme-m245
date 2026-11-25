@@ -21,19 +21,13 @@ npm ci
 npx --no-install supabase --version
 npm run db:start
 npm run db:migrate
-npm run db:reset
-npm run db:test
-npm run db:test:api
-npm run db:types
-npm run db:types:check
-npm run db:stop
 ```
 
 `db:migrate` wendet ausstehende Migrationen lokal an. `db:reset` ersetzt den Inhalt der Wegwerfdatenbank und spielt alle Migrationen erneut ein. Das Skript prüft Projekt-ID, fehlende Remote-Verknüpfung, lokalen Docker-Endpunkt, Containerlabel, API- und DB-Adresse und Portbindungen. `db:types` schreibt die Typen nach `src/database.types.ts`. `db:stop` erhält den lokalen Datenstand. API-Tests entfernen ihre synthetischen Konten nach jedem Lauf.
 
 Falls der Start eine allgemeine Portbindung meldet, in Docker Desktop unter **Settings → Resources → Network** die Standard-Portbindung auf **localhost** setzen, anwenden und den Start wiederholen. Diese Einstellung betrifft den Rechner. Alternativ dieselben Befehle auf einem isolierten Linux-Rechner mit Docker Engine ausführen. [Testbericht](docs/TEST_REPORT.md) · [Docker-Netzwerk](https://docs.docker.com/desktop/features/networking/) · [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
 
-Die separate Upgradeprüfung ersetzt die lokalen Testdaten und prüft den Übergang vom vorherigen Migrationsstand. Der aktuelle Ablauf für Task 007 steht unten.
+Der vollständige Regressionstest mit eigener Wegwerfdatenbank steht unten.
 
 ### Frontend
 
@@ -62,7 +56,7 @@ blockiert, verwende dort `npm.cmd`. `npm ci` installiert die in
 
 ## Umgebung und aktueller Umfang
 
-Vite verwendet `http://127.0.0.1:5173` mit festem Port. Bestätigung und Passwortreset kehren auf genau diesen Ursprung zurück. Auth-Sitzung, Profil, Einladungen und Haushaltsverwaltung sind angeschlossen. Die Warnfrist ist lesbar. Vorrat, Einkauf, Reservationen, Realtime und Installation folgen in späteren Aufgaben.
+Vite verwendet `http://127.0.0.1:5173` mit festem Port. Bestätigung und Passwortreset kehren auf genau diesen Ursprung zurück. Auth-Sitzung, Profil, Einladungen und Haushaltsverwaltung sind angeschlossen. Die Warnfrist ist lesbar. Die Datenbank für Vorrat und Reservierungen ist angeschlossen. Die zugehörigen Ansichten, Einkauf, Realtime und Installation sind offen.
 
 Für die Browserprüfung den Entwicklungsserver beenden, den lokalen Datenbankstack laufen lassen und `npx playwright install chromium` sowie `npm run test:browser` ausführen. Der Test startet Vite selbst auf Port 5173, verwendet Mailpit und räumt seine synthetischen Konten auf. Unit-Tests mit `npm run test` benötigen keinen laufenden Stack. [Prüfstand](docs/TEST_REPORT.md) · [Hosting-Voraussetzungen](docs/ARCHITECTURE.md)
 
@@ -72,9 +66,9 @@ GitHub Actions verwendet die Node-Version aus `package.json`, installiert mit
 `npm ci` und führt Lint, Typprüfung, Formatprüfung, Tests und Build aus.
 `package-lock.json` gehört zusammen mit dem Workflow ins Repository.
 
-## Vorratsdatenbank lokal prüfen (Task 007)
+## Integration 007.1 reproduzieren
 
-Eine Arbeitskopie mit Suffix `-task007` erhält in den npm-Datenbankbefehlen die Projekt-ID `zaeme-task007-local`. `.local-stack/` enthält die abgeleitete CLI-Konfiguration und Verzeichnisverweise auf die Migrationen und Tests dieses Klons. Für diesen Checkout sämtliche Stack-Befehle über npm ausführen. Ein direkter CLI-Aufruf im Repository würde die Basiskonfiguration für 005 verwenden.
+Für den separaten Wegwerfstack in PowerShell `$env:ZAEME_TEST_STACK = 'integration'` setzen. Unter Linux `export ZAEME_TEST_STACK=integration` verwenden. Alle Befehle im selben Terminal ausführen. Der Stack verwendet das Projekt `zaeme-integration-0071`, den Container und das Volume `supabase_db_zaeme-integration-0071` sowie API 55821, PostgreSQL 55822 und Mailpit 55824 auf Loopback. Vite verwendet für die Auth-Rückkehr weiterhin Port 5173.
 
 ```sh
 npm ci
@@ -85,11 +79,19 @@ npm run db:test
 npm run db:test:api
 npm run db:types
 npm run db:types:check
+npm run lint
+npm run typecheck
+npm run format:check
+npm run test
+npm run build
+npx --no-install playwright install chromium
+npm run test:browser
 npm run db:stop
+git diff --check
 ```
 
-Reset und Upgradeprüfung ersetzen die Daten im identifizierten lokalen Testprojekt. Die Upgradeprüfung setzt zuerst exakt auf `20261125000200` zurück, vergleicht die vier bestehenden Fachtabellen vor und nach der Migration und entfernt ihre Prüfdaten. Der HTTP-Lauf legt eigene, pro Durchlauf gekennzeichnete Konten an und räumt sie wieder auf. pgTAP rollt jede Testdatei zurück.
+Reset und Upgradeprüfung ersetzen die Daten des ausgewählten Wegwerfstacks. Vor beiden prüft das Skript Projekt-ID, lokale Endpunkte, Containerlabel und Listener. Der Upgradevergleich erhält Profile, Haushalte, Mitgliedschaften und Einladungen aus Task 005. Browser und HTTP-Suite verwenden ihre eigenen synthetischen Konten nacheinander. Für ein vollständig leeres Integrationsvolume auch die internen GoTrue-Audit- und PKCE-Zeilen nach dem Test durch einen abschliessenden `npm run db:reset` im gewählten Wegwerfstack bereinigen, danach `npm run db:stop` ausführen.
 
-API 55321, PostgreSQL 55322, Mailpit 55324. Reserviert sind Shadow-DB 55320, Studio 55323, SMTP/POP 55325/55326, Analyse 55327, Pooler 55329 und Inspector 9083. PostgreSQL, Auth, PostgREST, Gateway, Mailpit und postgres-meta laufen im eigenen Netzwerk `zaeme-task007-local-loopback`. Auf Windows prüft das Skript die tatsächlichen Listener. Das Postgres-Volume heisst `supabase_db_zaeme-task007-local`. Die Basiskonfiguration und bestehende npm-Befehle bleiben für gewöhnliche Checkouts verwendbar. Parallele Arbeitskopien brauchen verschiedene Tasknummern im Verzeichnisnamen und freie Ports.
+Ohne Auswahl gilt die gemeinsame Konfiguration `zaeme-task005-local` mit den Ports 54321, 54322 und 54324. Für eine parallele Arbeitskopie kann eine Tasknummer wie `ZAEME_TEST_STACK=task007` angegeben werden (55321, 55322, 55324). Die abgeleiteten Dateien liegen unter `.local-stack/`. Ein neuer Terminalprozess ohne Variable oder `Remove-Item Env:ZAEME_TEST_STACK` in PowerShell wechselt zur gemeinsamen Entwicklungskonfiguration zurück.
 
-Task 008 findet die Schreibparameter im [RPC-Vertrag](docs/RPC_SPEC.md), die Leseabfragen im [Datenmodell](docs/DATABASE_SPEC.md) und die ausgeführten Prüfungen im [Testbericht](docs/TEST_REPORT.md).
+Der Datenbankworkflow führt die erweiterten SQL-, HTTP-, Typ- und Browserprüfungen sequenziell aus. GitHub startet ihn beim Pull Request oder manuell. [Task-008-Vertrag](docs/TASK_008_VERTRAG.md) · [Testbericht](docs/TEST_REPORT.md)

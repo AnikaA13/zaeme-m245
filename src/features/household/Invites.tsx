@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { CompositeTypes } from '../../database.types';
 import { useAction } from '../../components/ui/Forms';
 import { invitation, FlowError } from '../../lib/operations/protocol';
@@ -6,6 +6,7 @@ import { query, mutate } from '../../lib/operations/rpc';
 import { activeScope } from '../auth/session';
 const date = (s: string | null) =>
   s ? new Date(s).toLocaleString('de-CH') : '–';
+const drafts = new WeakMap<AbortSignal, ReturnType<typeof invitation>>();
 export function Invites({ h, g }: { h: string; g: string }) {
   const [items, setItems] = useState<
       CompositeTypes<'invite_metadata'>[] | null
@@ -14,7 +15,6 @@ export function Invites({ h, g }: { h: string; g: string }) {
     [revision, reload] = useState(0);
   const [token, setToken] = useState(''),
     [notice, setNotice] = useState('');
-  const secret = useRef<Awaited<ReturnType<typeof invitation>> | null>(null);
   const action = useAction();
   useEffect(() => {
     let active = true;
@@ -91,26 +91,28 @@ export function Invites({ h, g }: { h: string; g: string }) {
           onClick={() =>
             void action.run(async () => {
               const scope = activeScope();
-              secret.current ??= await invitation();
-              if (scope.signal.aborted) return;
               try {
+                const draft = drafts.get(scope.signal) ?? invitation();
+                drafts.set(scope.signal, draft);
+                const secret = await draft;
+                if (scope.signal.aborted) return;
                 const r = await mutate('create_invite', {
                   h,
                   g,
-                  hash: secret.current.hash,
+                  hash: secret.hash,
                 });
                 if (!r.id) throw new FlowError('TRANSPORT');
                 if (!scope.signal.aborted) {
-                  setToken(secret.current.token);
-                  secret.current = null;
+                  setToken(secret.token);
+                  drafts.delete(scope.signal);
                   reload((n) => n + 1);
                 }
               } catch (e) {
                 if (
-                  e instanceof FlowError &&
-                  !['TRANSPORT', 'RETRY'].includes(e.code)
+                  !(e instanceof FlowError) ||
+                  !['TRANSPORT', 'RETRY', 'RATE_LIMITED'].includes(e.code)
                 )
-                  secret.current = null;
+                  drafts.delete(scope.signal);
                 throw e;
               }
             })

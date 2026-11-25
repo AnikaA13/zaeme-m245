@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 007.1 · Integration von Haushalt und Vorrat
+
+Die beiden Implementierungen sind lokal zusammengeführt. Neu sind die Sperre für geänderte offene Mutationen, die Prüfung von Vorratsquittungen und Sitzungswechseln sowie Meldungen für Datum, verfügbare Menge, Reservierungen und Vollverbrauch. Der Chromium-Test verbindet die vorhandenen Haushaltsaktionen mit echten Vorrats-RPCs und einer unabhängigen SQL-Prüfung. Der Datenbankworkflow führt anschliessend auch den Browserlauf aus. [Prüfbericht](TEST_REPORT.md)
+
 ## Task 006 · Anmeldung und Haushalte
 
 Echte E-Mail-Flows, Profilpflege, Startansicht und Haushaltsverwaltung im Frontend ergänzt. Einladungen lassen sich erstellen, teilen, prüfen, einlösen und widerrufen. Die Haushaltsansicht verwendet RLS-Daten und prüft den Zugang erneut. Lokale Auth-Konfiguration und typisierter Client sind auf Vite abgestimmt. Neu sind das verifizierte Projektlogo sowie Protokoll-, Sitzungs-, Komponenten- und Chromium-Tests mit Mailpit. [Testbericht](TEST_REPORT.md)

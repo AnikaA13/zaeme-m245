@@ -4,12 +4,12 @@ import { randomUUID, randomBytes } from 'node:crypto';
 import { setTimeout as wait } from 'node:timers/promises';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
-import { api, localStatus, checkBindings, sql } from './local.mjs';
+import { householdInventory } from './browser-inventory.mjs';
+import { api, mail, localStatus, checkBindings, sql } from './local.mjs';
 
 const stack = localStatus();
 checkBindings();
-const origin = 'http://127.0.0.1:5173',
-  mail = 'http://127.0.0.1:54324';
+const origin = 'http://127.0.0.1:5173';
 assert.equal(stack.MAILPIT_URL ?? stack.INBUCKET_URL, mail);
 process.env.VITE_SUPABASE_URL = api;
 process.env.VITE_SUPABASE_PUBLISHABLE_KEY =
@@ -72,7 +72,15 @@ async function register(p, n) {
   await p.getByLabel('E-Mail-Adresse').fill(address(n));
   if (n === 'Anna') await layout(p);
   await p.getByLabel('Passwort', { exact: true }).fill(password);
-  await button(p, 'Konto erstellen').click();
+  const [signup] = await Promise.all([
+    p.waitForResponse(
+      (r) =>
+        r.url().startsWith(api + '/auth/v1/signup') &&
+        r.request().method() === 'POST',
+    ),
+    button(p, 'Konto erstellen').click(),
+  ]);
+  assert.equal(signup.status(), 200, 'Registrierung über GoTrue');
   await heading(p, 'E-Mail bestätigen');
   const skip = new Set();
   if (n === 'Anna') {
@@ -232,6 +240,17 @@ try {
       0,
     );
   });
+  const verifyDissolution = await householdInventory({
+    a,
+    b,
+    c,
+    invitation,
+    join,
+    confirm,
+    heading,
+    step,
+    publicKey: process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+  });
   await step('E Getrennter Haushalt und RLS', async () => {
     d = await page();
     await d.goto(origin + '/auth/login');
@@ -366,8 +385,10 @@ try {
     await heading(c, 'Dein Haushalt');
     await a.reload();
     await heading(a, 'WG A');
+    verifyDissolution(false);
     await confirm(a, 'Haushalt auflösen');
     await heading(a, 'Dein Haushalt');
+    verifyDissolution(true);
     await a.reload();
     await heading(a, 'Dein Haushalt');
     await signOut(a);
@@ -387,6 +408,160 @@ try {
     await a.goto(origin + '/household');
     await heading(a, 'Anmelden');
     assert.equal(await button(a, 'Abmelden').count(), 0);
+  });
+  await step('Verspätete Mutation nach Kontowechsel', async () => {
+    const p = await page();
+    await login(p, 'Anna');
+    await heading(p, 'Dein Haushalt');
+    await p.getByText('Anzeigenamen bearbeiten', { exact: true }).click();
+    await p
+      .getByLabel('Anzeigename', { exact: true })
+      .fill('Anna nach Auflösung');
+    const captured = Promise.withResolvers(),
+      gate = Promise.withResolvers(),
+      finished = Promise.withResolvers();
+    await p.route(
+      '**/rest/v1/rpc/save_profile',
+      async (route) => {
+        try {
+          const response = await route.fetch();
+          assert.equal((await response.json()).ok, true);
+          captured.resolve();
+          await gate.promise;
+          await route.fulfill({ response }).catch(() => {
+            /* Logout bricht die Zustellung ab. */
+          });
+        } catch (error) {
+          captured.reject(error);
+        } finally {
+          finished.resolve();
+        }
+      },
+      { times: 1 },
+    );
+    await button(p, 'Namen speichern').click();
+    try {
+      await Promise.race([
+        captured.promise,
+        wait(8000).then(() => {
+          throw new Error('Mutation fehlt');
+        }),
+      ]);
+      await signOut(p);
+      await link(p, 'Anmelden').click();
+      await p.getByLabel('E-Mail-Adresse').fill(address('Dani'));
+      await p.getByLabel('Passwort', { exact: true }).fill(password);
+      await button(p, 'Anmelden').click();
+      await heading(p, 'Dein Haushalt');
+    } finally {
+      gate.resolve();
+    }
+    await finished.promise;
+    await p.getByText('Anzeigenamen bearbeiten', { exact: true }).click();
+    assert.equal(
+      await p.getByLabel('Anzeigename', { exact: true }).inputValue(),
+      'Dani',
+    );
+    assert.equal(
+      await p.getByText('Dein Anzeigename ist gespeichert.').count(),
+      0,
+    );
+    assert.equal(new URL(p.url()).pathname, '/');
+  });
+  await step(
+    'PKCE – vertauschte Callback-Routen, fehlender Verifier und verbrauchter Link',
+    async () => {
+      for (const recovery of [false, true]) {
+        const p = await page();
+        const email = address(recovery ? 'Anna' : 'Callback');
+        await p.goto(
+          origin + (recovery ? '/auth/forgot-password' : '/auth/register'),
+        );
+        await p.getByLabel('E-Mail-Adresse').fill(email);
+        if (!recovery)
+          await p.getByLabel('Passwort', { exact: true }).fill(password);
+        await button(
+          p,
+          recovery ? 'Link anfordern' : 'Konto erstellen',
+        ).click();
+        if (recovery) await p.getByText(/Falls ein Konto/).waitFor();
+        else await heading(p, 'E-Mail bestätigen');
+        const url = await mailLink(email, recovery ? 'recovery' : 'signup');
+        const response = await fetch(url, { redirect: 'manual' });
+        const callback = new URL(response.headers.get('location'));
+        assert.equal(callback.origin, origin);
+        assert.equal(
+          callback.pathname,
+          recovery ? '/auth/reset-password' : '/auth/callback',
+        );
+        assert.ok(callback.searchParams.get('code'));
+        const invalid = async (tab, url) => {
+          await tab.goto(url);
+          await heading(tab, 'Link nicht mehr gültig');
+          assert.equal(
+            await tab.getByLabel('Neues Passwort', { exact: true }).count(),
+            0,
+          );
+          assert.equal(new URL(tab.url()).search + new URL(tab.url()).hash, '');
+        };
+        const fresh = await page();
+        await invalid(fresh, callback.href);
+        callback.pathname = recovery
+          ? '/auth/callback'
+          : '/auth/reset-password';
+        // Für die Routenprüfung muss der echte Austausch erfolgreich sein.
+        const exchange = p.waitForResponse(
+          (r) =>
+            r.url().startsWith(api + '/auth/v1/token?grant_type=pkce') &&
+            r.request().method() === 'POST',
+        );
+        await invalid(p, callback.href);
+        assert.equal((await exchange).status(), 200);
+        await invalid(fresh, url);
+      }
+    },
+  );
+  await step('Kontowechsel während einer echten Registrierung', async () => {
+    const p = await page();
+    await p.goto(origin + '/auth/register');
+    const email = address('Kontowechsel');
+    await p.getByLabel('E-Mail-Adresse').fill(email);
+    await p.getByLabel('Passwort', { exact: true }).fill(password);
+    const gate = Promise.withResolvers();
+    await p.route(
+      '**/auth/v1/signup*',
+      async (route) => {
+        const response = await route.fetch();
+        await gate.promise;
+        await route.fulfill({ response });
+      },
+      { times: 1 },
+    );
+    const completed = p.waitForResponse(
+      (r) =>
+        r.url().startsWith(api + '/auth/v1/signup') &&
+        r.request().method() === 'POST',
+    );
+    const visited = [];
+    p.on('framenavigated', (frame) => {
+      if (frame === p.mainFrame()) visited.push(new URL(frame.url()).pathname);
+    });
+    try {
+      await button(p, 'Konto erstellen').click();
+      await mailLink(email, 'signup');
+      const secondTab = await p.context().newPage();
+      await login(secondTab, 'Dani');
+      await heading(p, 'Dein Haushalt');
+    } finally {
+      gate.resolve();
+    }
+    assert.equal((await completed).status(), 200);
+    await p.getByText('Anzeigenamen bearbeiten', { exact: true }).click();
+    assert.equal(
+      await p.getByLabel('Anzeigename', { exact: true }).inputValue(),
+      'Dani',
+    );
+    assert.ok(!visited.includes('/auth/confirm'));
   });
 } catch (error) {
   // Playwright-Fehler können URLs und Eingabewerte enthalten. Nur sichere Diagnose ausgeben.

@@ -1,5 +1,9 @@
 # Architektur
 
+## Integrationsgrenze 007.1
+
+Der Browser schreibt über eine explizite Liste öffentlicher Haushalts- und Vorrats-RPCs. Die Quittung wird vor der Anzeige geprüft. Jede Operation erfasst Konto, Haushalt und Mitgliedschaftsgeneration. Der nachfolgende Ladevorgang muss zum selben Kontext oder zum erwarteten Mitgliedschaftswechsel passen. Für einen verlorenen Transport bleiben Nutzlast und Operations-ID im Arbeitsspeicher. [Schnittstelle und Leseabfragen für Task 008](TASK_008_VERTRAG.md)
+
 ## Browseranwendung ab Task 006
 
 React Router führt Gäste auf `/welcome`, `/auth/login`, `/auth/register`, `/auth/confirm` und `/auth/forgot-password`. Das SDK verwaltet die Sitzung. Bei PKCE verarbeitet die Anwendung genau einen Code über `exchangeCodeForSession`. Die automatische URL-Erkennung ist ausgeschaltet. Der Browser entfernt Query und Fragment vor dem Austausch. Nur der vom SDK beim erfolgreichen Austausch bestätigte Recovery-Vorgang öffnet das Passwortformular für das zugehörige Konto. Nach Neuladen dieses Formulars braucht es einen neuen Link. [Supabase PKCE](https://supabase.com/docs/guides/auth/sessions/pkce-flow)

@@ -143,7 +143,16 @@ if (command === 'start') {
         endOfLine: 'lf',
       });
       assert.ok(
-        types.includes('save_profile') && types.includes('household_members'),
+        [
+          'save_profile',
+          'household_members',
+          'active_inventory',
+          'create_item',
+          'edit_item',
+          'consume_item',
+          'set_reservation',
+          'delete_item',
+        ].every((name) => types.includes(name)),
       );
       if (command === 'types') writeFileSync(typeFile, types);
       else

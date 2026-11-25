@@ -1,5 +1,20 @@
 # Testplan
 
+## Regression 007.1 · F01/F02/F03/F07/F10/F17, NF01/NF08/NF09/NF13
+
+Nach Reset und Upgrade pgTAP, HTTP und Typvergleich ausführen. Danach im selben Wegwerfstack mit Mailpit und Chromium prüfen. Die bestehende Szenarienfolge A–J und der fehlerhafte Logout bleiben Bestandteil des Laufs.
+
+| Fall                 | Auslöser                                                                                | Unabhängiger Nachweis                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Austritt             | Mitglied verlässt den Haushalt über die UI                                              | Reservierung entfernt, Menge konstant, Version erhöht, alter Zugriff abgelehnt                 |
+| Entfernung           | Owner entfernt Mitglied mit zwei Reservierungen                                         | Beide Versionen erhöht, übrige Reservierungen und Gesamtmengen erhalten, altes JWT ohne Zugang |
+| Wiederbeitritt       | Mitglied verwendet gültige Einladung                                                    | Neue Generation, alte Quittung und alter Verbrauch abgewiesen, alte Zielgeneration wirkungslos |
+| Auflösung            | Alleiniger Owner bestätigt mit reserviertem Bestand                                     | Haushalt, Chargen und Reservierungen entfernt, Konto und Profil weiter nutzbar                 |
+| Asynchrone Antworten | Profilmutation verzögern, währenddessen abmelden und anderes Konto anmelden             | Neuer Name und Route erhalten, keine alte Erfolgsmeldung                                       |
+| PKCE                 | Normale und vertauschte Rückkehr mit echtem Code, anderer Browser und verbrauchter Link | Passwortformular nur nach gültiger Recovery, URL bereinigt                                     |
+
+In Vitest zusätzlich unveränderliche Eingaben, Doppelsubmit, neue Absicht, getrennte Chargen, OP_EXPIRED, Generationenwechsel während Nachprüfung und falsche Quittungen prüfen. Ein physischer Gerätetest, Hosted SMTP und HTTPS sind gesonderte Abnahmen.
+
 ## Task 006 · reproduzierbarer lokaler Lauf
 
 `npm ci`, `npm run db:start`, `npx playwright install chromium` und `npm run test:browser` ausführen. Port 5173 muss frei sein. Der Test verwendet vier eigene Browserkontexte und zufällige Konten unter `example.invalid`. Alle vier registrieren sich über das Formular. Der Runner liest ihre tatsächlichen lokalen E-Mails und öffnet die Links im zugehörigen Kontext. Er schliesst Browser und Vite und entfernt die Konten, ihre Haushalte und die erfassten Nachrichten. Er schreibt weder Traces noch Screenshots.

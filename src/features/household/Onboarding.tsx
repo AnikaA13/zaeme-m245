@@ -100,8 +100,13 @@ export function JoinPage({ guest = false }: { guest?: boolean }) {
                 'Die lokale Einladung ist abgelaufen. Öffne den Einladungslink erneut oder gib den Code neu ein.',
               );
             if (preview) {
-              await mutate('join_household', { token });
-              if (activeScope().epoch === scope.epoch)
+              const receipt = await mutate('join_household', { token });
+              const current = activeScope();
+              if (
+                current.epoch === scope.epoch &&
+                current.household === receipt.id &&
+                current.revision === scope.revision + 1
+              )
                 navigate('/', { replace: true });
               return;
             }

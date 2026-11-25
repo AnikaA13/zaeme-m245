@@ -1,5 +1,9 @@
 # RPC-Verträge und Transaktionsgrenzen
 
+## Clientbindung ab 007.1
+
+Die fünf implementierten Vorratssignaturen im Abschnitt 007 gelten unverändert. Der Client verwaltet die UUIDv7 pro Benutzerabsicht und Zielressource bis zu einer geklärten Antwort. Ein geänderter Auftrag kann eine ungeklärte ID erst nach ausdrücklicher Auflösung ersetzen. Die Quittung wird mit der Ziel-ID und dem Versionsvertrag verglichen. [Client-API, Zustandsabgleich und Wiederholung](TASK_008_VERTRAG.md)
+
 ## Verbindliche SQL-Signaturen für 005
 
 Alle Funktionen liegen in `public` und liefern je einen `public.rpc_result`. PostgREST nimmt benannte JSON-Parameter entgegen. Pro Namen gibt es eine Signatur.

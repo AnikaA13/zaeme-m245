@@ -51,11 +51,20 @@ const messages: Record<string, string> = {
   STALE:
     'Die Daten wurden geändert. Prüfe den aktuellen Stand und bestätige erneut.',
   CONFIRM_REQUIRED: 'Bitte bestätige diesen Vorgang.',
+  DATE_ACK: 'Das Datum liegt weit in der Zukunft. Prüfe und bestätige es.',
+  INSUFFICIENT: 'Für diese Menge reicht der verfügbare Vorrat nicht aus.',
+  RESERVED: 'Gib zuerst die betroffenen Reservierungen frei.',
+  CONFIRM_FULL:
+    'Der gesamte Bestand würde verbraucht. Prüfe die aktuelle Menge und bestätige den Vollverbrauch.',
+  UNRESOLVED:
+    'Der Ausgang der früheren Aktion ist offen. Prüfe den aktuellen Stand oder wiederhole die ursprüngliche Eingabe.',
   OWNER_BOUND: 'Der Haushalt kann so nicht verlassen oder aufgelöst werden.',
   ALREADY_MEMBER: 'Du gehörst bereits zu einem Haushalt.',
   INVITE_INVALID:
     'Diese Einladung ist ungültig, abgelaufen oder widerrufen. Bitte die Person, die den Haushalt verwaltet, um eine neue Einladung.',
   RATE_LIMITED: 'Zu viele Versuche.',
+  REFRESH_FAILED:
+    'Die Aktion wurde gespeichert. Lade den aktuellen Stand erneut.',
   HASH_EXISTS: 'Erstelle eine neue Einladung.',
   OP_MISMATCH:
     'Die Anfrage passt nicht zur ursprünglichen Aktion. Prüfe den aktuellen Stand.',
@@ -73,6 +82,14 @@ export class FlowError extends FormError {
       (messages[code] ?? 'Die Aktion konnte nicht bestätigt werden.') +
         (seconds ? ' Versuche es in ' + seconds + ' Sekunden erneut.' : ''),
     );
+  }
+}
+export class PendingDecision extends FlowError {
+  constructor(
+    code: string,
+    readonly resolve: () => void,
+  ) {
+    super(code);
   }
 }
 const record = (value: unknown): value is Record<string, unknown> =>
@@ -130,27 +147,55 @@ export class Operations {
   clear() {
     this.pending.clear();
   }
+  // Erst nach Abgleich und bewusster Entscheidung. Eine überholte Entscheidung
+  // darf keinen neueren Versuch derselben Aktion verwerfen.
+  resolve(action: string, id: string) {
+    const entry = this.pending.get(action);
+    if (!entry || entry.busy || entry.id !== id) throw new FlowError('RETRY');
+    this.pending.delete(action);
+  }
+  unresolved(action: string) {
+    return this.pending.get(action)?.id;
+  }
   async execute<T>(
     action: string,
     payload: unknown,
     send: (id: string) => Promise<T>,
+    afterReceipt?: (result: T) => Promise<void>,
   ) {
-    const key = JSON.stringify(payload);
+    const key = JSON.stringify(payload, (_, value: unknown) =>
+      record(value)
+        ? Object.fromEntries(
+            Object.entries(value).sort(([a], [b]) =>
+              a < b ? -1 : a > b ? 1 : 0,
+            ),
+          )
+        : value,
+    );
     let entry = this.pending.get(action);
     if (entry?.busy) throw new FlowError('RETRY');
-    if (!entry || entry.key !== key) {
+    if (entry && entry.key !== key) throw new FlowError('UNRESOLVED');
+    if (!entry) {
       entry = { key, id: operationId(), busy: false };
       this.pending.set(action, entry);
     }
     entry.busy = true;
     try {
       const result = await send(entry.id);
+      if (this.pending.get(action) !== entry) throw new FlowError('FORBIDDEN');
+      if (afterReceipt) await afterReceipt(result);
       if (this.pending.get(action) === entry) this.pending.delete(action);
       return result;
     } catch (e) {
       if (
         e instanceof FlowError &&
-        !['TRANSPORT', 'RETRY', 'RATE_LIMITED'].includes(e.code) &&
+        ![
+          'TRANSPORT',
+          'RETRY',
+          'RATE_LIMITED',
+          'OP_EXPIRED',
+          'OP_MISMATCH',
+        ].includes(e.code) &&
         this.pending.get(action) === entry
       )
         this.pending.delete(action);

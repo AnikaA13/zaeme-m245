@@ -114,6 +114,66 @@ describe('RPC-Protokoll', () => {
     expect(await ops.execute('a', 'b', async (op) => op)).toBe(id);
     expect(await ops.execute('a', 'b', async (op) => op)).not.toBe(id);
   });
+  it('sperrt geänderte Eingaben bis zur ausdrücklichen Auflösung der richtigen ID', async () => {
+    const ops = new Operations(),
+      send = vi.fn(async () => 1);
+    const payload = { amount: '1', unit: 'kg' };
+    await expect(
+      ops.execute('a', payload, async () => {
+        throw new FlowError('TRANSPORT');
+      }),
+    ).rejects.toThrow();
+    payload.amount = '2';
+    await expect(ops.execute('a', payload, send)).rejects.toMatchObject({
+      code: 'UNRESOLVED',
+    });
+    expect(send).not.toHaveBeenCalled();
+    const original = ops.unresolved('a')!;
+    expect(() => ops.resolve('a', 'veraltete Entscheidung')).toThrow();
+    await expect(
+      ops.execute('a', { unit: 'kg', amount: '1' }, async (op) => op),
+    ).resolves.toBe(original);
+    expect(await ops.execute('a', payload, async (op) => op)).not.toBe(
+      original,
+    );
+  });
+  it('behält eine abgelaufene ID bis zum Abgleich und trennt zwei Chargen', async () => {
+    const ops = new Operations();
+    await expect(
+      ops.execute('item1', '1', async () => {
+        throw new FlowError('OP_EXPIRED');
+      }),
+    ).rejects.toMatchObject({ code: 'OP_EXPIRED' });
+    const expired = ops.unresolved('item1')!;
+    expect(await ops.execute('item2', '1', async (op) => op)).not.toBe(expired);
+    await expect(
+      ops.execute('item1', '2', async () => 1),
+    ).rejects.toMatchObject({ code: 'UNRESOLVED' });
+    ops.resolve('item1', expired);
+    expect(await ops.execute('item1', '2', async (op) => op)).not.toBe(expired);
+  });
+  it('verwirft eine verspätete Quittung nach Kontextwechsel und erhält die neuere Operation', async () => {
+    const ops = new Operations();
+    let release!: () => void;
+    const old = ops.execute(
+      'a',
+      '1',
+      () =>
+        new Promise<void>((r) => {
+          release = r;
+        }),
+    );
+    ops.clear();
+    await expect(
+      ops.execute('a', '2', async () => {
+        throw new FlowError('TRANSPORT');
+      }),
+    ).rejects.toThrow();
+    const newer = ops.unresolved('a');
+    release();
+    await expect(old).rejects.toMatchObject({ code: 'FORBIDDEN' });
+    expect(ops.unresolved('a')).toBe(newer);
+  });
 });
 describe('Einladungsabsicht', () => {
   it('übernimmt das Fragment nur auf der Beitrittsroute', () => {

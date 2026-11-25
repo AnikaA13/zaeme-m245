@@ -9,7 +9,9 @@ permissions:
 jobs:
   database:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 35
+    env:
+      ZAEME_TEST_STACK: integration
     steps:
       - uses: actions/checkout@v6
         with:
@@ -25,5 +27,7 @@ jobs:
       - run: npm run db:test
       - run: npm run db:test:api
       - run: npm run db:types:check
+      - run: npx --no-install playwright install --with-deps chromium
+      - run: npm run test:browser
       - if: always()
         run: npm run db:stop

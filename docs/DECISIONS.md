@@ -1,5 +1,11 @@
 # Technische Entscheidungen
 
+## 007.1 · Wiederholen und Kontext prüfen
+
+Eine offene Absicht ist pro Mutation und Zielressource gebunden. Eine zweite Eingabe darf sie erst nach Zustandsabgleich und bewusster lokaler Auflösung ablösen. Ein bestätigter Vollverbrauch benötigt einen eigenen Benutzerentscheid. Die Sitzungsnachprüfung akzeptiert bei Beitritt und Gründung genau einen Wechsel zum quittierten Haushalt. Bei Austritt und Auflösung erwartet sie den Verlust der Mitgliedschaft. Das erneute Eintreten in denselben Haushalt erzeugt einen neuen Kontext.
+
+Die Wegwerfumgebung wird explizit pro Prozess gewählt. Damit können Quellbranches und gemeinsamer Entwicklungsstack ihre vorhandenen Volumes behalten. Für den Browser verwendet der Test die Mailpit-Adresse des gewählten Stacks. Der erlaubte Vite-Ursprung und die zwei exakten PKCE-Routen bleiben gemeinsam.
+
 ## Task 006 · Auth, Absichten und Wiederholung
 
 - Der typisierte Supabase-Client 2.119.2 (MIT, Node ab 22) nutzt im Browser PKCE und die SDK-Sitzungspersistenz. Playwright 1.65.1 (Apache-2.0, Node ab 20) läuft ausschliesslich im Testprozess. Node 24 erfüllt beide Anforderungen.

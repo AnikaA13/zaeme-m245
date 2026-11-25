@@ -41,10 +41,12 @@ let reads = new AbortController();
 let scope = new AbortController();
 let flight: Promise<void> | null = null;
 let generation: string | null = null;
+let scopeRevision = 0;
 let loggingOut = false;
 let recoveryUser: string | null = null;
 export const operations = new Operations();
 function invalidate() {
+  scopeRevision++;
   scope.abort();
   scope = new AbortController();
   operations.clear();
@@ -62,6 +64,9 @@ export function activeScope() {
     user: state.user,
     email: session?.user.email,
     epoch: state.epoch,
+    revision: scopeRevision,
+    household: state.account?.home?.id ?? null,
+    generation,
     jwt: session?.access_token,
   };
 }
@@ -69,7 +74,10 @@ export function refresh(afterWrite = false): Promise<void> {
   if (!session || loggingOut) return Promise.resolve();
   if (flight) {
     const waiting = flight;
-    return afterWrite ? waiting.then(() => refresh()) : waiting;
+    const identity = reads.signal;
+    return afterWrite
+      ? waiting.then(() => (identity.aborted ? undefined : refresh()))
+      : waiting;
   }
   const user = session.user.id,
     controller = reads;
@@ -82,6 +90,7 @@ export function refresh(afterWrite = false): Promise<void> {
       if (controller.signal.aborted || state.user !== user) return;
       const next = account.home?.g ?? null;
       const lost = !!generation && !next;
+      const changed = next !== generation;
       if (next !== generation) {
         invalidate();
         generation = next;
@@ -90,7 +99,9 @@ export function refresh(afterWrite = false): Promise<void> {
       update({
         account,
         phase: 'ready',
-        ...(lost ? { notice: 'Deine Mitgliedschaft ist beendet.' } : {}),
+        ...(changed
+          ? { notice: lost ? 'Deine Mitgliedschaft ist beendet.' : '' }
+          : {}),
       });
     } catch {
       if (!controller.signal.aborted) {

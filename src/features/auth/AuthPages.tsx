@@ -35,6 +35,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' | 'forgot' }) {
   const register = mode === 'register',
     forgot = mode === 'forgot';
   async function submit() {
+    const scope = activeScope();
     const auth = backend().auth;
     const address = email.trim();
     if (register && !passwordValid(password))
@@ -45,6 +46,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' | 'forgot' }) {
       const { error } = await auth.resetPasswordForEmail(address, {
         redirectTo: location.origin + '/auth/reset-password',
       });
+      if (scope.signal.aborted) return;
       if (error && error.status !== 422) throw authFailure(error);
       setSent(true);
       return;
@@ -56,6 +58,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' | 'forgot' }) {
         password,
         options: { emailRedirectTo: confirmUrl() },
       });
+      if (scope.signal.aborted) return;
       if (
         error &&
         !['user_already_exists', 'email_exists'].includes(error.code ?? '')
@@ -69,6 +72,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' | 'forgot' }) {
       email: address,
       password,
     });
+    if (scope.signal.aborted) return;
     if (error?.code === 'email_not_confirmed') {
       navigate('/auth/confirm', { state: { email: address } });
       return;

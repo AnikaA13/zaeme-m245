@@ -8,20 +8,34 @@ import {
   writeFileSync,
   realpathSync,
 } from 'node:fs';
-import { basename, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import process from 'node:process';
 
-// Eigener Namensraum für parallele Arbeitskopien mit Suffix -taskNNN.
-const task = basename(process.cwd()).match(/-task([0-9]{3})$/i)?.[1] ?? '005';
-const offset = (Number(task) - 5) * 500;
+// Die Auswahl gilt für diesen Prozess, unabhängig vom Namen der Arbeitskopie.
+const selection = process.env.ZAEME_TEST_STACK;
+const parallel = selection?.match(/^task([0-9]{3})$/);
+assert.ok(
+  !selection || selection === 'integration' || parallel,
+  'Unbekannter Teststack',
+);
+const task = parallel?.[1] ?? '005';
+const integration = selection === 'integration';
+const offset = integration ? 1500 : (Number(task) - 5) * 500;
 assert.ok(offset >= 0 && 54329 + offset <= 65535);
-export const project = 'zaeme-task' + task + '-local';
-const workdir = offset ? resolve('.local-stack') : process.cwd();
+export const project = integration
+  ? 'zaeme-integration-0071'
+  : 'zaeme-task' + task + '-local';
+const workdir = integration
+  ? resolve('.local-stack/integration')
+  : offset
+    ? resolve('.local-stack', project)
+    : process.cwd();
 const apiPort = 54321 + offset;
 const dbPort = 54322 + offset;
 export const network = project + '-loopback';
 export const container = 'supabase_db_' + project;
 export const api = 'http://127.0.0.1:' + apiPort;
+export const mail = 'http://127.0.0.1:' + (54324 + offset);
 function prepareWorkdir() {
   if (!offset) return;
   const dir = resolve(workdir, 'supabase');
