@@ -1,13 +1,5 @@
 import assert from 'node:assert/strict';
-import {
-  readFileSync,
-  writeFileSync,
-  mkdtempDisposableSync,
-  mkdirSync,
-  copyFileSync,
-} from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
 import process from 'node:process';
 import { format, resolveConfig } from 'prettier';
 import {
@@ -15,6 +7,7 @@ import {
   docker,
   localEngine,
   localStatus,
+  project,
   network,
   checkBindings,
   sql,
@@ -57,7 +50,19 @@ if (command === 'start') {
   console.log('Lokale Datenbank und API bereit.');
 } else if (command === 'stop') {
   localEngine();
-  cli('stop');
+  if (
+    docker(
+      'ps',
+      '--filter',
+      'label=com.supabase.cli.project=' + project,
+      '--format',
+      '{{.Names}}',
+    )
+  ) {
+    localStatus();
+    checkBindings();
+    cli('stop');
+  }
 } else {
   localStatus();
   checkBindings();
@@ -70,37 +75,50 @@ if (command === 'start') {
       cli('migration', 'up', '--local');
       break;
     case 'upgrade-check': {
-      // M0 hatte keine Migration. Dieselbe geprüfte Projekt-ID ohne SQL-Dateien initialisieren.
-      const baseline = mkdtempDisposableSync(
-        join(tmpdir(), 'zaeme-task005-baseline-'),
+      cli(
+        'db',
+        'reset',
+        '--local',
+        '--no-seed',
+        '--yes',
+        '--version',
+        '20261125000200',
       );
-      try {
-        const configDir = join(baseline.path, 'supabase');
-        mkdirSync(configDir);
-        copyFileSync('supabase/config.toml', join(configDir, 'config.toml'));
-        cli(
-          'db',
-          'reset',
-          '--local',
-          '--no-seed',
-          '--yes',
-          '--workdir',
-          baseline.path,
-        );
-      } finally {
-        baseline.remove();
-      }
+      localStatus();
       checkBindings();
       assert.equal(
         sql(
-          "select to_regclass('auth.users') is not null and to_regclass('public.profiles') is null",
+          "select to_regclass('public.inventory_items') is null and array(select version from supabase_migrations.schema_migrations order by version) = array['20261125000100','20261125000200']",
         ),
         't',
       );
+      sql(`begin;
+        insert into auth.users(id,email_confirmed_at) values ('00000000-0007-4000-8000-000000000001',now());
+        insert into public.profiles(id,display_name) values ('00000000-0007-4000-8000-000000000001','Upgradeprüfung');
+        insert into public.households(id,owner_id,name) values ('00000000-0007-4000-8000-000000000002','00000000-0007-4000-8000-000000000001','Prüfhaushalt');
+        insert into public.household_members(household_id,user_id) values ('00000000-0007-4000-8000-000000000002','00000000-0007-4000-8000-000000000001');
+        insert into public.household_invites(household_id,created_by,token_hash)
+          select id,owner_id,sha256('Upgradeprüfung'::bytea) from public.households where id='00000000-0007-4000-8000-000000000002';
+        commit;`);
+      const snapshot = () =>
+        sql(`select jsonb_build_array(
+        (select jsonb_agg(p) from public.profiles p),
+        (select jsonb_agg(h) from public.households h),
+        (select jsonb_agg(m) from public.household_members m),
+        (select jsonb_agg(i) from public.household_invites i))`);
+      const before = snapshot();
       cli('migration', 'up', '--local');
+      assert.equal(snapshot(), before, 'Bestehende Haushaltsdaten unverändert');
+      localStatus();
+      checkBindings();
+      sql(`begin;
+        delete from public.households where owner_id='00000000-0007-4000-8000-000000000001';
+        delete from auth.users where id='00000000-0007-4000-8000-000000000001';
+        commit;`);
+      assert.equal(sql('select count(*) from public.profiles'), '0');
       assert.equal(
         sql(
-          "select count(*) from supabase_migrations.schema_migrations where version in ('20261125000100','20261125000200')",
+          "select count(*) from supabase_migrations.schema_migrations where version in ('20261125000300','20261125000400')",
         ),
         '2',
       );

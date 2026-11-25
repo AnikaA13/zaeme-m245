@@ -1,0 +1,278 @@
+{
+  "items": [
+    {
+      "label": "April mit 31 Tagen",
+      "fields": { "expiry_date": "2024-04-31", "date_type": "MHD" },
+      "valid": false
+    },
+    {
+      "label": "Liter mit drei Nachkommastellen",
+      "fields": {
+        "quantity": "1.234",
+        "unit": "Liter",
+        "category": "Getränke"
+      },
+      "valid": true
+    },
+    {
+      "label": "Getränk in kg",
+      "fields": { "unit": "kg", "category": "Getränke" },
+      "valid": false
+    },
+    { "label": "Kurze EAN", "fields": { "barcode": "1234" }, "valid": false },
+    {
+      "label": "Lange EAN",
+      "fields": { "barcode": "00123456789012" },
+      "valid": false
+    },
+    {
+      "label": "EAN mit Buchstabe",
+      "fields": { "barcode": "A123456789012" },
+      "valid": false
+    },
+    {
+      "label": "Standardfelder",
+      "fields": {
+        "name": " Milch "
+      },
+      "valid": true
+    },
+    {
+      "label": "Bruchteil",
+      "fields": {
+        "quantity": "0.001",
+        "unit": "kg"
+      },
+      "valid": true
+    },
+    {
+      "label": "Obergrenze",
+      "fields": {
+        "quantity": "9999",
+        "unit": "Packung"
+      },
+      "valid": true
+    },
+    {
+      "label": "Zu gross",
+      "fields": {
+        "quantity": "9999.001",
+        "unit": "Liter"
+      },
+      "valid": false
+    },
+    {
+      "label": "Null",
+      "fields": {
+        "quantity": "0"
+      },
+      "valid": false
+    },
+    {
+      "label": "Negativ",
+      "fields": {
+        "quantity": "-1"
+      },
+      "valid": false
+    },
+    {
+      "label": "Stückbruch",
+      "fields": {
+        "quantity": "1.4"
+      },
+      "valid": false
+    },
+    {
+      "label": "Packungsbruch",
+      "fields": {
+        "unit": "Packung",
+        "quantity": "2.5"
+      },
+      "valid": false
+    },
+    {
+      "label": "Zusätzliche Nachkommastelle",
+      "fields": {
+        "quantity": "1.0000",
+        "unit": "kg"
+      },
+      "valid": false
+    },
+    {
+      "label": "JSON-Zahl",
+      "fields": {
+        "quantity": 1
+      },
+      "valid": false
+    },
+    {
+      "label": "Exponent",
+      "fields": {
+        "quantity": "1e2"
+      },
+      "valid": false
+    },
+    {
+      "label": "Komma an API",
+      "fields": {
+        "quantity": "1,5",
+        "unit": "kg"
+      },
+      "valid": false
+    },
+    {
+      "label": "NaN",
+      "fields": {
+        "quantity": "NaN"
+      },
+      "valid": false
+    },
+    {
+      "label": "Unendlich",
+      "fields": {
+        "quantity": "Infinity"
+      },
+      "valid": false
+    },
+    {
+      "label": "Leerraum",
+      "fields": {
+        "name": "  "
+      },
+      "valid": false
+    },
+    {
+      "label": "100 Codepunkte",
+      "fields": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+      },
+      "valid": true
+    },
+    {
+      "label": "101 Codepunkte",
+      "fields": {
+        "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+      },
+      "valid": false
+    },
+    {
+      "label": "Fremdfeld",
+      "fields": {
+        "version": 2
+      },
+      "valid": false
+    },
+    {
+      "label": "Name als Objekt",
+      "fields": {
+        "name": {}
+      },
+      "valid": false
+    },
+    {
+      "label": "Explizit fehlende Menge",
+      "fields": {
+        "quantity": null
+      },
+      "valid": false
+    },
+    {
+      "label": "Lagerort",
+      "fields": {
+        "location": "Keller"
+      },
+      "valid": false
+    },
+    {
+      "label": "EAN mit führender Null",
+      "fields": {
+        "barcode": "0123456789012"
+      },
+      "valid": true
+    },
+    {
+      "label": "EAN-Prüfziffer",
+      "fields": {
+        "barcode": "0123456789013"
+      },
+      "valid": false
+    },
+    {
+      "label": "EAN als Zahl",
+      "fields": {
+        "barcode": 123456789012
+      },
+      "valid": false
+    },
+    {
+      "label": "Schalttag",
+      "fields": {
+        "expiry_date": "2024-02-29",
+        "date_type": "MHD"
+      },
+      "valid": true
+    },
+    {
+      "label": "Unmögliches Datum",
+      "fields": {
+        "expiry_date": "2025-02-29",
+        "date_type": "MHD"
+      },
+      "valid": false
+    },
+    {
+      "label": "ISO-Format",
+      "fields": {
+        "expiry_date": "2024-2-29",
+        "date_type": "MHD"
+      },
+      "valid": false
+    },
+    {
+      "label": "Datum ohne Art",
+      "fields": {
+        "expiry_date": "2024-02-29"
+      },
+      "valid": false
+    },
+    {
+      "label": "Art ohne Datum",
+      "fields": {
+        "date_type": "MHD"
+      },
+      "valid": false
+    },
+    {
+      "label": "Unbekannte Datumsart",
+      "fields": {
+        "expiry_date": "2024-01-01",
+        "date_type": "Morgen"
+      },
+      "valid": false
+    },
+    {
+      "label": "Gebietsfremde Ziffern",
+      "fields": {
+        "barcode": "０123456789012"
+      },
+      "valid": false
+    }
+  ],
+  "expiry": [
+    { "years": 0, "days": 0, "ack": false, "code": null },
+    { "years": 5, "days": 0, "ack": false, "code": null },
+    { "years": 5, "days": 1, "ack": false, "code": "DATE_ACK" },
+    { "years": 5, "days": 1, "ack": true, "code": null },
+    { "years": 20, "days": 0, "ack": true, "code": null },
+    { "years": 20, "days": 1, "ack": true, "code": "INVALID" }
+  ],
+  "reservations": [
+    { "unit": "Stück", "stock": "3", "desired": "0", "code": null },
+    { "unit": "Stück", "stock": "3", "desired": "3", "code": null },
+    { "unit": "Stück", "stock": "3", "desired": "1.4", "code": "INVALID" },
+    { "unit": "Stück", "stock": "3", "desired": "4", "code": "INSUFFICIENT" },
+    { "unit": "kg", "stock": "1.2", "desired": "0.001", "code": null },
+    { "unit": "kg", "stock": "1.2", "desired": "-1", "code": "INVALID" },
+    { "unit": "kg", "stock": "1.2", "desired": "0.0001", "code": "INVALID" }
+  ]
+}

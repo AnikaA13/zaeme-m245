@@ -16,6 +16,7 @@ import {
   checkBindings,
 } from './local.mjs';
 import { invitation, operationId as op } from './fixtures.mjs';
+import { addInventoryCases } from './inventory-api.mjs';
 
 test('Auth, PostgREST, Haushaltsregeln und parallele Transaktionen', async (t) => {
   const status = localStatus();
@@ -40,7 +41,7 @@ test('Auth, PostgREST, Haushaltsregeln und parallele Transaktionen', async (t) =
     return { status: response.status, body: s ? JSON.parse(s) : null };
   }
   async function account(label, confirmed = true) {
-    const email = 'task005-' + run + '-' + label + '@example.invalid';
+    const email = project + '-' + run + '-' + label + '@example.invalid';
     const password = randomBytes(20).toString('hex');
     const created = await request('/auth/v1/admin/users', admin, 'POST', {
       email,
@@ -108,8 +109,12 @@ test('Auth, PostgREST, Haushaltsregeln und parallele Transaktionen', async (t) =
   }
   // Auth-E-Mails dieses Laufs begrenzen die Bereinigung auch nach einem Teilfehler.
   t.after(() => {
+    localStatus();
+    checkBindings();
     const ids =
-      "select id from auth.users where email like 'task005-" +
+      "select id from auth.users where email like '" +
+      project +
+      '-' +
       run +
       "-%@example.invalid'";
     sql(
@@ -119,6 +124,7 @@ test('Auth, PostgREST, Haushaltsregeln und parallele Transaktionen', async (t) =
         ids +
         '); commit;',
     );
+    assert.equal(sql('select count(*) from (' + ids + ') as remaining'), '0');
   });
   const people = [];
   for (const label of ['a', 'b', 'c', 'd', 'e', 'f'])
@@ -252,6 +258,18 @@ test('Auth, PostgREST, Haushaltsregeln und parallele Transaktionen', async (t) =
       );
     },
   );
+  addInventoryCases({
+    check,
+    actors: () => ({ a, b, c, d, e, ac, bc, cc, dc, link }),
+    rpc,
+    request,
+    rows,
+    context,
+    profiled,
+    success,
+    error,
+    guest,
+  });
   check(
     'Direkte Tabellenrechte, interne Schemas, Gast-RPCs und fremde IDs',
     async () => {

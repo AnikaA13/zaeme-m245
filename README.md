@@ -14,7 +14,7 @@ bereiten den Betrieb vor. Supabase Auth, PostgreSQL und PostgREST tragen die lok
 
 ## Lokal starten
 
-Die M0-Oberfläche läuft unabhängig von der Datenbank. Für die lokale Haushaltsdatenbank werden Node 24, npm 11 und eine lokale Linux-Docker-Engine benötigt. API, PostgreSQL und Testpostfach verwenden die Ports 54321, 54322 und 54324. Die erste Ausführung lädt die Service-Images.
+Die M0-Oberfläche läuft unabhängig von der Datenbank. Für die lokale Haushaltsdatenbank werden Node 24, npm 11 und eine lokale Linux-Docker-Engine benötigt. Im Basisprojekt verwenden API, PostgreSQL und Testpostfach die Ports 54321, 54322 und 54324. Die erste Ausführung lädt die Service-Images. Die abweichenden Ports des parallelen Task-007-Klons stehen unten.
 
 ```sh
 npm ci
@@ -33,7 +33,7 @@ npm run db:stop
 
 Falls der Start eine allgemeine Portbindung meldet, in Docker Desktop unter **Settings → Resources → Network** die Standard-Portbindung auf **localhost** setzen, anwenden und den Start wiederholen. Diese Einstellung betrifft den Rechner. Alternativ dieselben Befehle auf einem isolierten Linux-Rechner mit Docker Engine ausführen. [Testbericht](docs/TEST_REPORT.md) · [Docker-Netzwerk](https://docs.docker.com/desktop/features/networking/) · [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
 
-Für die separate Prüfung des Upgrade-Pfads setzt `npm run db:upgrade:check` das verifizierte Wegwerfprojekt auf die leere Auth-Grundlage zurück, prüft diesen Zwischenstand und wendet die Migrationen mit `migration up --local` an. Dieser Test benötigt Node ab 24.4 und ersetzt die lokalen Testdaten.
+Die separate Upgradeprüfung ersetzt die lokalen Testdaten und prüft den Übergang vom vorherigen Migrationsstand. Der aktuelle Ablauf für Task 007 steht unten.
 
 ### Frontend
 
@@ -82,3 +82,25 @@ Den aktuellen Prüfstand findest du in [PROJECT_STATUS.md](docs/PROJECT_STATUS.m
 GitHub Actions verwendet die Node-Version aus `package.json`, installiert mit
 `npm ci` und führt Lint, Typprüfung, Formatprüfung, Tests und Build aus.
 `package-lock.json` gehört zusammen mit dem Workflow ins Repository.
+
+## Vorratsdatenbank lokal prüfen (Task 007)
+
+Eine Arbeitskopie mit Suffix `-task007` erhält in den npm-Datenbankbefehlen die Projekt-ID `zaeme-task007-local`. `.local-stack/` enthält die abgeleitete CLI-Konfiguration und Verzeichnisverweise auf die Migrationen und Tests dieses Klons. Für diesen Checkout sämtliche Stack-Befehle über npm ausführen. Ein direkter CLI-Aufruf im Repository würde die Basiskonfiguration für 005 verwenden.
+
+```sh
+npm ci
+npm run db:start
+npm run db:reset
+npm run db:upgrade:check
+npm run db:test
+npm run db:test:api
+npm run db:types
+npm run db:types:check
+npm run db:stop
+```
+
+Reset und Upgradeprüfung ersetzen die Daten im identifizierten lokalen Testprojekt. Die Upgradeprüfung setzt zuerst exakt auf `20261125000200` zurück, vergleicht die vier bestehenden Fachtabellen vor und nach der Migration und entfernt ihre Prüfdaten. Der HTTP-Lauf legt eigene, pro Durchlauf gekennzeichnete Konten an und räumt sie wieder auf. pgTAP rollt jede Testdatei zurück.
+
+API 55321, PostgreSQL 55322, Mailpit 55324. Reserviert sind Shadow-DB 55320, Studio 55323, SMTP/POP 55325/55326, Analyse 55327, Pooler 55329 und Inspector 9083. PostgreSQL, Auth, PostgREST, Gateway, Mailpit und postgres-meta laufen im eigenen Netzwerk `zaeme-task007-local-loopback`. Auf Windows prüft das Skript die tatsächlichen Listener. Das Postgres-Volume heisst `supabase_db_zaeme-task007-local`. Die Basiskonfiguration und bestehende npm-Befehle bleiben für gewöhnliche Checkouts verwendbar. Parallele Arbeitskopien brauchen verschiedene Tasknummern im Verzeichnisnamen und freie Ports.
+
+Task 008 findet die Schreibparameter im [RPC-Vertrag](docs/RPC_SPEC.md), die Leseabfragen im [Datenmodell](docs/DATABASE_SPEC.md) und die ausgeführten Prüfungen im [Testbericht](docs/TEST_REPORT.md).

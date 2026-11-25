@@ -21,3 +21,4 @@ supabase/.branches/
 *.dump
 *.backup
 supabase/backups/
+.local-stack/
