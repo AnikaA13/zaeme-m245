@@ -1,5 +1,11 @@
 # Technische Entscheidungen
 
+## Task 010A · Decoder, Kamera und Datenquelle
+
+Für F06 verwenden wir den gezielten EAN-13-Leser von `@zxing/library` 0.23.0 (Apache-2.0, Node ≥24). `@zxing/browser` 0.2.1 (MIT) verwendet denselben Core als Peer. Direkter Zugriff auf den Reader erlaubt die eigene Track-Freigabe auch während verzögerter Browserprompts. Das Paket ist im beitragsbasierten Wartungsmodus. Der kleine Funktionsumfang, der vorhandene Node-24-Stack, die optisch getestete EAN-13-Erkennung und der separate Ladechunk begründen den Einsatz. Die schmalen ESM-Importpfade sind an die gesperrte Version gebunden. Bei Upgrades den optischen Test und den Modulgraphen wiederholen. Ein plattformabhängiger nativer Detector ist keine Voraussetzung. [ZXing Core](https://github.com/zxing-js/library) · [Browseradapter](https://github.com/zxing-js/browser)
+
+Der Anbieterzugriff verwendet ausschliesslich die v3-Einzelabfrage für den Produktnamen. Die Browser-Schicht kennt keine Sitzung, Haushalte oder Schreiboperationen. Der Aufrufer verwaltet den Kontext über ein Abbruchsignal. Herkunft, Browserkennung, Grenzen und Zustände sind im [Integrationsvertrag](TASK_010B_VERTRAG.md) beschrieben.
+
 ## 007.1 · Wiederholen und Kontext prüfen
 
 Eine offene Absicht ist pro Mutation und Zielressource gebunden. Eine zweite Eingabe darf sie erst nach Zustandsabgleich und bewusster lokaler Auflösung ablösen. Ein bestätigter Vollverbrauch benötigt einen eigenen Benutzerentscheid. Die Sitzungsnachprüfung akzeptiert bei Beitritt und Gründung genau einen Wechsel zum quittierten Haushalt. Bei Austritt und Auflösung erwartet sie den Verlust der Mitgliedschaft. Das erneute Eintreten in denselben Haushalt erzeugt einen neuen Kontext.

@@ -1,5 +1,9 @@
 # Projektstand
 
+## Task 010A · isolierter F06-Kern
+
+Der separate Branch `feature/m6-barcode-lookup-core` enthält die optische EAN-13-Erkennung, den Kameralebenszyklus, die abbrechbare Produktabfrage und einen lokalen Prüfstand. Chromium hat die Videofixture zweimal gelesen. Zwei separate Live-Abfragen bestätigten einen Namen und eine unbekannte EAN. Android Chrome und iOS Safari physisch **NOT RUN**. F06 bleibt bis zur Einbindung in F05 und zur Geräteabnahme offen. [Prüfnachweis](../REVIEW_HANDOFF.md) · [Vertrag für 010B](TASK_010B_VERTRAG.md)
+
 ## Task 007.2 · Freigabeprüfung
 
 Die ersten beiden CI-Läufe bestanden die Frontendprüfungen und die Datenbankschritte bis einschliesslich Typvergleich. Der erste Chromium-Lauf stoppte bei der Registrierung, der zweite nach erfolgreicher Registrierung beim Passwortlink. Die Testeingabe prüft deshalb bei allen drei Auth-Formularen den abgeschlossenen Seitenwechsel. Die GitHub-Ergebnisse gehören zum jeweiligen Commit in [PR #3](https://github.com/AnikaA13/zaeme-m245/pull/3).
