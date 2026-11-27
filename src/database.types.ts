@@ -141,6 +141,76 @@ export type Database = {
           },
         ];
       };
+      inventory_items: {
+        Row: {
+          barcode: string | null;
+          category: string;
+          created_at: string;
+          created_by: string | null;
+          date_type: string | null;
+          expiry_date: string | null;
+          household_id: string;
+          id: string;
+          location: string | null;
+          name: string;
+          quantity: number;
+          status: string;
+          unit: string;
+          updated_at: string;
+          version: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          barcode?: string | null;
+          category?: string;
+          created_at?: string;
+          created_by?: string | null;
+          date_type?: string | null;
+          expiry_date?: string | null;
+          household_id: string;
+          id?: string;
+          location?: string | null;
+          name: string;
+          quantity?: number;
+          status?: string;
+          unit?: string;
+          updated_at?: string;
+          version?: number;
+        };
+        Update: {
+          barcode?: string | null;
+          category?: string;
+          created_at?: string;
+          created_by?: string | null;
+          date_type?: string | null;
+          expiry_date?: string | null;
+          household_id?: string;
+          id?: string;
+          location?: string | null;
+          name?: string;
+          quantity?: number;
+          status?: string;
+          unit?: string;
+          updated_at?: string;
+          version?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'inventory_items_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'inventory_items_household_id_fkey';
+            columns: ['household_id'];
+            isOneToOne: false;
+            referencedRelation: 'households';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       profiles: {
         Row: {
           created_at: string;
@@ -166,11 +236,122 @@ export type Database = {
         };
         Relationships: [];
       };
+      reservations: {
+        Row: {
+          created_at: string;
+          household_id: string;
+          id: string;
+          inventory_item_id: string;
+          quantity: number;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          household_id: string;
+          id?: string;
+          inventory_item_id: string;
+          quantity: number;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          household_id?: string;
+          id?: string;
+          inventory_item_id?: string;
+          quantity?: number;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'reservations_household_id_inventory_item_id_fkey';
+            columns: ['household_id', 'inventory_item_id'];
+            isOneToOne: false;
+            referencedRelation: 'active_inventory';
+            referencedColumns: ['household_id', 'id'];
+          },
+          {
+            foreignKeyName: 'reservations_household_id_inventory_item_id_fkey';
+            columns: ['household_id', 'inventory_item_id'];
+            isOneToOne: false;
+            referencedRelation: 'inventory_items';
+            referencedColumns: ['household_id', 'id'];
+          },
+          {
+            foreignKeyName: 'reservations_household_id_user_id_fkey';
+            columns: ['household_id', 'user_id'];
+            isOneToOne: false;
+            referencedRelation: 'household_members';
+            referencedColumns: ['household_id', 'user_id'];
+          },
+        ];
+      };
     };
     Views: {
-      [_ in never]: never;
+      active_inventory: {
+        Row: {
+          barcode: string | null;
+          category: string;
+          consumable_quantity: number | null;
+          created_at: string;
+          created_by: string | null;
+          date_type: string | null;
+          expiry_date: string | null;
+          free_quantity: number | null;
+          household_id: string;
+          id: string;
+          location: string | null;
+          name: string;
+          own_quantity: number | null;
+          quantity: number;
+          reserved_quantity: number | null;
+          status: string;
+          unit: string;
+          updated_at: string;
+          version: number;
+        };
+        ComputedFields: never;
+        Relationships: [
+          {
+            foreignKeyName: 'inventory_items_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'inventory_items_household_id_fkey';
+            columns: ['household_id'];
+            isOneToOne: false;
+            referencedRelation: 'households';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Functions: {
+      consume_item: {
+        Args: {
+          amount: Json;
+          confirm_full: Json;
+          confirmed_v?: number;
+          g: string;
+          h: string;
+          id: string;
+          op: string;
+          unit: string;
+        };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       create_household: {
         Args: { name: string; op: string };
         Returns: Database['public']['CompositeTypes']['rpc_result'];
@@ -191,8 +372,53 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      create_item: {
+        Args: { ack: Json; fields: Json; g: string; h: string; op: string };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      delete_item: {
+        Args: {
+          confirm: Json;
+          g: string;
+          h: string;
+          id: string;
+          op: string;
+          v: number;
+        };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       dissolve_household: {
         Args: { confirm: boolean; g: string; h: string; op: string };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      edit_item: {
+        Args: {
+          ack: Json;
+          fields: Json;
+          g: string;
+          h: string;
+          id: string;
+          op: string;
+          v: number;
+        };
         Returns: Database['public']['CompositeTypes']['rpc_result'];
         SetofOptions: {
           from: '*';
@@ -269,6 +495,23 @@ export type Database = {
       };
       save_profile: {
         Args: { g?: string; h?: string; name: string; op: string; v: number };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      set_reservation: {
+        Args: {
+          desired: Json;
+          g: string;
+          h: string;
+          id: string;
+          op: string;
+          v: number;
+        };
         Returns: Database['public']['CompositeTypes']['rpc_result'];
         SetofOptions: {
           from: '*';

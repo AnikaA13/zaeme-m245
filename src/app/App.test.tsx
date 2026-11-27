@@ -1,10 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { App } from './App';
+import * as session from '../features/auth/session';
 
 describe('zäme', () => {
-  it('zeigt den Entwicklungsstand auf der Startseite', () => {
+  it('führt Gäste von der Startseite zur Haushaltsauswahl', () => {
+    const guest = { ...session.snapshot(), phase: 'guest' as const };
+    vi.spyOn(session, 'snapshot').mockReturnValue(guest);
     render(
       <MemoryRouter initialEntries={['/']}>
         <App />
@@ -13,9 +16,12 @@ describe('zäme', () => {
 
     const main = screen.getByRole('main');
     expect(main).toContainElement(
-      screen.getByRole('heading', { name: 'zäme' }),
+      screen.getByRole('heading', { name: 'Gemeinsam alles im Blick.' }),
     );
-    expect(screen.getByText('zäme ist in Entwicklung.')).toBeVisible();
+    expect(
+      screen.getByRole('link', { name: 'Haushalt erstellen' }),
+    ).toHaveAttribute('href', '/auth/register');
+    vi.restoreAllMocks();
   });
 
   it('bietet bei einer unbekannten Adresse einen Weg zur Startseite', () => {

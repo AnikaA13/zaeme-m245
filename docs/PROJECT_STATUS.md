@@ -1,5 +1,21 @@
 # Projektstand
 
+## Task 007.2 · Freigabeprüfung
+
+Die ersten beiden CI-Läufe bestanden die Frontendprüfungen und die Datenbankschritte bis einschliesslich Typvergleich. Der erste Chromium-Lauf stoppte bei der Registrierung, der zweite nach erfolgreicher Registrierung beim Passwortlink. Die Testeingabe prüft deshalb bei allen drei Auth-Formularen den abgeschlossenen Seitenwechsel. Die GitHub-Ergebnisse gehören zum jeweiligen Commit in [PR #3](https://github.com/AnikaA13/zaeme-m245/pull/3).
+
+## Task 007.1 · integrierter Stand
+
+Auf `integration/m3-auth-inventory` sind die Auth- und Haushaltsoberfläche von 006 und die Vorratsdatenbank von 007 zusammengeführt. Die vier Migrationen gelten unverändert. Für Abnahmeumfang, Prüfbefunde und offene Umgebungstests gilt der [aktuelle Prüfbericht](TEST_REPORT.md). Die nachfolgenden Aufgabenstände dokumentieren ihre jeweiligen historischen Prüfumgebungen.
+
+F03, F05, F07, F10 und F17 benötigen noch die Vorratsoberfläche. F04 Realtime, F06 Kamerascan, F09 Einkauf, F15 physische Installation sowie Hosted SMTP, HTTPS, physische Geräte und Nutzertests bleiben offen. [Übergabe für 008](TASK_008_VERTRAG.md)
+
+## Task 006 · lokale Auth- und Haushaltsoberfläche
+
+Der Branch `feature/m2-auth-households` basiert direkt auf `4936f3f`. Die Anwendung unterstützt Registrierung, E-Mail-Bestätigung, Passwortreset, Profilpflege und den vollständigen Lebenszyklus der Haushaltsmitgliedschaft. Der Browserlauf mit vier getrennten Konten prüfte den Beitritt zu dritt, einen zweiten isolierten Haushalt, Entzug und Auflösung. Die lokale Abnahme gilt für Windows, Chromium und den isolierten Stack. Hosted SMTP, HTTPS-Preview, echte Mobilgeräte und Screenreader bleiben offen. [Prüfbericht](TEST_REPORT.md)
+
+Nach technischem Review kann 007 den Vorrat und die transaktionale Freigabe von Reservationen bei Entfernung und Austritt ergänzen. Bis dahin gilt für F02 nur der geprüfte Haushaltsumfang. F19 zeigt die gespeicherte Warnfrist an.
+
 ## Task 005 · lokal verifiziert
 
 Architekturcommit `e766d28`, Implementierung auf `feature/m1-database-foundation`. Frischer Reset und separater Upgrade vom leeren Backend bestanden. Nach geprüfter Loopback-Bindung bestanden 140 pgTAP-Prüfungen, elf fachliche HTTP-Szenarien und der Typvergleich. Die M0-Oberfläche verwendet die RPCs noch nicht. Remote-CI und die späteren Hosting-Prüfungen sind offen.
@@ -117,3 +133,9 @@ Im Checkout fehlt die Originalmarke als einsetzbares Asset. Unter `~/Downloads/H
 ### Tatsächliche Prüfung der Review-Arbeitskopie
 
 Formatprüfung, ESLint, Typprüfung und Produktionsbuild erfolgreich. Der Standardaufruf von Vitest endete vor Testbeginn mit spawn EPERM. Im dokumentierten Thread-Pool bestanden alle drei bestehenden M0-Tests. Diese Läufe prüfen die vorhandene Anwendungshülle. Die Fachverträge wurden ausschliesslich als Dokumentation geprüft.
+
+## Task 007 · Gemeinsamer Vorrat und Reservierungen
+
+Auf dem M1-Merge `0fb8398` sind zwei weitere Migrationen lokal installiert und geprüft. Mehrere Mitglieder können dieselbe Charge lesen, eigene Mengen reservieren und freie oder selbst reservierte Mengen verbrauchen. Ein explizit bestätigter Vollverbrauch ist an die angezeigte Menge, Einheit und Version gebunden. Austritt und Entfernung geben betroffene Reservierungen im selben Commit frei. Bestand und Quittung bleiben bei Abbruch konsistent.
+
+Der technische Teilstand für F02/F03/F05/F07/F10/F17 ist lokal mit PostgreSQL, GoTrue und PostgREST belegt. Die Abnahmen der Oberfläche, Synchronisierung zwischen Geräten, Hosting und Nutzertests einschliesslich G01–G08 stehen aus. Task 006 bleibt ein separater Integrationsstand. Task 008 kann den [Schreibvertrag](RPC_SPEC.md) und den [Lesevertrag](DATABASE_SPEC.md) verwenden. [Nachweismatrix](IMPLEMENTATION_STATUS.md) · [Testbericht](TEST_REPORT.md)

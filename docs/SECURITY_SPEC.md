@@ -41,6 +41,14 @@ Schreib-RPCs laufen unter separaten NOLOGIN-Rollen mit expliziten Objektprivileg
 
 ## Sitzungen und Nachweis
 
+Seit 007.1 prüft der Client den Sicherheitskontext sowohl bei der RPC-Quittung als auch nach der anschliessenden Mitgliedschaftsabfrage. Offene Operationen, Einladungsentwürfe und Entscheidungen über einen früheren Auftrag sind an das flüchtige Signal der Sitzung und Mitgliedschaft gebunden. Der PKCE-Austausch muss erfolgreich sein und sein SDK-Ergebnis zur Callback-Route passen, bevor die Oberfläche ein neues Passwort entgegennimmt. [Vertrag für die Oberfläche](TASK_008_VERTRAG.md)
+
 Supabase Auth mit E-Mail und Passwort, Bestätigung, Login, Logout, Wiederherstellung über explizit zugelassene HTTPS-Zieladresse. Sitzung über das SDK erneuern. Lokaler Sitzungswechsel invalidiert sofort den gesamten privaten React-Zustand, laufende Anfragen und Kanäle. Sichtbare Daten bei Offlinebetrieb nur im RAM als veraltet kennzeichnen. Rechteentzug auf dem Server gilt mit Commit. Bei bestätigter fehlender Mitgliedschaft UI räumen und Onboarding zeigen. Details in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 005 prüft jedes Tabellenrecht und jede RPC-Rolle mit echten Client-JWTs und direktem API-Aufruf (Gast, ohne Haushalt, A/B/C in H1, D in H2, B nach Austritt). Gesperrte SELECTs liefern leere Ergebnisse oder verweigerte Berechtigung, Mutationen bleiben ohne Wirkung. Zusätzlich alle Negativfälle mit bekannten fremden UUIDs, gefälschtem Kontext, veraltetem JWT, geratenem Owner-Flag und direkter Tabellenmutation. 007/009 wiederholen die Matrix nach jeder Erweiterung. GET auf Einladungsliste, Einzelobjekt und interne Tabellen darf keine Hashes liefern. Zähler-/Realtime-Abos mit fremder ID und ohne Filter testen. E-Mail-Adressen, Token, private DELETE-Payloads und Daten aus vorherigen Sitzungen dürfen im fremden Client nie erscheinen.
+
+## Sicherheitsgrenze 007
+
+Die Tabellen gehören `postgres`. RLS beschränkt SELECT mit `private.my_household()` auf bestätigte aktuelle Mitglieder. Direkte Schreib- und TRUNCATE-Rechte der Clientrollen sind entzogen. Die Leseansicht arbeitet mit Aufruferrechten. Die fünf öffentlichen Schreibfunktionen gehören `zaeme_writer`, laufen mit leerem Suchpfad und leiten den Akteur aus der geprüften Sitzung ab. Der Besitzer erhält SELECT, DELETE und die benötigten INSERT-/UPDATE-Spaltenrechte. Ein Owner kann fremde Reservierungen weder übernehmen noch für den eigenen Verbrauch verwenden.
+
+Auch bei bekannter UUID müssen Haushalt und Generation zum aktuellen Konto passen. Der zusammengesetzte Fremdschlüssel auf Mitgliedschaft und Charge sichert beide Haushaltsbezüge. Der private Operationskontext bindet Erfolge an die aktuelle Mitgliedschaft. Wiederholschutz speichert einen Hash und die minimale Quittung. Fehlertrigger und synthetische Identitäten existieren ausschliesslich in Tests. Prüfungen mit echten JWTs, Rechtekatalog und SQLSTATE-Injektion sind im [Testbericht](TEST_REPORT.md) aufgeführt.

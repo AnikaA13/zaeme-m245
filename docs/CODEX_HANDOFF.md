@@ -1,5 +1,9 @@
 # Übergabe für die Umsetzung
 
+## Stand nach Task 007.1
+
+Basis für die technische Prüfung ist der lokale Branch `integration/m3-auth-inventory`. Für Task 008 gelten der [integrierte Schreib-, Lese- und Sitzungsvertrag](TASK_008_VERTRAG.md) sowie die [tatsächlichen Regressionsergebnisse](TEST_REPORT.md). F03/F05/F07/F10/F17 benötigen die Bedienoberfläche. Die Navigationsfolge bleibt Start — Vorrat — Hinzufügen — Einkauf — Haushalt.
+
 Ziel ist die stabile Testversion am 01.12.2026. Schulauftrag und ausdrückliche PO-Entscheide führen. Fachregeln, Prioritäten und Abnahme stehen in [MVP_SPEC.md](MVP_SPEC.md), Gestaltung und Interaktion in [UX_SPEC.md](UX_SPEC.md). Die Gruppe prüft die Spezifikation noch. M0 und die bestehenden npm-Skripte, Router, Tests und CI erhalten.
 
 - **Haushalt und Auth.** E-Mail/Passwort mit Registrierung, Login, Logout, Reset und persistenter gültiger Sitzung. Maximal ein Haushalt je Konto, genau ein Owner je Haushalt. Onboarding ohne Haushalt möglich. Gehashte, widerrufbare Mehrfacheinladung mit standardmässig sieben Tagen Gültigkeit. Owner verwaltet Einladung, Entfernung und gemeinsame Warnfrist. Allein darf er den Haushalt bestätigt auflösen.

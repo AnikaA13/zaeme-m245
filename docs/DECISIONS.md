@@ -1,5 +1,19 @@
 # Technische Entscheidungen
 
+## 007.1 · Wiederholen und Kontext prüfen
+
+Eine offene Absicht ist pro Mutation und Zielressource gebunden. Eine zweite Eingabe darf sie erst nach Zustandsabgleich und bewusster lokaler Auflösung ablösen. Ein bestätigter Vollverbrauch benötigt einen eigenen Benutzerentscheid. Die Sitzungsnachprüfung akzeptiert bei Beitritt und Gründung genau einen Wechsel zum quittierten Haushalt. Bei Austritt und Auflösung erwartet sie den Verlust der Mitgliedschaft. Das erneute Eintreten in denselben Haushalt erzeugt einen neuen Kontext.
+
+Die Wegwerfumgebung wird explizit pro Prozess gewählt. Damit können Quellbranches und gemeinsamer Entwicklungsstack ihre vorhandenen Volumes behalten. Für den Browser verwendet der Test die Mailpit-Adresse des gewählten Stacks. Der erlaubte Vite-Ursprung und die zwei exakten PKCE-Routen bleiben gemeinsam.
+
+## Task 006 · Auth, Absichten und Wiederholung
+
+- Der typisierte Supabase-Client 2.119.2 (MIT, Node ab 22) nutzt im Browser PKCE und die SDK-Sitzungspersistenz. Playwright 1.65.1 (Apache-2.0, Node ab 20) läuft ausschliesslich im Testprozess. Node 24 erfüllt beide Anforderungen.
+- Der lokale Ursprung ist `http://127.0.0.1:5173`. Die Rückwege für Bestätigung und Wiederherstellung haben exakte Pfade. Das UI prüft neue Passwörter auf acht Zeichen, die lokale Auth-Konfiguration setzt dieselbe Mindestlänge. Das lokale Mailpit-Budget erlaubt wiederholte Läufe.
+- Der Client erzeugt UUIDv7 mit 48 Zeitbits, Versions- und Variantenbits sowie kryptografischem Zufall. Er hält die normalisierte Absicht und ID während einer ungeklärten Anfrage im RAM. Vor der manuellen Wiederholung erfolgt ein Abgleich. Eine geänderte Eingabe, Identität oder Generation begründet keine automatische Wiederholung. Entfernung bindet auch die Generation der bestätigten Zielperson.
+- Einladungen verwenden 32 Zufallsbytes. Nur deren SHA-256 als hexadezimales PostgreSQL-bytea geht an den Erstellungs-RPC. Der 43-stellige Code wird nach bestätigter Speicherung angeboten. Vorschau und Beitritt erfolgen per POST und benötigen zwei bewusste Aktionen. Die vorhandenen Migrationen blieben gültig.
+- Das eingebundene Projektlogo stimmt mit dem Original-SVG im lokalen Prototyp überein. Die spätere Warnfristbearbeitung und Realtime bleiben Task 009 zugeordnet.
+
 ## Task 005 · Präzisierungen des Datenbankvertrags
 
 Die Entfernung bindet zusätzlich die Generation der Zielperson. So kann eine verspätete Bestätigung des Owners nach erneutem Beitritt keine neue Mitgliedschaft löschen. Der API-Test prüft genau diesen Ablauf.
@@ -53,3 +67,10 @@ PO-Entscheide definieren den Produktumfang. Die technische Architektur ist zur P
 | Unterschiedliche Zeit- und Bedienziele                                                | G01–G08 sind die vorgeschlagenen Messziele. Keine Umdeutung historischer Testdaten.                                                                                                  | MVP Abschnitt 1                      |
 
 Architekturvorschlag: Ein Owner-Fremdschlüssel pro Haushalt, Datenbankgrenze für alle Mutationen, kurze Serialisierung je Haushalt, Versionsprüfung für absolute Änderungen und befristete Quittungen. Ein separater Revisionszähler erlaubt Refetch ohne Veröffentlichung privater Fachzeilen. Gründe und Tests in [Datenmodell](DATABASE_SPEC.md), [RPC-Verträgen](RPC_SPEC.md) und [Systemarchitektur](ARCHITECTURE.md).
+
+## 007 · Bestätigung, Eingabetypen und Lesesicht
+
+- Der Vollverbrauch bindet die Menge, Einheit und sichtbare Chargenversion an den Dialog. Dies verhindert eine frühere Bestätigung nach zwischenzeitlichem Verbrauch, Bearbeiten oder Reservieren. Teilverbrauch bleibt additiv.
+- Mengen und Bestätigungen verwenden SQL-`jsonb` an der API-Grenze. Damit kann die Funktion JSON-Dezimaltext und JSON-Boolean prüfen, bevor PostgreSQL skalare Eingaben umwandelt. Der fachliche TypeScript-Vertrag bleibt eng. [RPC-Vertrag](RPC_SPEC.md)
+- `active_inventory` summiert Reservierungen per Charge im selben SQL-Snapshot. Die Invoker-Sicht erhält die RLS-Prüfung und liefert vollständige Summen auch bei paginierter Personenliste. Ein zusätzlicher Speicher für Summen entfällt.
+- Austritt und Entfernung sperren die betroffenen Chargen in UUID-Reihenfolge. Sie erhöhen nach der Freigabe deren Version. Dies macht veraltete Dialoge erkennbar. Die bestehenden Signaturen und die Mitgliedschaftsgeneration von 005 bleiben erhalten.

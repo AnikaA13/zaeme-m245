@@ -1,5 +1,17 @@
 # Änderungsprotokoll
 
+## Task 007.2 · Registrierung im Browserlauf
+
+Der Browserprüfer wartet bei Registrierung, Anmeldung und Passwortwiederherstellung auf die Überschrift des jeweiligen Formulars, bevor er das gleich beschriftete E-Mail-Feld ausfüllt.
+
+## Task 007.1 · Integration von Haushalt und Vorrat
+
+Die beiden Implementierungen sind lokal zusammengeführt. Neu sind die Sperre für geänderte offene Mutationen, die Prüfung von Vorratsquittungen und Sitzungswechseln sowie Meldungen für Datum, verfügbare Menge, Reservierungen und Vollverbrauch. Der Chromium-Test verbindet die vorhandenen Haushaltsaktionen mit echten Vorrats-RPCs und einer unabhängigen SQL-Prüfung. Der Datenbankworkflow führt anschliessend auch den Browserlauf aus. [Prüfbericht](TEST_REPORT.md)
+
+## Task 006 · Anmeldung und Haushalte
+
+Echte E-Mail-Flows, Profilpflege, Startansicht und Haushaltsverwaltung im Frontend ergänzt. Einladungen lassen sich erstellen, teilen, prüfen, einlösen und widerrufen. Die Haushaltsansicht verwendet RLS-Daten und prüft den Zugang erneut. Lokale Auth-Konfiguration und typisierter Client sind auf Vite abgestimmt. Neu sind das verifizierte Projektlogo sowie Protokoll-, Sitzungs-, Komponenten- und Chromium-Tests mit Mailpit. [Testbericht](TEST_REPORT.md)
+
 ## Task 005 · lokale Haushaltsdatenbank
 
 Zwei Migrationen führen Profile, Haushalte, Mitgliedschaften, Einladungen, Versuchszähler und Operationsquittungen ein. Elf typisierte RPCs steuern Zugriff und Warnfrist. Neu sind eine gepinnte Entwicklungs-CLI, generierte Datenbanktypen, pgTAP-, API- und Konkurrenztests und ein separater Linux-Workflow. Nach Umstellung und Prüfung der tatsächlichen Host-Portbindung bestand der lokale Abschlusslauf. [Nachweise](TEST_REPORT.md)
@@ -38,3 +50,9 @@ Zwei Migrationen führen Profile, Haushalte, Mitgliedschaften, Einladungen, Vers
 - Navigation, Reservierungsrechte, Vollverbrauch, Validierung, Fristen, Installation und P0/P1-Abnahme auf die PO-Entscheide abgestimmt. Anforderungs-IDs und historische Testbeobachtungen erhalten.
 - Schema, RLS, sichere Einladungen, RPCs, Gleichzeitigkeit und Synchronisierung zur Prüfung dokumentiert. Tasks 005–011, Abnahmetests und Anforderungsnachweise zugeordnet.
 - M0-Merge und lokale Herkunft des Mobile-Prototyps dokumentiert. Der Änderungsumfang besteht aus Projektdokumentation und Repository-Anweisungen.
+
+## 25. November 2026 · Task 007
+
+- Chargen und eigene Reservierungen mit Haushalts-RLS, exakten Mengen, Metadatenprüfung, Versionen und fünf transaktionalen RPCs ergänzt. Aktive Lesesicht mit persönlichen und gemeinsamen Mengen hinzugefügt.
+- Austritt und Entfernung geben die Reservierungen der betroffenen Person atomar frei. Der bestätigte Vollverbrauch prüft die beobachtete Chargenversion.
+- Datenbanktypen generiert. Isolierte lokale Stack-Konfiguration, Upgradeprüfung mit Bestandsdaten, gemeinsame F10-Fixtures, pgTAP-, Rollback- und HTTP-Konkurrenztests ergänzt. [Prüfnachweis](TEST_REPORT.md)
