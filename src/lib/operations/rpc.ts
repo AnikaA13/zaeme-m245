@@ -26,7 +26,7 @@ type Mutation =
   | 'remove_member'
   | 'leave_household'
   | 'dissolve_household';
-type Payloads = { [K in Mutation]: Omit<Functions[K]['Args'], 'op'> };
+export type Payloads = { [K in Mutation]: Omit<Functions[K]['Args'], 'op'> };
 const inventory: ReadonlySet<string> = new Set<Inventory>([
   'create_item',
   'edit_item',

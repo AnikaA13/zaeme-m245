@@ -16,6 +16,11 @@ import {
   JoinPage,
 } from '../features/household/Onboarding';
 import { HouseholdPage } from '../features/household/HouseholdPage';
+import { Navigation } from '../components/navigation/Navigation';
+import { InventoryList } from '../features/inventory/List';
+import { Detail } from '../features/inventory/Detail';
+import { ProductForm } from '../features/capture/ProductForm';
+import { PendingWrites } from '../features/inventory/writes';
 function subscribeConnection(fn: () => void) {
   window.addEventListener('online', fn);
   window.addEventListener('offline', fn);
@@ -34,7 +39,10 @@ export function Application() {
   const { phase, account, user } = state;
   const target = (to: string) => <Navigate replace to={to} />;
   function page() {
-    if (!online)
+    if (
+      !online &&
+      (!account?.home || path === '/household' || path === '/join')
+    )
       return (
         <>
           <h1>Keine Netzwerkverbindung</h1>
@@ -158,24 +166,48 @@ export function Application() {
           </Link>
         </>
       );
-    if (path !== '/') return target('/');
-    return (
-      <>
-        <h1>Hallo {account.profile.display_name}</h1>
-        <p>
-          Dein Haushalt heisst <strong>{account.home.name}</strong>.
-        </p>
-        <Link className="primary" to="/household">
-          Haushalt öffnen
-        </Link>
-        <p>Der gemeinsame Vorrat folgt in einer späteren Version.</p>
-      </>
-    );
+    if (path === '/inventory' || path === '/')
+      return (
+        <InventoryList
+          key={path}
+          overview={path === '/'}
+          days={account.home.warning_days}
+        />
+      );
+    if (path === '/capture' || path === '/capture/manual')
+      return <ProductForm />;
+    if (path === '/shopping')
+      return (
+        <>
+          <h1>Einkauf</h1>
+          <p>Die gemeinsame Einkaufsliste ist noch nicht verfügbar.</p>
+          <Link to="/inventory">Zum Vorrat</Link>
+        </>
+      );
+    const [, section, id, action = ''] = path.split('/');
+    if (section === 'inventory' && id)
+      return (
+        <Detail
+          key={path}
+          id={id}
+          action={action}
+          days={account.home.warning_days}
+        />
+      );
+    return target('/');
   }
   return (
     <div key={state.epoch + '-' + (account?.home?.g ?? '')} className="content">
+      {user && <PendingWrites />}
+      {!online && account?.home && (
+        <p role="alert">
+          Offline · Angezeigte Daten können veraltet sein. Änderungen benötigen
+          eine Verbindung.
+        </p>
+      )}
       {state.notice && <p role="status">{state.notice}</p>}
       {page()}
+      {user && account?.home && !state.recovery && <Navigation />}
       {user && (
         <button className="text-button" onClick={() => void logout()}>
           Abmelden

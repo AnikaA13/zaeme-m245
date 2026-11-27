@@ -1,5 +1,9 @@
 # Projektstand
 
+## Task 008 · Vorratsoberfläche
+
+Im authentifizierten Haushalt sind Start, Vorrat, manuelle Erfassung, Bearbeitung, Verbrauch und eigene Reservierungen an die bestehende Datenbank angeschlossen. Einkauf zeigt einen Entwicklungshinweis. Die nächsten fachlichen Schritte sind Einkauf und Synchronisierung in 009 sowie Kamera und Produktsuche in 010. Geräteabnahme und Haushaltstests stehen aus. Umfang, Prüfstand und technische Anschlussstellen sind separat dokumentiert. [Anforderungsmatrix](IMPLEMENTATION_STATUS.md) · [Prüfbericht](TEST_REPORT.md) · [Anschlussvertrag](TASK_008_ANSCHLUSS.md)
+
 ## Task 007.2 · Freigabeprüfung
 
 Die ersten beiden CI-Läufe bestanden die Frontendprüfungen und die Datenbankschritte bis einschliesslich Typvergleich. Der erste Chromium-Lauf stoppte bei der Registrierung, der zweite nach erfolgreicher Registrierung beim Passwortlink. Die Testeingabe prüft deshalb bei allen drei Auth-Formularen den abgeschlossenen Seitenwechsel. Die GitHub-Ergebnisse gehören zum jeweiligen Commit in [PR #3](https://github.com/AnikaA13/zaeme-m245/pull/3).

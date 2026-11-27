@@ -258,6 +258,16 @@
       "valid": false
     }
   ],
+  "swissInputs": [
+    { "raw": "001,050", "unit": "kg", "normalized": "1.05" },
+    { "raw": "01.000", "unit": "Stück", "normalized": "1" },
+    { "raw": "0,001", "unit": "Liter", "normalized": "0.001" },
+    { "raw": "9999.000", "unit": "Packung", "normalized": "9999" },
+    { "raw": "0.000", "unit": "kg", "normalized": null },
+    { "raw": "1,2300", "unit": "kg", "normalized": null },
+    { "raw": "1,2.3", "unit": "kg", "normalized": null },
+    { "raw": "2,1", "unit": "Stück", "normalized": null }
+  ],
   "expiry": [
     { "years": 0, "days": 0, "ack": false, "code": null },
     { "years": 5, "days": 0, "ack": false, "code": null },

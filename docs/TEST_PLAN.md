@@ -1,5 +1,9 @@
 # Testplan
 
+## Regression 008 · Vorratsoberfläche
+
+`npm run test` prüft die geteilten Grenzfälle, lokale Datumsklassifizierung, Leseinvalidierung, mehrere Reservierungsseiten und offene Aufträge isoliert. `npm run test:browser` führt die bestehenden Mailpit-, Auth- und Haushaltsszenarien sowie `browser-core.mjs` aus. Eine echte verlorene Antwort wird erst nach der Serverquittung verworfen. SQL prüft gespeicherte Mengen, Versionen, NULL-Werte und Löschungen unabhängig von der UI. Zwei Browserkontexte ändern dieselbe Charge. Separate Haushalte und verspätete Antworten prüfen die Sichtgrenze. Für den Leistungstest werden 200 und anschliessend insgesamt 1005 zusätzliche synthetische Chargen eingefügt. Die Zeitmessung umfasst eine echte Navigation bis zur ersten sichtbaren Listenzeile. `ZAEME_SCREENSHOTS=1` aktiviert repräsentative PNG-Aufnahmen des synthetischen Haushalts. Geräte- und Nutzertests erfolgen getrennt.
+
 ## Regression 007.1 · F01/F02/F03/F07/F10/F17, NF01/NF08/NF09/NF13
 
 Nach Reset und Upgrade pgTAP, HTTP und Typvergleich ausführen. Danach im selben Wegwerfstack mit Mailpit und Chromium prüfen. Die bestehende Szenarienfolge A–J und der fehlerhafte Logout bleiben Bestandteil des Laufs.

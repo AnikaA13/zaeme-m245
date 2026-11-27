@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './inventory.css';
 
 * {
   box-sizing: border-box;
