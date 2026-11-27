@@ -148,6 +148,8 @@ export async function householdInventory({
           consumable_quantity: 9,
         },
       ]);
+      await c.goto(new URL('/inventory/' + items[1], c.url()).href);
+      await heading(c, 'Birnen');
       await confirm(a, 'Cora entfernen');
       await a.getByText('Cora', { exact: true }).waitFor({ state: 'detached' });
       assert.deepEqual(
@@ -161,6 +163,7 @@ export async function householdInventory({
       await denied(cora, items[1]);
       await c.evaluate(() => window.dispatchEvent(new Event('focus')));
       await heading(c, 'Dein Haushalt');
+      assert.equal(await c.getByText('Birnen', { exact: true }).count(), 0);
       assert.equal(await c.getByText('WG A', { exact: true }).count(), 0);
     },
   );

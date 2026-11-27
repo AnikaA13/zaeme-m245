@@ -13,6 +13,7 @@ type Snapshot = {
   notice: string;
   epoch: number;
   inviteRevision: number;
+  checkingConnection: boolean;
 };
 let state: Snapshot = {
   phase: 'initial',
@@ -23,6 +24,7 @@ let state: Snapshot = {
   notice: '',
   epoch: 0,
   inviteRevision: 0,
+  checkingConnection: false,
 };
 const listeners = new Set<() => void>();
 export const snapshot = () => state;
@@ -90,8 +92,10 @@ export function refresh(afterWrite = false): Promise<void> {
       if (controller.signal.aborted || state.user !== user) return;
       const next = account.home?.g ?? null;
       const lost = !!generation && !next;
-      const changed = next !== generation;
-      if (next !== generation) {
+      const changed =
+        next !== generation ||
+        (!!state.account?.home && state.account.home.id !== account.home?.id);
+      if (changed) {
         invalidate();
         generation = next;
         if (next || lost) intent.clear();
@@ -104,7 +108,10 @@ export function refresh(afterWrite = false): Promise<void> {
           : {}),
       });
     } catch {
-      if (!controller.signal.aborted) {
+      if (
+        !controller.signal.aborted &&
+        (navigator.onLine || !state.account?.home)
+      ) {
         update({ account: null, phase: 'error' });
       }
     }
@@ -139,6 +146,7 @@ function accept(next: Session | null) {
     user: id,
     epoch: state.epoch + 1,
     phase: id ? 'loading' : 'guest',
+    checkingConnection: false,
     account: null,
     recovery: !!id && recoveryUser === id,
     notice,
@@ -227,7 +235,8 @@ export async function startSession() {
   }
   const { data } = client.auth.onAuthStateChange((_event, s) => accept(s));
   const reload = () => {
-    if (document.visibilityState === 'visible') void refresh();
+    if (navigator.onLine && document.visibilityState === 'visible')
+      void refresh();
   };
   const timer = window.setInterval(reload, 30000);
   const captureFragment = () => {
@@ -240,14 +249,20 @@ export async function startSession() {
   };
   window.addEventListener('hashchange', captureFragment);
   window.addEventListener('focus', reload);
-  window.addEventListener('online', reload);
+  const reconnect = async () => {
+    const identity = reads.signal;
+    update({ checkingConnection: true });
+    await refresh(true);
+    if (!identity.aborted) update({ checkingConnection: false });
+  };
+  window.addEventListener('online', reconnect);
   document.addEventListener('visibilitychange', reload);
   return () => {
     clearInterval(timer);
     window.removeEventListener('hashchange', captureFragment);
     data.subscription.unsubscribe();
     window.removeEventListener('focus', reload);
-    window.removeEventListener('online', reload);
+    window.removeEventListener('online', reconnect);
     document.removeEventListener('visibilitychange', reload);
     clear();
   };

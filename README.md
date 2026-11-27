@@ -56,7 +56,7 @@ blockiert, verwende dort `npm.cmd`. `npm ci` installiert die in
 
 ## Umgebung und aktueller Umfang
 
-Vite verwendet `http://127.0.0.1:5173` mit festem Port. Bestätigung und Passwortreset kehren auf genau diesen Ursprung zurück. Auth-Sitzung, Profil, Einladungen und Haushaltsverwaltung sind angeschlossen. Die Warnfrist ist lesbar. Die Datenbank für Vorrat und Reservierungen ist angeschlossen. Die zugehörigen Ansichten, Einkauf, Realtime und Installation sind offen.
+Vite verwendet `http://127.0.0.1:5173` mit festem Port. Bestätigung und Passwortreset kehren auf genau diesen Ursprung zurück. Auth-Sitzung, Profil, Einladungen und Haushaltsverwaltung sind angeschlossen. Die Warnfrist ist lesbar. Haushaltsmitglieder sehen die dringendsten Daten auf Start, suchen im gemeinsamen Vorrat und erfassen separate Chargen. Im Detail können sie Mengen verbrauchen und für sich reservieren. Bearbeiten enthält die Korrektur fehlerhafter Einträge. Einkauf, Kamera, Realtime und Installation stehen noch aus. [Routen und Integrationsvertrag](docs/TASK_008_ANSCHLUSS.md)
 
 Für die Browserprüfung den Entwicklungsserver beenden, den lokalen Datenbankstack laufen lassen und `npx playwright install chromium` sowie `npm run test:browser` ausführen. Der Test startet Vite selbst auf Port 5173, verwendet Mailpit und räumt seine synthetischen Konten auf. Unit-Tests mit `npm run test` benötigen keinen laufenden Stack. [Prüfstand](docs/TEST_REPORT.md) · [Hosting-Voraussetzungen](docs/ARCHITECTURE.md)
 

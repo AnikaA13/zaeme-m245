@@ -4,6 +4,7 @@ import { randomUUID, randomBytes } from 'node:crypto';
 import { setTimeout as wait } from 'node:timers/promises';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
+import { coreInventory } from './browser-core.mjs';
 import { householdInventory } from './browser-inventory.mjs';
 import { api, mail, localStatus, checkBindings, sql } from './local.mjs';
 
@@ -135,7 +136,9 @@ async function layout(p) {
     for (const size of ['100%', '200%']) {
       const fits = await p.evaluate((size) => {
         document.documentElement.style.fontSize = size;
-        const targets = [...document.querySelectorAll('a,button,input,summary')]
+        const targets = [
+          ...document.querySelectorAll('a,button,input,select,summary'),
+        ]
           .map((el) => el.getBoundingClientRect())
           .filter((r) => r.width && r.height);
         return (
@@ -160,6 +163,14 @@ try {
   await server.listen();
   assert.ok(server.resolvedUrls.local.includes(origin + '/'));
   browser = await chromium.launch();
+  console.log(
+    'Chromium ' +
+      browser.version() +
+      ' · ' +
+      process.platform +
+      ' ' +
+      process.arch,
+  );
   await step('A Registrierung und Bestätigung', async () => {
     a = await page();
     await a.goto(origin);
@@ -245,6 +256,7 @@ try {
       0,
     );
   });
+  await coreInventory({ a, b, step, layout, origin });
   const verifyDissolution = await householdInventory({
     a,
     b,
@@ -273,6 +285,67 @@ try {
     });
     assert.ok(foreign);
   });
+  await step(
+    '008 J · Fremdhaushalt und verspätete Vorratsantwort beim Kontowechsel',
+    async () => {
+      const fixture = await a.evaluate(async () => {
+        const { inventoryScope, readInventory } =
+          await import('/src/features/inventory/read.ts');
+        const rows = await readInventory(inventoryScope());
+        return { id: rows[0].id, name: rows[0].name };
+      });
+      await d.goto(origin + '/inventory/' + fixture.id);
+      await heading(d, 'Eintrag nicht verfügbar');
+      assert.equal(await d.getByText(fixture.name, { exact: true }).count(), 0);
+      await d.goto(origin + '/household');
+      await heading(d, 'WG D');
+      const tab = await page();
+      await login(tab, 'Anna');
+      await heading(tab, 'Haltbarkeitsdaten prüfen');
+      const captured = Promise.withResolvers(),
+        release = Promise.withResolvers(),
+        finished = Promise.withResolvers();
+      await tab.route(
+        '**/rest/v1/active_inventory?*',
+        async (route) => {
+          const response = await route.fetch();
+          captured.resolve();
+          await release.promise;
+          try {
+            await route.fulfill({ response });
+          } catch {
+            /* Alte Anfrage wurde abgebrochen. */
+          } finally {
+            finished.resolve();
+          }
+        },
+        { times: 1 },
+      );
+      await link(tab, 'Vorrat').click();
+      try {
+        await Promise.race([
+          captured.promise,
+          wait(8000).then(() => {
+            throw new Error('Leseanfrage fehlt');
+          }),
+        ]);
+        await signOut(tab);
+        await link(tab, 'Anmelden').click();
+        await fillAuthEmail(tab, 'Anmelden', address('Dani'));
+        await tab.getByLabel('Passwort', { exact: true }).fill(password);
+        await button(tab, 'Anmelden').click();
+        await tab.getByText('Euer Vorrat ist noch leer.').waitFor();
+      } finally {
+        release.resolve();
+      }
+      await finished.promise;
+      assert.equal(
+        await tab.getByText(fixture.name, { exact: true }).count(),
+        0,
+      );
+      await tab.context().close();
+    },
+  );
   await step('F Einladung widerrufen', async () => {
     await confirm(a, 'Einladung widerrufen');
     await a.getByText('Widerrufen', { exact: true }).waitFor();
@@ -575,7 +648,9 @@ try {
 } catch (error) {
   // Playwright-Fehler können URLs und Eingabewerte enthalten. Nur sichere Diagnose ausgeben.
   const lines = [
-    ...String(error.stack).matchAll(/browser\.mjs:(\d+):\d+/g),
+    ...String(error.stack).matchAll(
+      /browser(?:-core|-inventory)?\.mjs:(\d+):\d+/g,
+    ),
   ].map((m) => m[1]);
   console.error(
     'FAIL ' +

@@ -1,5 +1,9 @@
 # Architektur
 
+## Task 008 · Vorrat im Browser
+
+Die vorhandene Sitzung begrenzt alle privaten Reads und offenen Aufträge. Listen und Details halten autorisierte Ergebnisse im RAM. `read.ts` übernimmt Cursor und Versionsprüfung, `domain.ts` die Dezimaltexte und Zürcher Kalendertage. Die Formulare verwenden die fünf bestehenden RPCs über `mutate`. Fokus, Reconnect und bestätigte Änderungen aktualisieren die Ansichten. [Datenfluss und Erweiterungspunkte](TASK_008_ANSCHLUSS.md)
+
 ## Integrationsgrenze 007.1
 
 Der Browser schreibt über eine explizite Liste öffentlicher Haushalts- und Vorrats-RPCs. Die Quittung wird vor der Anzeige geprüft. Jede Operation erfasst Konto, Haushalt und Mitgliedschaftsgeneration. Der nachfolgende Ladevorgang muss zum selben Kontext oder zum erwarteten Mitgliedschaftswechsel passen. Für einen verlorenen Transport bleiben Nutzlast und Operations-ID im Arbeitsspeicher. [Schnittstelle und Leseabfragen für Task 008](TASK_008_VERTRAG.md)

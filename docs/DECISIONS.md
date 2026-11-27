@@ -1,5 +1,9 @@
 # Technische Entscheidungen
 
+## Task 008 · Vollständige Liste und bewusste Konfliktauflösung
+
+Die Implementierung lädt die aktive Sicht in 100er-Seiten, bevor sie nach Datum sortiert oder nach Namen sucht. Damit wirken Suchsonderzeichen wörtlich und späte ID-Seiten können die dringendste Charge enthalten. Die Anzeige begrenzt zunächst die gerenderten Treffer. Reservierungen werden je sichtbarer Gruppe geladen. Ein Versionskonflikt erfordert einen erneuten Entscheid. Eine fehlende Antwort hält den ursprünglichen Auftrag im Sitzungskontext. Die bestehende Navigationsentscheidung platziert die manuelle Erfassung zentral. Der Einkauf zeigt seinen aktuellen Entwicklungsstand. Alphabetische Sortierung bleibt mit den zusätzlichen P1-Filtern zurückgestellt.
+
 ## 007.1 · Wiederholen und Kontext prüfen
 
 Eine offene Absicht ist pro Mutation und Zielressource gebunden. Eine zweite Eingabe darf sie erst nach Zustandsabgleich und bewusster lokaler Auflösung ablösen. Ein bestätigter Vollverbrauch benötigt einen eigenen Benutzerentscheid. Die Sitzungsnachprüfung akzeptiert bei Beitritt und Gründung genau einen Wechsel zum quittierten Haushalt. Bei Austritt und Auflösung erwartet sie den Verlust der Mitgliedschaft. Das erneute Eintreten in denselben Haushalt erzeugt einen neuen Kontext.

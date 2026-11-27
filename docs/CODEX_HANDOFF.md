@@ -1,5 +1,9 @@
 # Übergabe für die Umsetzung
 
+## Anschluss nach Task 008
+
+Task 009 übernimmt `/shopping`, die sekundären Produktaktionen und `invalidateInventory()`. Task 010 übernimmt die Erfassungsaktion und `ProductForm` mit `CaptureInput`. Task 011 prüft reale Geräte, Bedienhilfen, Softwaretastaturen und private Cache-Grenzen. Die [Anschlusspunkte](TASK_008_ANSCHLUSS.md) beschreiben die konkreten Schnittstellen. Für ausgeführte Prüfungen gilt der [Prüfbericht](TEST_REPORT.md).
+
 ## Stand nach Task 007.1
 
 Basis für die technische Prüfung ist der lokale Branch `integration/m3-auth-inventory`. Für Task 008 gelten der [integrierte Schreib-, Lese- und Sitzungsvertrag](TASK_008_VERTRAG.md) sowie die [tatsächlichen Regressionsergebnisse](TEST_REPORT.md). F03/F05/F07/F10/F17 benötigen die Bedienoberfläche. Die Navigationsfolge bleibt Start — Vorrat — Hinzufügen — Einkauf — Haushalt.

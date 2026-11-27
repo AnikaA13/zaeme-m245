@@ -1,5 +1,33 @@
 # Nachweis je Anforderung
 
+## Task 008 · Umfang und Nachweise
+
+Der lokale Abschlusslauf ist bestanden. Die PR-Prüfungen beziehen sich auf den veröffentlichten Commit. Das Reviewpaket führt deren tatsächlichen Status und den Merge-Stand separat auf.
+
+| Anforderung | Implementierter Umfang                                                                                          | Nachweis und Grenze                                                                                                     |
+| ----------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| F03         | Gemeinsame aktive Chargen, wörtliche Suche, getrennte Chargen, stabile Seitennavigation                         | Browser 008 B/C/I, SQL-Gegenprüfung, AC-03/04/11/24                                                                     |
+| F05         | Manuelle Erfassung, optionale Metadaten, quittierte Anlage                                                      | Browser 008 A/B/G, AC-07/09. Zeitvorgabe AK05.5 benötigt Nutzertests.                                                   |
+| F07         | Versionierte Bearbeitung, Teilverbrauch, bestätigter Vollverbrauch und geschützte Korrekturlöschung             | Browser 008 D/E/F/H, AC-12–16/25                                                                                        |
+| F08         | Dringlichste Chargen, unbekannte Daten, Datumsart und neutrale Entnahme bei überschrittenem Verbrauchsdatum     | Domänentests und Browser 008 C/I, AC-03/04/34/38                                                                        |
+| F10         | Unicode-Namen, exakte Mengen, Komma/Punkt, Einheit je Kategorie, EAN-13 und Datumsbestätigung                   | Geteilte Fixtures, Browser 008 B, HTTP und pgTAP, AC-16/17                                                              |
+| F11         | Fünf beschriftete Einträge, stabile Ziele, zentrale Erfassung und Abbruchfokus                                  | Teilweise. Browser 008 A prüft die Reihenfolge. Einkauf und Kamera stehen aus. AC-01/02/30/31/37 nur im Umfang von 008. |
+| F17         | Eigene Reservierung als absoluter Zielwert, Freigabe, Fremdmengen, Anzeigenamen und persönlich verfügbare Menge | Browser 008 E/F und frühere Integrationsfälle, AC-18–20                                                                 |
+| F19         | Gelesene Haushaltsfrist steuert Hinweise                                                                        | Teilweise. Domänentests 0, 3, 7, 30. Änderung der Frist und geräteübergreifende Signale offen.                          |
+| NF01        | Private Reads mit Scope, Generation und RLS, Mutationen über die bestehende RPC-Grenze                          | pgTAP, HTTP und getrennte Browserkontexte, AC-26                                                                        |
+| NF04        | Mobile Oberfläche und Desktop, feste untere Navigation mit Inhaltsabstand                                       | Chromium-Layoutprüfung, AC-32. Softwaretastatur und physischer Safe Area offen.                                         |
+| NF06        | Beschriftete Touch-Ziele mit Mindestgrösse                                                                      | Browser-Geometrieprüfung ab 320 CSS-px, AC-33                                                                           |
+| NF07        | Native Felder und Dialoge, Fokus nach Abbruch, Text für Status und Fehler                                       | Teilweise. Browser- und Komponententests, AC-34–36. Physische Bedienhilfen offen.                                       |
+| NF08        | Versionskonflikte, Wiederholung identischer Operationen und quittierter Lesefehler                              | 008 D/F/G, isolierter Test für REFRESH_FAILED, bestehende Konkurrenzsuite                                               |
+| NF09        | Strikte Typen, bestehende generierte Datenbanktypen und Lockdatei                                               | Typecheck, Build, frische Installation und Typvergleich                                                                 |
+| NF10        | Schweizer Standarddeutsch und Zürcher Kalenderdatum                                                             | Stück/Packungen, Dezimalmengen, Schalttag und Zeitumstellung im Domänentest                                             |
+| NF11        | Online-Schreiben, gekennzeichnete RAM-Ansicht und Neuladen bei Wiederverbindung                                 | Browser 008 H. Service Worker und Installation gehören zu 011.                                                          |
+| NF13        | Browser und Datenbank mit synthetischen Konten sowie getrennte isolierte Tests                                  | Befehle, Anzahl, Umgebung und Ergebnis im [Prüfbericht](TEST_REPORT.md)                                                 |
+
+AC-05/06/08 sowie der Kamerateil von AC-10, Einkaufsfunktionen und AC-23 auf physischen Geräten stehen aus. Die Ziele G01–G08 erfordern Beobachtungen mit Haushalten. Für sie liegen aus Task 008 keine Ergebnisse vor.
+
+## Historischer Stand bis Task 007.2
+
 Die Matrix führt F- und NF-IDs der [MVP-Spezifikation](MVP_SPEC.md) mit den lokalen Nachweisen aus 005, 006, 007 und 007.1 zusammen. Die [Prüfergebnisse](TEST_REPORT.md) unterscheiden Browseraktionen, API-Fixtures und offene Produktabnahmen.
 
 | Anforderung                                                                                                                                                                      | Quelle                | Task            | Umsetzung              | Geplante Prüfung                    | Tatsächliche Verifikation                                                                                                                                                      |
