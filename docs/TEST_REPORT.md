@@ -1,5 +1,11 @@
 # Prüfbericht
 
+## 27. November 2026 · Freigabeprüfung 007.2
+
+Der erste GitHub-Lauf auf `df5e93a` bestand die Frontendprüfungen, 243 pgTAP-Prüfungen, 21 HTTP-Fachszenarien und den Typvergleich. Beim ersten Chromium-Szenario wartete der Runner vergeblich auf die Registrierungsantwort. Der genaue Auslöser dieser Zeitüberschreitung ist im Log nicht sichtbar. Im Test konnten die gleich beschrifteten Felder der Anmeldung schon während des Wechsels zur Registrierung gefunden werden. Der Test wartet jetzt vor der Eingabe auf die Überschrift der Zielseite. [Erster Datenbanklauf](https://github.com/AnikaA13/zaeme-m245/actions/runs/46073351091)
+
+Nach der Korrektur bestanden lokal `npm run db:start` und alle 17 Szenarien von `npm run test:browser` einschliesslich echter Mailpit-Rückkehr und Aufräumprüfung. Lint, Typprüfung, Formatierung, 35 Unit-/Komponententests und Build bestanden ebenfalls. JavaScript 510,55 kB, gzip 149,04 kB, mit der bisherigen Chunkwarnung.
+
 ## 25. November 2026 · Integration 007.1
 
 ### Herkunft und Umgebung

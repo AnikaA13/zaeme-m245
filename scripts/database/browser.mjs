@@ -69,6 +69,8 @@ async function mailLink(email, kind, skip = new Set()) {
 }
 async function register(p, n) {
   await link(p, 'Konto erstellen').click();
+  // Anmeldung und Registrierung haben gleich beschriftete Felder.
+  await heading(p, 'Konto erstellen');
   await p.getByLabel('E-Mail-Adresse').fill(address(n));
   if (n === 'Anna') await layout(p);
   await p.getByLabel('Passwort', { exact: true }).fill(password);

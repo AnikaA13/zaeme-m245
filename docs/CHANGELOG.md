@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 007.2 · Registrierung im Browserlauf
+
+Der Browserprüfer wartet nach dem Wechsel von der Anmeldung zur Registrierung auf die Überschrift «Konto erstellen», bevor er die gleich beschrifteten Eingabefelder ausfüllt.
+
 ## Task 007.1 · Integration von Haushalt und Vorrat
 
 Die beiden Implementierungen sind lokal zusammengeführt. Neu sind die Sperre für geänderte offene Mutationen, die Prüfung von Vorratsquittungen und Sitzungswechseln sowie Meldungen für Datum, verfügbare Menge, Reservierungen und Vollverbrauch. Der Chromium-Test verbindet die vorhandenen Haushaltsaktionen mit echten Vorrats-RPCs und einer unabhängigen SQL-Prüfung. Der Datenbankworkflow führt anschliessend auch den Browserlauf aus. [Prüfbericht](TEST_REPORT.md)

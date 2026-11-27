@@ -1,5 +1,9 @@
 # Projektstand
 
+## Task 007.2 · Freigabeprüfung
+
+Der erste CI-Lauf bestand die Frontendprüfungen und die Datenbankschritte bis einschliesslich Typvergleich. Der Chromium-Lauf erreichte beim ersten Konto keine Registrierungsantwort. Der korrigierte Test wartet vor der Eingabe auf den abgeschlossenen Seitenwechsel. Die GitHub-Ergebnisse gehören zum jeweiligen Commit in [PR #3](https://github.com/AnikaA13/zaeme-m245/pull/3).
+
 ## Task 007.1 · integrierter Stand
 
 Auf `integration/m3-auth-inventory` sind die Auth- und Haushaltsoberfläche von 006 und die Vorratsdatenbank von 007 zusammengeführt. Die vier Migrationen gelten unverändert. Für Abnahmeumfang, Prüfbefunde und offene Umgebungstests gilt der [aktuelle Prüfbericht](TEST_REPORT.md). Die nachfolgenden Aufgabenstände dokumentieren ihre jeweiligen historischen Prüfumgebungen.
