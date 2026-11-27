@@ -1,5 +1,9 @@
 # Zugriff auf Haushaltsdaten
 
+## Einkauf und Realtime 009A
+
+Beide neuen Tabellen erlauben `authenticated` ausschliesslich SELECT im aktuellen Haushalt. Vier RPCs mit festem leerem Suchpfad gehören der bestehenden NOLOGIN-Rolle `zaeme_writer`. Der Signalhelfer liegt im privaten Schema. Die Publikation enthält nur ID und Revision. Das serverseitige RLS-Prädikat bleibt auch bei einem ungefilterten Abonnement wirksam. Die authentifizierte WebSocket-Prüfung umfasst fremden Filter, breiten Filter, fehlende Mitgliedschaft, fortbestehende Verbindung nach Entfernung, neuen Kanal mit altem JWT, Tokenrefresh und Wiederbeitritt. [Lokaler Prüfbericht](TEST_REPORT.md)
+
 ## Geprüfte Implementierung 005
 
 Die laufende API meldete `PGRST_DB_SCHEMAS=public`. `authenticated` liest Profile, Haushalte und Mitgliedschaften durch RLS. Alle sechs Tabellen verweigern direkte Clientmutationen einschliesslich TRUNCATE. Einladungen und interne Tabellen haben kein Client-SELECT. Die parameterlosen Helfer `private.eligible_actor()` und `private.my_household()` gehören `zaeme_reader`. Seine Mitgliedschaftspolicy filtert unmittelbar nach `auth.uid()`. Die private Security-Barrier-Sicht `confirmed_self` prüft `auth.users.email_confirmed_at IS NOT NULL` für genau diese ID. Der Leser erhält keine Berechtigung auf `auth.users`. Die Migrationsrolle besitzt dort lokal SELECT ohne Weitergaberecht. [Supabase Auth](https://supabase.com/docs/guides/auth/users)

@@ -17,7 +17,7 @@ from unnest(array['anon','authenticated','authenticator']) r cross join unnest(a
 select ok(not rolcanlogin and not rolbypassrls and not rolsuper and not rolinherit,rolname||' eingeschränkt') from pg_roles where rolname like 'zaeme_%';
 select ok(not has_schema_privilege(r,s,'CREATE'),r||' ohne CREATE auf '||s)
 from unnest(array['anon','authenticated','zaeme_reader','zaeme_writer']) r cross join unnest(array['public','private']) s;
-select is(count(*)::int,16,'Elf Haushaltseinstiege und fünf Vorratseinstiege')
+select is(count(*)::int,20,'Elf Haushaltseinstiege, fünf Vorratseinstiege und vier Einkaufseinstiege')
 from pg_proc where pronamespace='public'::regnamespace and proowner='zaeme_writer'::regrole;
 select ok(p.prosecdef and p.proconfig @> array['search_path=""'] and not has_function_privilege('anon',p.oid,'EXECUTE')
   and has_function_privilege('authenticated',p.oid,'EXECUTE'),p.proname||' Eigentümer, Pfad und Ausführung')

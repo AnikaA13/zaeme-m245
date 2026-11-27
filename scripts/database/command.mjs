@@ -43,7 +43,7 @@ if (command === 'start') {
   cli(
     'start',
     '-x',
-    'studio,realtime,storage-api,imgproxy,edge-runtime,logflare,vector,supavisor',
+    'studio,storage-api,imgproxy,edge-runtime,logflare,vector,supavisor',
   );
   localStatus();
   checkBindings();
@@ -124,6 +124,60 @@ if (command === 'start') {
       );
       break;
     }
+    case 'upgrade-shopping': {
+      cli(
+        'db',
+        'reset',
+        '--local',
+        '--no-seed',
+        '--yes',
+        '--version',
+        '20261125000400',
+      );
+      localStatus();
+      checkBindings();
+      assert.equal(
+        sql(
+          "select count(*)=4 and to_regclass('public.shopping_items') is null from supabase_migrations.schema_migrations",
+        ),
+        't',
+      );
+      const owner = '00000000-0009-4000-8000-000000000001';
+      const h = '00000000-0009-4000-8000-000000000002';
+      sql(`begin;
+        insert into auth.users(id,email_confirmed_at) values ('${owner}',now());
+        insert into public.profiles(id,display_name) values ('${owner}','Upgrade');
+        insert into public.households(id,owner_id,name) values ('${h}','${owner}','Prüfhaushalt');
+        insert into public.household_members(household_id,user_id) values ('${h}','${owner}');
+        insert into public.inventory_items(id,household_id,name) values ('${h}','${h}','Brot');
+        insert into public.reservations(household_id,inventory_item_id,user_id,quantity) values ('${h}','${h}','${owner}',1);
+        commit;`);
+      const snapshot = () =>
+        [
+          'profiles',
+          'households',
+          'household_members',
+          'inventory_items',
+          'reservations',
+        ].map((table) => sql(`select jsonb_agg(t) from public.${table} t`));
+      const before = snapshot();
+      cli('migration', 'up', '--local');
+      assert.deepEqual(snapshot(), before);
+      assert.equal(
+        sql(`select revision from public.household_signals where id='${h}'`),
+        '1',
+      );
+      localStatus();
+      checkBindings();
+      sql(
+        `begin; delete from public.households where id='${h}'; delete from auth.users where id='${owner}'; commit;`,
+      );
+      assert.equal(
+        sql(`select revision from public.household_signals where id='${h}'`),
+        '1',
+      );
+      break;
+    }
     case 'sql':
       console.log(cli('test', 'db', '--local'));
       break;
@@ -152,6 +206,11 @@ if (command === 'start') {
           'consume_item',
           'set_reservation',
           'delete_item',
+          'create_shopping',
+          'check_shopping',
+          'edit_shopping',
+          'delete_shopping',
+          'household_signals',
         ].every((name) => types.includes(name)),
       );
       if (command === 'types') writeFileSync(typeFile, types);

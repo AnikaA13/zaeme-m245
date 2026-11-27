@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 009A · Gemeinsamer Einkauf und Haushaltssignale
+
+Vier geschützte Einkaufs-RPCs und ein haushaltsbezogener Revisionszähler ergänzen die vier bisherigen Migrationen. Änderungen an Haushalt, Profil, Vorrat, Reservierung, Einkauf und Warnfrist invalidieren den gemeinsamen Stand im selben Commit. Der lokale Datenbankworkflow startet Realtime und prüft auch authentifizierte WebSockets. Parallele Stacks erhalten eigene Browser- und Auth-Rückkehrports. [Vertrag für 009B](TASK_009B_VERTRAG.md)
+
 ## Task 007.2 · Registrierung im Browserlauf
 
 Der Browserprüfer wartet bei Registrierung, Anmeldung und Passwortwiederherstellung auf die Überschrift des jeweiligen Formulars, bevor er das gleich beschriftete E-Mail-Feld ausfüllt.

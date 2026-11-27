@@ -1,5 +1,9 @@
 # Projektstand
 
+## Task 009A · Lokales Backend für Einkauf und Synchronisation
+
+Der separate Backend-Branch ergänzt Einkauf, transaktionale Haushaltssignale und eine UPDATE-Publikation. Das lokale WebSocket-Szenario verifiziert Mitgliedschaftsentzug mit einem weiterhin gültigen JWT und den Zugriff nach Wiederbeitritt. Task 008 integriert den Vorratsclient unabhängig. Einkauf, Warnfrist-Bedienung und sichtbare Synchronisation auf zwei Geräten folgen in Task 009B. [Prüfbericht](TEST_REPORT.md) · [Integrationsvertrag](TASK_009B_VERTRAG.md)
+
 ## Task 007.2 · Freigabeprüfung
 
 Die ersten beiden CI-Läufe bestanden die Frontendprüfungen und die Datenbankschritte bis einschliesslich Typvergleich. Der erste Chromium-Lauf stoppte bei der Registrierung, der zweite nach erfolgreicher Registrierung beim Passwortlink. Die Testeingabe prüft deshalb bei allen drei Auth-Formularen den abgeschlossenen Seitenwechsel. Die GitHub-Ergebnisse gehören zum jeweiligen Commit in [PR #3](https://github.com/AnikaA13/zaeme-m245/pull/3).

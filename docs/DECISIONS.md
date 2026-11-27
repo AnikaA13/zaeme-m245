@@ -1,5 +1,11 @@
 # Technische Entscheidungen
 
+## 009A · Revisionszähler und Kanalbeitritt
+
+Fachzeilen invalidieren den Haushalt in derselben Transaktion. Die Haushaltsanlage reserviert die Signal-ID inklusive erster Mitgliedschaft mit Revision 1. Bei der Auflösung bleiben nur ID und letzte Revision erhalten. Einladungsanlage, Vorschau, Widerruf, Ablauf und interne Bereinigung betreffen den privaten Einladungsablauf. Erst der wirksame Beitritt invalidiert die gemeinsame Ansicht. Die Warnfrist und das Profil melden auch eine neue Fachversion bei erneutem Speichern desselben Werts. Identische Quittungswiederholungen und unveränderte Reservierungen schreiben keine Fachzeile.
+
+Der Integrationstest setzt vor dem Kanalbeitritt das Benutzer-JWT explizit und wartet auf die PostgreSQL-Registrierung. Dadurch kann der erste Refetch die Lücke beim Anmelden des Kanals schliessen. Die Auslieferung prüft den aktuellen RLS-Lesezugriff je Signal. [Supabase Postgres Changes](https://supabase.com/docs/guides/realtime/postgres-changes) · [Kanalimplementierung v2.147.1](https://github.com/supabase/realtime/blob/v2.147.1/lib/realtime_web/channels/realtime_channel.ex)
+
 ## 007.1 · Wiederholen und Kontext prüfen
 
 Eine offene Absicht ist pro Mutation und Zielressource gebunden. Eine zweite Eingabe darf sie erst nach Zustandsabgleich und bewusster lokaler Auflösung ablösen. Ein bestätigter Vollverbrauch benötigt einen eigenen Benutzerentscheid. Die Sitzungsnachprüfung akzeptiert bei Beitritt und Gründung genau einen Wechsel zum quittierten Haushalt. Bei Austritt und Auflösung erwartet sie den Verlust der Mitgliedschaft. Das erneute Eintreten in denselben Haushalt erzeugt einen neuen Kontext.

@@ -1,5 +1,9 @@
 # Übergabe für die Umsetzung
 
+## Anschluss an Task 009A
+
+Der Backend-Branch ergänzt zwei Migrationen nach der integrierten Viererbasis. Für die Einkaufsoberfläche, den Sitzungswechsel, die Warnfrist und den Realtime-Kanal gilt der [Vertrag für Task 009B](TASK_009B_VERTRAG.md). Bei der späteren Integration die Browserprüfungen und Dokumentation aus Task 008 mit dem getrennten Browserport und den 009A-Nachweisen zusammenführen. [Lokaler Prüfbericht](TEST_REPORT.md)
+
 ## Stand nach Task 007.1
 
 Basis für die technische Prüfung ist der lokale Branch `integration/m3-auth-inventory`. Für Task 008 gelten der [integrierte Schreib-, Lese- und Sitzungsvertrag](TASK_008_VERTRAG.md) sowie die [tatsächlichen Regressionsergebnisse](TEST_REPORT.md). F03/F05/F07/F10/F17 benötigen die Bedienoberfläche. Die Navigationsfolge bleibt Start — Vorrat — Hinzufügen — Einkauf — Haushalt.

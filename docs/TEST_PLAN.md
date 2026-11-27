@@ -1,5 +1,11 @@
 # Testplan
 
+## Regression 009A
+
+Einen separaten lokalen Stack über `ZAEME_TEST_STACK=task009` auswählen. Vor einer Neuinstallation oder einem Upgrade Projektlabel, DB-Port, lokale CLI-Konfiguration und Hostlistener prüfen. Nach frischem Start `db:upgrade:check` für die frühere Basis und `db:upgrade:shopping` für vier Migrationen ausführen. Anschliessend `db:test`, `db:test:api`, `db:test:shopping`, `db:test:realtime`, Typvergleich und Chromium ausführen. Der Rennprüfer blockiert die Haushaltszeile, weist zwei wartende PostgreSQL-Sitzungen nach und gibt beide frei. Die Realtime-Prüfung enthält positive Vergleichskanäle sowie begrenzte Beobachtungsfenster nach Rechteentzug.
+
+009B prüft zwei gleichzeitig sichtbare Clients, Fokus/Reconnect bei laufender Abfrage, Markierung, Konfliktanzeige, Namensvorbelegung und Owner-Warnfrist. Auf dem Hosted-Stack Publikation, Rechteentzug und Latenz mit öffentlichem Projektschlüssel erneut messen.
+
 ## Regression 007.1 · F01/F02/F03/F07/F10/F17, NF01/NF08/NF09/NF13
 
 Nach Reset und Upgrade pgTAP, HTTP und Typvergleich ausführen. Danach im selben Wegwerfstack mit Mailpit und Chromium prüfen. Die bestehende Szenarienfolge A–J und der fehlerhafte Logout bleiben Bestandteil des Laufs.

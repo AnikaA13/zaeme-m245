@@ -1,5 +1,9 @@
 # Architektur
 
+## Synchronisation 009A
+
+Die einzige Tabelle in `supabase_realtime` ist `public.household_signals`, mit Publikationsoption `publish='update'`. Standard-Replica-Identity genügt für den Primärschlüssel. Eine bereits belegte Publikation bricht die Migration zur Prüfung ab. Initialisierung und Invalidierung erfolgen über tabellengebundene Trigger. Die vorhandenen Vorrats-RPCs erhöhen bei jeder wirksamen Reservierung die Chargenversion. Damit erfasst der Chargentrigger auch Erhöhung, Verringerung und Freigabe. Ein Austritt mit mehreren Freigaben kann mehrere Revisionen auslösen. Eine Auflösung lässt den Zähler beim letzten Wert stehen. [PostgreSQL-Publikationen](https://www.postgresql.org/docs/17/sql-createpublication.html) · [Clientvertrag](TASK_009B_VERTRAG.md)
+
 ## Integrationsgrenze 007.1
 
 Der Browser schreibt über eine explizite Liste öffentlicher Haushalts- und Vorrats-RPCs. Die Quittung wird vor der Anzeige geprüft. Jede Operation erfasst Konto, Haushalt und Mitgliedschaftsgeneration. Der nachfolgende Ladevorgang muss zum selben Kontext oder zum erwarteten Mitgliedschaftswechsel passen. Für einen verlorenen Transport bleiben Nutzlast und Operations-ID im Arbeitsspeicher. [Schnittstelle und Leseabfragen für Task 008](TASK_008_VERTRAG.md)
