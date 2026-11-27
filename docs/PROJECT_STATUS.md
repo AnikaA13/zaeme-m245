@@ -2,7 +2,7 @@
 
 ## Task 007.2 · Freigabeprüfung
 
-Der erste CI-Lauf bestand die Frontendprüfungen und die Datenbankschritte bis einschliesslich Typvergleich. Der Chromium-Lauf erreichte beim ersten Konto keine Registrierungsantwort. Der korrigierte Test wartet vor der Eingabe auf den abgeschlossenen Seitenwechsel. Die GitHub-Ergebnisse gehören zum jeweiligen Commit in [PR #3](https://github.com/AnikaA13/zaeme-m245/pull/3).
+Die ersten beiden CI-Läufe bestanden die Frontendprüfungen und die Datenbankschritte bis einschliesslich Typvergleich. Der erste Chromium-Lauf stoppte bei der Registrierung, der zweite nach erfolgreicher Registrierung beim Passwortlink. Die Testeingabe prüft deshalb bei allen drei Auth-Formularen den abgeschlossenen Seitenwechsel. Die GitHub-Ergebnisse gehören zum jeweiligen Commit in [PR #3](https://github.com/AnikaA13/zaeme-m245/pull/3).
 
 ## Task 007.1 · integrierter Stand
 

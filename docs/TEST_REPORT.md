@@ -6,6 +6,10 @@ Der erste GitHub-Lauf auf `df5e93a` bestand die Frontendprüfungen, 243 pgTAP-Pr
 
 Nach der Korrektur bestanden lokal `npm run db:start` und alle 17 Szenarien von `npm run test:browser` einschliesslich echter Mailpit-Rückkehr und Aufräumprüfung. Lint, Typprüfung, Formatierung, 35 Unit-/Komponententests und Build bestanden ebenfalls. JavaScript 510,55 kB, gzip 149,04 kB, mit der bisherigen Chunkwarnung.
 
+Auf `c65fa0a` bestanden in GitHub auch Registrierung, Haushalt und Wiederbeitritt. Szenario I wartete nach dem Wechsel zur Passwortwiederherstellung auf die generische Versandmeldung. Der Test verwendete das E-Mail-Feld dort ebenfalls vor der Prüfung der Zielseite. Die gemeinsame Eingabehilfe wartet für Anmeldung, Registrierung und Passwortwiederherstellung auf die jeweils sichtbare Überschrift. [Zweiter Datenbanklauf](https://github.com/AnikaA13/zaeme-m245/actions/runs/46074172940)
+
+Mit der gemeinsamen Eingabehilfe bestanden lokal alle 17 Browser-Szenarien einschliesslich Passwortwiederherstellung. Lint, TypeScript, Formatierung, alle 35 Unit-/Komponententests und der Produktionsbuild bestanden erneut.
+
 ## 25. November 2026 · Integration 007.1
 
 ### Herkunft und Umgebung

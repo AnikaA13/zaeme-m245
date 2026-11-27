@@ -44,6 +44,11 @@ const button = (p, name) => p.getByRole('button', { name, exact: true });
 const link = (p, name) => p.getByRole('link', { name, exact: true });
 const heading = (p, name) =>
   p.getByRole('heading', { name, exact: true }).waitFor();
+async function fillAuthEmail(p, title, email) {
+  // Die drei Auth-Formulare haben gleich beschriftete E-Mail-Felder.
+  await heading(p, title);
+  await p.getByLabel('E-Mail-Adresse').fill(email);
+}
 async function mailLink(email, kind, skip = new Set()) {
   for (let i = 0; i < 40; i++) {
     const result = await fetch(
@@ -69,9 +74,7 @@ async function mailLink(email, kind, skip = new Set()) {
 }
 async function register(p, n) {
   await link(p, 'Konto erstellen').click();
-  // Anmeldung und Registrierung haben gleich beschriftete Felder.
-  await heading(p, 'Konto erstellen');
-  await p.getByLabel('E-Mail-Adresse').fill(address(n));
+  await fillAuthEmail(p, 'Konto erstellen', address(n));
   if (n === 'Anna') await layout(p);
   await p.getByLabel('Passwort', { exact: true }).fill(password);
   const [signup] = await Promise.all([
@@ -102,7 +105,7 @@ async function register(p, n) {
 }
 async function login(p, n, pw = password) {
   await p.goto(origin + '/auth/login');
-  await p.getByLabel('E-Mail-Adresse').fill(address(n));
+  await fillAuthEmail(p, 'Anmelden', address(n));
   await p.getByLabel('Passwort', { exact: true }).fill(pw);
   await button(p, 'Anmelden').click();
 }
@@ -333,7 +336,7 @@ try {
     try {
       await signOut(b);
       await link(b, 'Anmelden').click();
-      await b.getByLabel('E-Mail-Adresse').fill(address('Dani'));
+      await fillAuthEmail(b, 'Anmelden', address('Dani'));
       await b.getByLabel('Passwort', { exact: true }).fill(password);
       await button(b, 'Anmelden').click();
       await heading(b, 'Dein Haushalt');
@@ -351,7 +354,7 @@ try {
     await signOut(b);
     await link(b, 'Anmelden').click();
     await link(b, 'Passwort vergessen?').click();
-    await b.getByLabel('E-Mail-Adresse').fill(address('Bea'));
+    await fillAuthEmail(b, 'Passwort vergessen?', address('Bea'));
     await button(b, 'Link anfordern').click();
     await b
       .getByRole('status')
@@ -451,7 +454,7 @@ try {
       ]);
       await signOut(p);
       await link(p, 'Anmelden').click();
-      await p.getByLabel('E-Mail-Adresse').fill(address('Dani'));
+      await fillAuthEmail(p, 'Anmelden', address('Dani'));
       await p.getByLabel('Passwort', { exact: true }).fill(password);
       await button(p, 'Anmelden').click();
       await heading(p, 'Dein Haushalt');
@@ -479,7 +482,11 @@ try {
         await p.goto(
           origin + (recovery ? '/auth/forgot-password' : '/auth/register'),
         );
-        await p.getByLabel('E-Mail-Adresse').fill(email);
+        await fillAuthEmail(
+          p,
+          recovery ? 'Passwort vergessen?' : 'Konto erstellen',
+          email,
+        );
         if (!recovery)
           await p.getByLabel('Passwort', { exact: true }).fill(password);
         await button(
@@ -527,7 +534,7 @@ try {
     const p = await page();
     await p.goto(origin + '/auth/register');
     const email = address('Kontowechsel');
-    await p.getByLabel('E-Mail-Adresse').fill(email);
+    await fillAuthEmail(p, 'Konto erstellen', email);
     await p.getByLabel('Passwort', { exact: true }).fill(password);
     const gate = Promise.withResolvers();
     await p.route(

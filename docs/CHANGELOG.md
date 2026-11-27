@@ -2,7 +2,7 @@
 
 ## Task 007.2 · Registrierung im Browserlauf
 
-Der Browserprüfer wartet nach dem Wechsel von der Anmeldung zur Registrierung auf die Überschrift «Konto erstellen», bevor er die gleich beschrifteten Eingabefelder ausfüllt.
+Der Browserprüfer wartet bei Registrierung, Anmeldung und Passwortwiederherstellung auf die Überschrift des jeweiligen Formulars, bevor er das gleich beschriftete E-Mail-Feld ausfüllt.
 
 ## Task 007.1 · Integration von Haushalt und Vorrat
 
