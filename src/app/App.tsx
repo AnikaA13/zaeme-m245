@@ -20,9 +20,12 @@ const paths = [
   '/inventory/:id/edit',
   '/inventory/:id/consume',
   '/inventory/:id/reserve',
+  '/inventory/:id/shopping',
   '/capture',
   '/capture/manual',
   '/shopping',
+  '/shopping/add',
+  '/shopping/edit/:id',
 ];
 export function App() {
   const { pathname, state } = useLocation();

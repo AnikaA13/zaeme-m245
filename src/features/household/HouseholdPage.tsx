@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { useAction } from '../../components/ui/Forms';
 import { mutate } from '../../lib/operations/rpc';
 import { ProfileForm } from './Onboarding';
+import { WarningDays } from './WarningDays';
 import { Invites } from './Invites';
 import type { Account } from './load';
 export function HouseholdPage({
@@ -65,8 +66,8 @@ export function HouseholdPage({
       <button className="secondary" onClick={() => setEdit(!edit)}>
         {edit ? 'Profil schliessen' : 'Anzeigenamen bearbeiten'}
       </button>
-      {edit && <ProfileForm key={account.profile?.version} account={account} />}
-      <p>Warnfrist für Ablaufdaten: {home.warning_days} Tage</p>
+      {edit && <ProfileForm account={account} />}
+      <WarningDays home={home} owner={owner} />
       {owner && <Invites {...context} />}
       {(!owner || home.household_members.length === 1) && (
         <button

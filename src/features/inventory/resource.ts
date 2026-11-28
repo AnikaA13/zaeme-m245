@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import { FlowError } from '../../lib/operations/protocol';
 import { refresh } from '../auth/session';
 import { inventoryScope, isCurrent, type Scope } from './read';
+import { consistentRead, synchronizedScopes } from '../household/revision';
 import { today } from './domain';
 
 export function invalidateInventory() {
@@ -25,11 +27,21 @@ export function useResource<T>(
     async function run() {
       if (!navigator.onLine) return;
       try {
-        const data = await loader(scope);
+        const data = await consistentRead(scope, loader);
         if (isCurrent(scope)) setState({ key, signal: scope.signal, data });
-      } catch {
+      } catch (error) {
         if (isCurrent(scope) && navigator.onLine)
-          setState({ key, signal: scope.signal, error: true });
+          setState((previous) => ({
+            key,
+            signal: scope.signal,
+            error: true,
+            data:
+              previous?.key === key &&
+              previous.signal === scope.signal &&
+              !(error instanceof FlowError && error.code === 'FORBIDDEN')
+                ? previous.data
+                : undefined,
+          }));
       }
     }
     void run();
@@ -40,7 +52,7 @@ export function useResource<T>(
   useEffect(() => {
     let live = true;
     const revalidate = async () => {
-      if (!navigator.onLine) return;
+      if (!navigator.onLine || synchronizedScopes.has(s.signal)) return;
       await refresh();
       if (live && !s.signal.aborted) again();
     };

@@ -1,5 +1,9 @@
 # Projektstand
 
+## Task 009B · Gemeinsamer Einkauf und Warnfrist
+
+Der separate lokale Integrationsbranch verbindet die abgenommene Vorratsoberfläche aus Task 008 mit dem Einkaufs- und Signalbackend aus 009A. Die Einkaufsliste, der Namensvorschlag aus dem Vorrat und die Warnfrist für den Haushalt sind implementiert. Die lokalen Prüfergebnisse, Messpunkte und Grenzen stehen in der [Übergabe für Task 011B](../REVIEW_HANDOFF.md). Die Releaseintegration bleibt bei Task 011B.
+
 ## Task 009A · Lokales Backend für Einkauf und Synchronisation
 
 Der separate Backend-Branch ergänzt Einkauf, transaktionale Haushaltssignale und eine UPDATE-Publikation. Das lokale WebSocket-Szenario verifiziert Mitgliedschaftsentzug mit einem weiterhin gültigen JWT und den Zugriff nach Wiederbeitritt. Task 008 integriert den Vorratsclient unabhängig. Einkauf, Warnfrist-Bedienung und sichtbare Synchronisation auf zwei Geräten folgen in Task 009B. [Prüfbericht](TEST_REPORT.md) · [Integrationsvertrag](TASK_009B_VERTRAG.md)

@@ -1,5 +1,9 @@
 # Übergabe für die Umsetzung
 
+## Task 009B · Einkauf und Synchronisation
+
+Task 011B übernimmt den lokalen Branch `feature/m5-shopping-realtime-integration`. Er enthält die Historie von Task 008 und 009A. Der Primärstack und die getrennten Parallelaufgaben haben eigene Arbeitsverzeichnisse. Für Quellen, Prüfungen und verbleibende Abnahmen gilt [die lokale Übergabe](../REVIEW_HANDOFF.md).
+
 ## Anschluss an Task 009A
 
 Der Backend-Branch ergänzt zwei Migrationen nach der integrierten Viererbasis. Für die Einkaufsoberfläche, den Sitzungswechsel, die Warnfrist und den Realtime-Kanal gilt der [Vertrag für Task 009B](TASK_009B_VERTRAG.md). Bei der späteren Integration die Browserprüfungen und Dokumentation aus Task 008 mit dem getrennten Browserport und den 009A-Nachweisen zusammenführen. [Lokaler Prüfbericht](TEST_REPORT.md)

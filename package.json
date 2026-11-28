@@ -8,6 +8,7 @@
     "npm": "11.x"
   },
   "scripts": {
+    "test:browser:shopping": "node --test scripts/database/browser-shopping-standalone.mjs",
     "test:browser": "node scripts/database/browser.mjs",
     "db:start": "node scripts/database/command.mjs start",
     "db:reset": "node scripts/database/command.mjs reset",

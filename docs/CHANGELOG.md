@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 009B · Einkauf und Synchronisation
+
+Der vierte Navigationseintrag öffnet die gemeinsame Einkaufsliste. Einträge lassen sich mit optionaler Menge und Einheit erfassen, bearbeiten, abhaken, wieder öffnen und nach Bestätigung entfernen. Im Produktdetail öffnet «Auf Einkaufsliste setzen» das mit dem Produktnamen vorbelegte Formular. Eigentümerinnen und Eigentümer können die gemeinsame Warnfrist zwischen 0 und 30 Tagen ändern. Haushaltssignale aktualisieren Vorrat, Einkauf und Haushaltseinstellungen.
+
 ## Task 009A · Gemeinsamer Einkauf und Haushaltssignale
 
 Vier geschützte Einkaufs-RPCs und ein haushaltsbezogener Revisionszähler ergänzen die vier bisherigen Migrationen. Änderungen an Haushalt, Profil, Vorrat, Reservierung, Einkauf und Warnfrist invalidieren den gemeinsamen Stand im selben Commit. Der lokale Datenbankworkflow startet Realtime und prüft auch authentifizierte WebSockets. Parallele Stacks erhalten eigene Browser- und Auth-Rückkehrports. [Vertrag für 009B](TASK_009B_VERTRAG.md)

@@ -1,5 +1,18 @@
 # Nachweis je Anforderung
 
+## Task 009B · Einkauf, Warnfrist und gemeinsamer Stand
+
+| ID   | Implementierung und Nachweis                                                                                                                                                                                                                                                                                       |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| F04  | Ein authentifizierter UPDATE-Kanal pro aktiver Mitgliedschaft. Getrennte Chromium-Kontexte prüfen sichtbare Änderungen an Vorrat, Reservierungen, Einkauf, Profil und Frist. Die Messwerte unterscheiden die Netzrückkehr von der Laufzeit ab RPC-Quittung.                                                        |
+| F09  | S11 liest beide Zustände mit exklusivem ID-Cursor und gruppiert nach Offen und Eingekauft. Die vier RPCs unterstützen Erfassung, Bearbeitung, Markierung und Entfernung. Der Produktweg belegt nur den Namen vor. Browser-, API- und Datenbanktests prüfen den Einkaufsablauf und den unabhängigen Vorratsbestand. |
+| F19  | Die Haushaltsseite zeigt die gespeicherte Warnfrist und für die Eigentümerschaft das Formular. Browser und API prüfen 0, 3, 7 und 30 Tage, die Berechtigung und die abhängige Ablaufanzeige.                                                                                                                       |
+| F11  | Start, Vorrat, Hinzufügen, Einkauf und Haushalt bleiben in dieser Reihenfolge erreichbar. Die manuelle Erfassung und der Rückweg aus dem Einkauf sind im Browser geprüft.                                                                                                                                          |
+| NF01 | RLS, explizite Haushaltsfilter, gespeicherter Sitzungskontext und Mitgliedschaftsgeneration begrenzen private Lese- und Schreibvorgänge. API, WebSocket und Browser prüfen Fremdhaushalt, Entzug und Wiederbeitritt.                                                                                               |
+| NF08 | Erwartete Version bei Bearbeitung, Entfernung und Markierung, absoluter Zielzustand beim Abhaken und unveränderlicher Auftrag bei fehlender Antwort. Offene Entwürfe und bestätigte Vollverbrauchsmengen werden gegen den neuen Stand geprüft.                                                                     |
+| NF11 | Offline bleiben geladene Daten im RAM gekennzeichnet. Bei Netzrückkehr werden Authentifizierung, Mitgliedschaft, Kanal und Fachansichten erneut geprüft. Wiederholungen offener Aufträge verlangen eine Benutzeraktion.                                                                                            |
+| NF13 | [Prüfbericht](TEST_REPORT.md), [Übergabe](../REVIEW_HANDOFF.md) und Rohmessungen dokumentieren den lokalen Prüfstand. Hosted-Betrieb, zwei physische Geräte, Kamera, PWA-Installation und Nutzertestziele benötigen eigene Abnahmen.                                                                               |
+
 ## Task 008 · Umfang und Nachweise
 
 Der lokale Abschlusslauf ist bestanden. Die PR-Prüfungen beziehen sich auf den veröffentlichten Commit. Das Reviewpaket führt deren tatsächlichen Status und den Merge-Stand separat auf.

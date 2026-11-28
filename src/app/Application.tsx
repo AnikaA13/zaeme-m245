@@ -20,6 +20,9 @@ import { Navigation } from '../components/navigation/Navigation';
 import { InventoryList } from '../features/inventory/List';
 import { Detail } from '../features/inventory/Detail';
 import { ProductForm } from '../features/capture/ProductForm';
+import { ShoppingPage } from '../features/shopping/ShoppingPage';
+import { ShoppingForm } from '../features/shopping/ShoppingForm';
+import { HouseholdSync } from '../features/household/HouseholdSync';
 import { PendingWrites } from '../features/inventory/writes';
 function subscribeConnection(fn: () => void) {
   window.addEventListener('online', fn);
@@ -176,14 +179,9 @@ export function Application() {
       );
     if (path === '/capture' || path === '/capture/manual')
       return <ProductForm />;
-    if (path === '/shopping')
-      return (
-        <>
-          <h1>Einkauf</h1>
-          <p>Die gemeinsame Einkaufsliste ist noch nicht verfügbar.</p>
-          <Link to="/inventory">Zum Vorrat</Link>
-        </>
-      );
+    if (path === '/shopping/add') return <ShoppingForm />;
+    if (path === '/shopping' || path.startsWith('/shopping/edit/'))
+      return <ShoppingPage editId={path.split('/')[3]} />;
     const [, section, id, action = ''] = path.split('/');
     if (section === 'inventory' && id)
       return (
@@ -198,6 +196,7 @@ export function Application() {
   }
   return (
     <div key={state.epoch + '-' + (account?.home?.g ?? '')} className="content">
+      {user && account?.home && !state.recovery && <HouseholdSync />}
       {user && <PendingWrites />}
       {!online && account?.home && (
         <p role="alert">

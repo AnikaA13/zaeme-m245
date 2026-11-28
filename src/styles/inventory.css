@@ -279,3 +279,29 @@ html {
     scroll-behavior: auto;
   }
 }
+.shopping-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.shopping-list li {
+  display: grid;
+  gap: 0.25rem;
+  overflow-wrap: anywhere;
+}
+.shopping-check {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+.shopping-check input {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  accent-color: var(--color-action);
+}
+.shopping-check small {
+  display: block;
+}

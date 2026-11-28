@@ -1,5 +1,25 @@
 # Prüfbericht
 
+## Task 009B · Lokaler Kombinationslauf
+
+Windows und Docker Desktop, PostgreSQL 17, Supabase CLI 2.122.1, Supabase JS 2.119.2, Node 24.14.1, Chromium 159.0.8154.6. Der Lauf verwendet `ZAEME_TEST_STACK=task012`, Projekt `zaeme-task012-local`, API 57821, PostgreSQL 57822, Mailpit 57824 und Vite 8673 auf Loopback. Die Primärdatenbank blieb in Betrieb. Der zuerst gewählte Port 61322 war belegt.
+
+| Prüfung                                   | Beobachtung                                                                                                                                                                                                    |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm ci`                                  | Frische Installation von 278 Paketen                                                                                                                                                                           |
+| `db:start`                                | Alle sechs Migrationen auf leerem Stack ausgeführt                                                                                                                                                             |
+| `db:upgrade:check`, `db:upgrade:shopping` | Upgrade ab der zweiten sowie der vierten Migration bestanden, Altdaten geprüft                                                                                                                                 |
+| `db:test`                                 | 307 pgTAP-Prüfungen in vier Dateien bestanden                                                                                                                                                                  |
+| `db:test:api`, `db:test:shopping`         | 22 bzw. 6 Node-Testeinträge bestanden, einschliesslich der parallelen Schreibvorgänge                                                                                                                          |
+| `db:test:realtime`                        | WebSocket-Prüfung einschliesslich Entzug, altem JWT, Wiederbeitritt und Fremdhaushalt bestanden. Je zehn Messungen vom RPC-Start zum Callback, Maximum 535 ms auf frischem und 549 ms auf aktualisiertem Stack |
+| `db:types`, `db:types:check`              | Typen aus dem kombinierten Schema generiert und vor sowie nach dem Upgrade unabhängig verglichen                                                                                                               |
+
+Frühere Browserläufe deckten einen fehlenden Eintrag im React-Router für Einkaufsformulare und einen ausbleibenden sichtbaren Vorratsabgleich auf. Der Router kennt die drei neuen Formularwege. Zusätzlich zum Hauskanal prüft der Client die autorisierte Revision periodisch. In zwei Diagnoseläufen mit allen vier Kontexten im selben Chromium-Prozess dauerte die sichtbare Einkaufslöschung bei gleichzeitig emulierter Netztrennung eines anderen Kontexts 18 357 bzw. 18 872 ms. Diese Läufe verfehlten die Zeitvorgabe. Die Übergabe führt die abschliessenden Messungen und deren Umgebung separat auf.
+
+### Abschlusslauf 009B
+
+`npm run lint`, `typecheck`, `format:check`, `test` und `build` bestanden. 104 Vitest-Tests und 34 kombinierte Chromium-Szenarien bestanden. Die sieben Einkaufs- und Synchronisationsszenarien bestanden zusätzlich im separaten Browserlauf. 49 Beobachtungen ab bestätigter Serverantwort ergaben einen Median von 761 ms und ein Maximum von 1295 ms. Die zwei Netzrückkehrmessungen dauerten 925 und 340 ms. Der kombinierte Lauf prüfte den Zeitbedarf des Mitgliedschaftsentzugs ohne manuelle Aktualisierung. Die Netzwerkemulation verwendete für den zeitweise getrennten Client einen eigenen Chromium-Prozess. Beim Lasttest trat zuvor `MessagePerSecondRateLimitReached` im lokalen Realtime-Dienst auf. Die stabilen Latenzmessungen erfolgen deshalb vor der getrennten Massendatenprüfung. Der Produktionsbuild meldet eine Chunkgrössenwarnung. [Messpunkte, Rohdaten und Abnahmegrenzen](../REVIEW_HANDOFF.md)
+
 ## 27. November 2026 · Backend 009A
 
 Lokaler Worktree `zaeme-m245-task009a`, Basis `b229f9354c73332b0da8f0c82bdfdd6795bcb02d`. Windows, Docker Desktop mit 12 virtuellen CPUs und rund 8 GB VM-Speicher, PostgreSQL 17.11, Realtime v2.147.1, PostgREST v16.5, CLI 2.122.1, Supabase JS 2.119.2, Node 24.14.1, npm 11.21.3. Der vorhandene Stackselektor `ZAEME_TEST_STACK=task009` erzeugte `zaeme-task009-local`. Die Windows-Listener für API 56321, DB 56322 und Mailpit 56324 banden an 127.0.0.1. Chromium verwendete Port 7173.

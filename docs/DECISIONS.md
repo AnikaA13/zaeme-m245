@@ -1,5 +1,9 @@
 # Technische Entscheidungen
 
+## Task 009B · Einkauf und Synchronisation
+
+Ein Kanal je aktivem Haushalt genügt für Vorrat, Einkauf und Einstellungen. Die UI sammelt Ereignisse für 45 ms und merkt während einer laufenden Prüfung einen weiteren Durchlauf vor. Ein ausbleibendes Signal kann auch auf einen Mitgliedschaftsentzug zurückgehen. Deshalb liest der Client bei bestehender Netzwerkverbindung alle 1,5 Sekunden zusätzlich die autorisierte Revision. Eine fehlende Zeile löst sofort die Mitgliedschaftsprüfung aus. Eine verpasste Revision löst denselben Abgleich wie ein Kanalsignal aus. Die bestehende Sitzungsinvalidierung räumt Requests, offene Aufträge, Formulare und Kanal bei einem Kontextwechsel auf.
+
 ## 009A · Revisionszähler und Kanalbeitritt
 
 Fachzeilen invalidieren den Haushalt in derselben Transaktion. Die Haushaltsanlage reserviert die Signal-ID inklusive erster Mitgliedschaft mit Revision 1. Bei der Auflösung bleiben nur ID und letzte Revision erhalten. Einladungsanlage, Vorschau, Widerruf, Ablauf und interne Bereinigung betreffen den privaten Einladungsablauf. Erst der wirksame Beitritt invalidiert die gemeinsame Ansicht. Die Warnfrist und das Profil melden auch eine neue Fachversion bei erneutem Speichern desselben Werts. Identische Quittungswiederholungen und unveränderte Reservierungen schreiben keine Fachzeile.

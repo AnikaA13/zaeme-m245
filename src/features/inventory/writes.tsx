@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Link } from 'react-router';
-import type { Payloads } from '../../lib/operations/rpc';
+import { readShopping } from '../shopping/read';
+import type { Payloads, ShoppingMutation } from '../../lib/operations/rpc';
 import { mutate, reviewPending } from '../../lib/operations/rpc';
 import { FlowError } from '../../lib/operations/protocol';
 import { activeScope, announce, refresh, snapshot } from '../auth/session';
@@ -15,6 +16,8 @@ import { invalidateInventory } from './resource';
 import { quantity } from './domain';
 
 type Name =
+  | ShoppingMutation
+  | 'set_warning_days'
   | 'create_item'
   | 'edit_item'
   | 'consume_item'
@@ -23,6 +26,7 @@ type Name =
 type Args<K extends Name> = Payloads[K];
 type Job = {
   key: string;
+  name: Name;
   label: string;
   intention: string;
   retryable: boolean;
@@ -39,6 +43,11 @@ let jobs: Job[] = [];
 const createMarker = 'zaeme-pruefung-offen';
 const createKey = JSON.stringify(['create_item', '']);
 function describe(name: Name, args: Payloads[Name]) {
+  if (name === 'set_warning_days' && 'days' in args)
+    return 'Warnfrist · ' + args.days + ' Tage';
+  if (name === 'delete_shopping') return 'Einkaufseintrag entfernen';
+  if ('checked' in args)
+    return args.checked ? 'Als eingekauft markieren' : 'Wieder öffnen';
   if (
     'fields' in args &&
     args.fields &&
@@ -50,13 +59,13 @@ function describe(name: Name, args: Payloads[Name]) {
       typeof f.quantity === 'string' && typeof f.unit === 'string'
         ? quantity(f.quantity, f.unit)
         : '';
-    return (
-      (name === 'create_item'
+    const intention =
+      name === 'create_item'
         ? 'Zum Vorrat hinzufügen'
-        : 'Änderungen speichern') +
-      ' · ' +
-      amount
-    );
+        : name === 'create_shopping'
+          ? 'Zur Einkaufsliste hinzufügen'
+          : 'Änderungen speichern';
+    return [intention, amount].filter(Boolean).join(' · ');
   }
   if ('amount' in args)
     return 'Bestand entfernen · ' + quantity(String(args.amount), args.unit);
@@ -70,10 +79,11 @@ function describe(name: Name, args: Payloads[Name]) {
 function canWrite() {
   return navigator.onLine && !snapshot().checkingConnection;
 }
-function missingOriginal() {
+function missingOriginal(shopping = false) {
+  const marker = shopping ? 'zaeme-einkauf-offen' : createMarker;
+  const key = shopping ? JSON.stringify(['create_shopping', '']) : createKey;
   return (
-    sessionStorage.getItem(createMarker) === '1' &&
-    !jobs.some((j) => j.key === createKey)
+    sessionStorage.getItem(marker) === '1' && !jobs.some((j) => j.key === key)
   );
 }
 const listeners = new Set<() => void>();
@@ -89,6 +99,8 @@ const emit = () => {
   for (const fn of listeners) fn();
 };
 function drop(j: Job) {
+  if (j.name === 'create_shopping')
+    sessionStorage.removeItem('zaeme-einkauf-offen');
   if (j.key === createKey) sessionStorage.removeItem(createMarker);
   jobs = jobs.filter((other) => other !== j);
   j.scope.signal.removeEventListener('abort', j.forget);
@@ -116,7 +128,8 @@ export function useWrite() {
     const s = inventoryScope(),
       key = JSON.stringify([name, 'id' in args ? args.id : '']);
     if (
-      (name === 'create_item' && missingOriginal()) ||
+      (['create_item', 'create_shopping'].includes(name) &&
+        missingOriginal(name === 'create_shopping')) ||
       !canWrite() ||
       args.h !== s.household ||
       args.g !== s.generation ||
@@ -126,6 +139,7 @@ export function useWrite() {
     const payload = structuredClone(args);
     const job: Job = {
       key,
+      name,
       scope: s,
       label,
       intention: describe(name, payload),
@@ -152,7 +166,23 @@ export function useWrite() {
       job.summary = undefined;
       emit();
       try {
-        await mutate(name, payload);
+        for (let attempt = 0; ; attempt++) {
+          try {
+            await mutate(name, payload);
+            break;
+          } catch (error) {
+            if (
+              !(error instanceof FlowError) ||
+              error.code !== 'RETRY' ||
+              attempt >= 2
+            )
+              throw error;
+            await new Promise((resolve) =>
+              setTimeout(resolve, (attempt + 1) * 100 + Math.random() * 100),
+            );
+            if (!isCurrent(s) || !canWrite()) throw error;
+          }
+        }
         done();
       } catch (e) {
         if (s.signal.aborted) return;
@@ -167,7 +197,11 @@ export function useWrite() {
             await refresh(true);
             if (!isCurrent(s)) return;
             try {
-              if ('id' in payload && typeof payload.id === 'string')
+              if (name.endsWith('_shopping')) await readShopping(s);
+              else if (name === 'set_warning_days') {
+                if (!snapshot().account?.home)
+                  throw new FlowError('REFRESH_FAILED');
+              } else if ('id' in payload && typeof payload.id === 'string')
                 await readItem(s, payload.id);
               else await readInventory(s);
               done();
@@ -204,7 +238,11 @@ export function useWrite() {
       if (!isCurrent(s) || !canWrite()) return;
       try {
         const decision = await reviewPending(name, payload);
-        const all = await readInventory(s);
+        const all = name.endsWith('_shopping')
+          ? await readShopping(s)
+          : name === 'set_warning_days'
+            ? []
+            : await readInventory(s);
         if (!isCurrent(s) || !jobs.includes(job)) return;
         const relevant = all.filter((i) =>
           'id' in payload ? i.id === payload.id : i.name === label,
@@ -213,10 +251,19 @@ export function useWrite() {
           (i) =>
             i.name +
             ' · ' +
-            quantity(i.quantity, i.unit) +
+            (i.quantity !== null && i.unit
+              ? quantity(i.quantity, i.unit)
+              : 'Ohne Mengenangabe') +
+            ('checked' in i ? (i.checked ? ' · Eingekauft' : ' · Offen') : '') +
             ' · Version ' +
             i.version,
         );
+        if (name === 'set_warning_days')
+          job.summary = [
+            'Aktuelle Warnfrist · ' +
+              snapshot().account?.home?.warning_days +
+              ' Tage',
+          ];
         job.finish = () => {
           if (!isCurrent(s)) return;
           decision.resolve();
@@ -228,6 +275,8 @@ export function useWrite() {
       }
       emit();
     }
+    if (name === 'create_shopping')
+      sessionStorage.setItem('zaeme-einkauf-offen', '1');
     if (name === 'create_item') sessionStorage.setItem(createMarker, '1');
     setMessage('');
     announce('');
@@ -240,7 +289,8 @@ export function useWrite() {
     message,
     blocked: (name: Name, id = '') =>
       !canWrite() ||
-      (name === 'create_item' && missingOriginal()) ||
+      (['create_item', 'create_shopping'].includes(name) &&
+        missingOriginal(name === 'create_shopping')) ||
       tracked.some(
         (j) =>
           j.scope.signal === activeScope().signal &&
@@ -263,6 +313,35 @@ export function PendingWrites() {
     ) : null;
   return (
     <>
+      {missingOriginal(true) && (
+        <section className="pending">
+          <p role="alert">Eine frühere Einkaufserfassung ist noch zu prüfen.</p>
+          <Link to="/shopping">Einkauf zur Prüfung öffnen</Link>
+          <button
+            disabled={!canWrite()}
+            onClick={async () => {
+              const s = inventoryScope();
+              try {
+                await readShopping(s);
+                if (
+                  isCurrent(s) &&
+                  window.confirm(
+                    'Hast du die Einkaufsliste abgeglichen und den Ausgang geklärt?',
+                  )
+                ) {
+                  sessionStorage.removeItem('zaeme-einkauf-offen');
+                  emit();
+                }
+              } catch {
+                if (isCurrent(s))
+                  announce('Die Einkaufsliste konnte nicht geprüft werden.');
+              }
+            }}
+          >
+            Einkauf abgleichen
+          </button>
+        </section>
+      )}
       {missingOriginal() && (
         <section className="pending">
           <p role="alert">
@@ -333,11 +412,21 @@ export function PendingWrites() {
                       disabled={!canWrite()}
                       onClick={() => void j.review()}
                     >
-                      Aktuellen Vorrat abgleichen
+                      {j.name.endsWith('_shopping')
+                        ? 'Einkauf abgleichen'
+                        : j.name === 'set_warning_days'
+                          ? 'Warnfrist abgleichen'
+                          : 'Aktuellen Vorrat abgleichen'}
                     </button>
                     {j.summary && (
                       <>
-                        <p>Aktuelle passende Chargen im vollständigen Vorrat</p>
+                        <p>
+                          {j.name.endsWith('_shopping')
+                            ? 'Passende Einkaufseinträge'
+                            : j.name === 'set_warning_days'
+                              ? 'Gespeicherte Einstellung'
+                              : 'Aktuelle passende Chargen im vollständigen Vorrat'}
+                        </p>
                         {j.summary.length ? (
                           <ul>
                             {j.summary.map((v, i) => (
@@ -345,13 +434,23 @@ export function PendingWrites() {
                             ))}
                           </ul>
                         ) : (
-                          <p>Keine passenden aktiven Chargen.</p>
+                          <p>Kein passender Eintrag.</p>
                         )}
                         <p>
                           Gleiche Produktdaten oder fehlende Einträge belegen
                           den Ausgang der Anfrage nicht.
                         </p>
-                        <Link to="/inventory">Zum Vorrat</Link>
+                        <Link
+                          to={
+                            j.name.endsWith('_shopping')
+                              ? '/shopping'
+                              : j.name === 'set_warning_days'
+                                ? '/household'
+                                : '/inventory'
+                          }
+                        >
+                          Zur Übersicht
+                        </Link>
                         <button
                           className="secondary"
                           onClick={() => {
