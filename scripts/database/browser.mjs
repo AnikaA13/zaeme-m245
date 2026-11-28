@@ -6,11 +6,18 @@ import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import { coreInventory } from './browser-core.mjs';
 import { householdInventory } from './browser-inventory.mjs';
-import { api, mail, localStatus, checkBindings, sql } from './local.mjs';
+import {
+  api,
+  mail,
+  browserPort,
+  localStatus,
+  checkBindings,
+  sql,
+} from './local.mjs';
 
 const stack = localStatus();
 checkBindings();
-const origin = 'http://127.0.0.1:5173';
+const origin = 'http://127.0.0.1:' + browserPort;
 assert.equal(stack.MAILPIT_URL ?? stack.INBUCKET_URL, mail);
 process.env.VITE_SUPABASE_URL = api;
 process.env.VITE_SUPABASE_PUBLISHABLE_KEY =
@@ -158,7 +165,12 @@ let a, b, c, d, invitation;
 try {
   server = await createServer({
     logLevel: 'silent',
-    server: { host: '127.0.0.1', port: 5173, strictPort: true, hmr: false },
+    server: {
+      host: '127.0.0.1',
+      port: browserPort,
+      strictPort: true,
+      hmr: false,
+    },
   });
   await server.listen();
   assert.ok(server.resolvedUrls.local.includes(origin + '/'));
@@ -665,6 +677,8 @@ try {
 } finally {
   await browser?.close();
   await server?.close();
+  localStatus();
+  checkBindings();
   const ids =
     "select id from auth.users where email like 'task006-" +
     run +

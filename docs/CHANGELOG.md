@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 009A · Gemeinsamer Einkauf und Haushaltssignale
+
+Vier geschützte Einkaufs-RPCs und ein haushaltsbezogener Revisionszähler ergänzen die vier bisherigen Migrationen. Änderungen an Haushalt, Profil, Vorrat, Reservierung, Einkauf und Warnfrist invalidieren den gemeinsamen Stand im selben Commit. Der lokale Datenbankworkflow startet Realtime und prüft auch authentifizierte WebSockets. Parallele Stacks erhalten eigene Browser- und Auth-Rückkehrports. [Vertrag für 009B](TASK_009B_VERTRAG.md)
+
 ## Task 008 · Gemeinsamen Vorrat bedienen
 
 Start, Vorrat, manuelle Erfassung, Detail, Bearbeitung, Verbrauch und eigene Reservierungen verwenden die vorhandene Datenbank. Lade- und Konfliktzustände, Datumsprüfung, Navigation und Abgleich offener Anfragen sind integriert. Gemeinsame Validierungsfälle und Browserabläufe mit PostgreSQL-Gegenprüfung ergänzen die bisherigen Regressionen. Alle vier Migrationen und die generierten Datenbanktypen bleiben auf dem Stand von 007.2.

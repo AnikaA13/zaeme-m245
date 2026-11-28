@@ -24,8 +24,11 @@ jobs:
       - run: npm run db:start
       - run: npm run db:reset
       - run: npm run db:upgrade:check
+      - run: npm run db:upgrade:shopping
       - run: npm run db:test
       - run: npm run db:test:api
+      - run: npm run db:test:shopping
+      - run: npm run db:test:realtime
       - run: npm run db:types:check
       - run: npx --no-install playwright install --with-deps chromium
       - run: npm run test:browser

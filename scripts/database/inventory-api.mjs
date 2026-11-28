@@ -10,7 +10,7 @@ import { operationId as op } from './fixtures.mjs';
 
 // Beide HTTP-Anfragen müssen in unabhängigen Datenbanksitzungen nachweislich
 // auf die Sperre warten. Erst danach darf eine davon die Transaktion beenden.
-async function race(h, first, second) {
+export async function race(h, first, second) {
   const locker = spawn('docker', [
     'exec',
     '-i',
