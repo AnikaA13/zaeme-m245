@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 010A · EAN-13 und Produktabfrage
+
+Scanner liest Kamerabilder lokal und beendet die Vorschau nach einem Treffer, Abbruch oder Kontextverlust. Die Einzelabfrage bei Open Food Facts liefert den geprüften Barcode und gegebenenfalls einen editierbaren Namen. Fehler und unvollständige Daten erlauben die manuelle Weiterarbeit. Neu sind der Entwicklungsprüfstand, die optische Chromium-Fixture, Modulprüfungen und das [Testblatt für die physischen Geräte](TASK_010A_GERAETETEST.md).
+
 ## Task 008 · Gemeinsamen Vorrat bedienen
 
 Start, Vorrat, manuelle Erfassung, Detail, Bearbeitung, Verbrauch und eigene Reservierungen verwenden die vorhandene Datenbank. Lade- und Konfliktzustände, Datumsprüfung, Navigation und Abgleich offener Anfragen sind integriert. Gemeinsame Validierungsfälle und Browserabläufe mit PostgreSQL-Gegenprüfung ergänzen die bisherigen Regressionen. Alle vier Migrationen und die generierten Datenbanktypen bleiben auf dem Stand von 007.2.

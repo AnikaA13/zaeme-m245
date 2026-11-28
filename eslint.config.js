@@ -7,6 +7,10 @@ import tseslint from 'typescript-eslint';
 export default defineConfig([
   globalIgnores(['dist', 'coverage', '.npm-cache', '.vercel', 'references']),
   js.configs.recommended,
+  {
+    files: ['scripts/scanner/*.mjs'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+  },
   ...tseslint.configs.recommended,
   {
     files: ['scripts/database/*.mjs'],

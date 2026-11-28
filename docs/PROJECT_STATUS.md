@@ -1,5 +1,9 @@
 # Projektstand
 
+## Task 010A · isolierter F06-Kern
+
+Der separate Branch `feature/m6-barcode-lookup-core` enthält die optische EAN-13-Erkennung, den Kameralebenszyklus, die abbrechbare Produktabfrage und einen lokalen Prüfstand. Chromium hat die Videofixture zweimal gelesen. Zwei separate Live-Abfragen bestätigten einen Namen und eine unbekannte EAN. Android Chrome und iOS Safari physisch **NOT RUN**. F06 bleibt bis zur Einbindung in F05 und zur Geräteabnahme offen. [Prüfnachweis](../REVIEW_HANDOFF.md) · [Vertrag für 010B](TASK_010B_VERTRAG.md)
+
 ## Task 008 · Vorratsoberfläche
 
 Im authentifizierten Haushalt sind Start, Vorrat, manuelle Erfassung, Bearbeitung, Verbrauch und eigene Reservierungen an die bestehende Datenbank angeschlossen. Einkauf zeigt einen Entwicklungshinweis. Die nächsten fachlichen Schritte sind Einkauf und Synchronisierung in 009 sowie Kamera und Produktsuche in 010. Geräteabnahme und Haushaltstests stehen aus. Umfang, Prüfstand und technische Anschlussstellen sind separat dokumentiert. [Anforderungsmatrix](IMPLEMENTATION_STATUS.md) · [Prüfbericht](TEST_REPORT.md) · [Anschlussvertrag](TASK_008_ANSCHLUSS.md)
