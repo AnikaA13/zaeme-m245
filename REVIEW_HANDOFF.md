@@ -1,6 +1,6 @@
 # zäme · Technische Übergabe zum Haushaltstest
 
-**Teilnehmerfreigabe gesperrt.** Die integrierte App ist lokal mit synthetischen Haushalten geprüft. Für den geplanten 1. Dezember 2026 fehlen das identifizierte Hosted-Testprojekt, das Deployment, reale Mailzustellung und die physische Abnahme auf Android und iPhone. Es gibt keine freigegebene Testadresse. Der Gruppenentscheid sowie G01–G08 bleiben offen.
+**Teilnehmerfreigabe gesperrt.** Die integrierte App ist lokal mit synthetischen Haushalten geprüft. Für den geplanten 1. Dezember 2026 fehlen die Anwendung der sechs Hosted-Migrationen, das Preview-Deployment, reale Mailzustellung und die physische Abnahme auf Android und iPhone. Es gibt keine freigegebene Testadresse. Der Gruppenentscheid sowie G01–G08 bleiben offen.
 
 | Quelle | Branch                                   | Commit  | Nachweis des damaligen Stands                                                                                  |
 | ------ | ---------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- |

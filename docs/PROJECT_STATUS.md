@@ -4,7 +4,7 @@
 
 009B und 010B enthalten ihre jeweiligen Backend- und Scannergrundlagen. Sie sind zusammen mit der 011A-Vorprüfung auf Basis von PR #4 integriert. Der neue Funktionsstand umfasst Warnfrist, gemeinsamen Einkauf und Vorrat, privilegienarmen Produktabruf, Kamera, Installationssymbole und Offline-Hinweis. [Freigabe, Eintritt und offene Geräteprüfungen](USER_TEST_RELEASE.md) · [Prüfbericht](TEST_REPORT.md)
 
-Die lokalen Datenbank-Upgrades ab Version 00200 und 00400 erhielten die bestehenden Testdaten. Die Hosted-Identität, E-Mail-Zustellung und Abnahme auf Android und iPhone sind offen. Die Testzielgruppe wurde nicht einbezogen. Der 1. Dezember ist ein Planungstermin.
+Die lokalen Datenbank-Upgrades ab Version 00200 und 00400 erhielten die bestehenden Testdaten. Die PO hat die externen Testprojekte benannt. Beide Anbieterzugänge und Projekt-IDs sind administrativ geprüft. Die Hosted-Datenbank ist fachlich leer, sechs Migrationen stehen laut Dry Run aus. Das vorhandene Git-Deployment ist Production. Migration, autorisierte Preview, SMTP-Zustellung und beide physischen Plattformen stehen aus. Die Testzielgruppe wurde nicht einbezogen. Der 1. Dezember ist ein Planungstermin.
 
 ## Task 009B · Gemeinsamer Einkauf und Warnfrist
 
