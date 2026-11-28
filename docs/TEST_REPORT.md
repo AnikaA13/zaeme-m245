@@ -1,5 +1,7 @@
 # Prüfbericht
 
+CI-Lauf 46136445705 auf cc7bd29 bestand den kombinierten Browserlauf. Der PWA-Test meldete «Workerwechsel blieb aus». Der überarbeitete Test erfasst den ersten Controller vor dem Austausch der Datei. Er verlangt die zweite HTTP-Antwort bytegenau, einen anderen aktivierten Controller und die bisher geprüfte Cache-Bereinigung. Im isolierten lokalen Task-011-Stack bestanden anschliessend vier unabhängige Produktionsbuild- und PWA-Läufe hintereinander. Lint, Formatprüfung und Build mit Typprüfung waren erfolgreich.
+
 ## Task 011B · Kombinierte technische Abnahme am 28. November 2026
 
 **Umgebung.** Windows 11 Pro x64, Intel Core i5-1345U, Node 24.14.1, npm 11.21.3, Playwright 1.65.1, Chromium 159.0.8154.6, PostgreSQL 17.11. Eigener Docker-Stack `zaeme-task011-local`, API 57321, PostgreSQL 57322, Mailpit 57324, Browser 8173. Alle Listener auf Loopback geprüft. Konten und Haushalte synthetisch. Die Archive der Einzeltasks bleiben historische Nachweise.

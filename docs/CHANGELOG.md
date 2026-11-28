@@ -1,5 +1,7 @@
 # Änderungsprotokoll
 
+Der PWA-Test beobachtet die Controller-Identität über den gesamten Revisionswechsel und vergleicht die vom Server ausgelieferten Bytes.
+
 ## Task 011B · Releasekandidat
 
 Einkauf, Warnfrist, Realtime und Scan sind gemeinsam mit der Vorratsoberfläche erreichbar. Manifest, vier PNG-Exporte des Originalzeichens, Offline-Start und die identifizierte Produktabfrage ergänzen den Produktionsbuild. Die Vercel-Konfiguration deaktiviert Git-Deployments für alle Branches und legt die vereinbarten Buildbefehle fest. Die drei separaten Übergaben und ihre bisherigen Testergebnisse bleiben erhalten. [Freigabe und Nachweise](USER_TEST_RELEASE.md)

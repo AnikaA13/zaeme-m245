@@ -1,5 +1,7 @@
 # Projektstand
 
+GitHub hat beim Stand cc7bd29 den Scannerlauf bestanden. Der PWA-Lauf erreichte das erwartete Ereignis beim Workerwechsel nicht. Der Nachtest vergleicht die tatsächlich ausgelieferte zweite Datei und die Identität des aktivierten Controllers.
+
 ## Task 011B · Kandidat für den Haushaltstest
 
 009B und 010B enthalten ihre jeweiligen Backend- und Scannergrundlagen. Sie sind zusammen mit der 011A-Vorprüfung auf Basis von PR #4 integriert. Der neue Funktionsstand umfasst Warnfrist, gemeinsamen Einkauf und Vorrat, privilegienarmen Produktabruf, Kamera, Installationssymbole und Offline-Hinweis. [Freigabe, Eintritt und offene Geräteprüfungen](USER_TEST_RELEASE.md) · [Prüfbericht](TEST_REPORT.md)

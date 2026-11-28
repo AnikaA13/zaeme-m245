@@ -143,43 +143,29 @@ test('011B · Produktionsbuild, private Sitzung, Offline-Start und Workerwechsel
     await caches.open('zaeme-public-shell-veraltet');
   });
   const worker = join(outDir, 'sw.js');
-  await writeFile(
-    worker,
-    (await readFile(worker, 'utf8')) + '\n// Zweite Testrevision.\n',
+  const firstController = await page.evaluateHandle(
+    () => navigator.serviceWorker.controller,
+  );
+  const nextSource =
+    (await readFile(worker, 'utf8')) + '\n// Zweite Testrevision.\n';
+  await writeFile(worker, nextSource);
+  assert.equal(
+    await (await page.request.get(origin + '/sw.js')).text(),
+    nextSource,
   );
   await page.evaluate(async () => {
     const registration = await navigator.serviceWorker.ready;
-    const changed = new Promise((resolve, reject) => {
-      const timeout = setTimeout(
-        () => reject(new Error('Workerwechsel blieb aus')),
-        20000,
-      );
-      navigator.serviceWorker.addEventListener(
-        'controllerchange',
-        () => {
-          clearTimeout(timeout);
-          resolve();
-        },
-        { once: true },
-      );
-    });
-    await Promise.all([changed, registration.update()]);
-    const worker = navigator.serviceWorker.controller;
-    if (worker.state !== 'activated') {
-      await new Promise((resolve, reject) => {
-        const timer = setTimeout(
-          () => reject(new Error('Aktivierung blieb aus')),
-          20000,
-        );
-        worker.addEventListener('statechange', () => {
-          if (worker.state === 'activated') {
-            clearTimeout(timer);
-            resolve();
-          }
-        });
-      });
-    }
+    await registration.update();
   });
+  await page.waitForFunction(
+    (previous) => {
+      const current = navigator.serviceWorker.controller;
+      return current && current !== previous && current.state === 'activated';
+    },
+    firstController,
+    { timeout: 20000 },
+  );
+  await firstController.dispose();
   assert.deepEqual(await storage(), { caches: ['anderer-test'], dbs: [] });
   await page.context().setOffline(true);
   const offline = await page.goto(origin + '/inventory');
