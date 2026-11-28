@@ -301,8 +301,19 @@ export async function scanCapture({ page, step, layout, origin, signOut }) {
       await page
         .getByText('Halte den Barcode mit senkrechten Strichen in den Rahmen.')
         .waitFor();
+      assert.equal(
+        await stopped(),
+        false,
+        'Der Scan verwendet vor dem Seitenwechsel die Kamera',
+      );
       await page.getByRole('link', { name: 'Vorrat', exact: true }).click();
-      assert.ok(await stopped());
+      await page
+        .getByRole('heading', { name: 'Vorrat', exact: true })
+        .waitFor();
+      assert.ok(
+        await stopped(),
+        'Beim sichtbaren Vorrat müssen alle Videospuren beendet sein',
+      );
       await button('Hinzufügen').last().click();
       await scan();
       await start();

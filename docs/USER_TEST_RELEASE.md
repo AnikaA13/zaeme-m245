@@ -2,6 +2,8 @@
 
 **PARTIALLY VERIFIED.** Die technische Freigabe für Teilnehmende ist offen. Für die Gruppe 23 gibt es noch keine bestätigte HTTPS-Testadresse und keinen nachgewiesenen Deployment-Commit. Der 1. Dezember 2026 ist das Ziel für den Testbeginn. Bitte erst einladen, wenn die Projektgruppe die geprüfte Testadresse mitteilt.
 
+Der vollständige lokale Abnahmelauf gehört zum Kandidaten `1066454ef6859721145e277efcedc848d11acb07`. Alle 40 Browsergruppen und der separate PWA-Test sind bestanden. Die GitHub-Prüfungen und der spätere Merge-Commit sind im [Release-PR #5](https://github.com/AnikaA13/zaeme-m245/pull/5) nachvollziehbar. Der ausgelieferte Stand bleibt offen, bis die dedizierte HTTPS-Umgebung identifiziert und geprüft ist.
+
 ## Zugang und erster Haushalt
 
 1. Öffne die von der Projektgruppe freigegebene HTTPS-Adresse in Chrome auf Android oder Safari auf dem iPhone. Verwende für den Test einen eigenen Anzeigenamen oder ein Pseudonym. Erfasse nur die zum Test benötigten Lebensmittel.

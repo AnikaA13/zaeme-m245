@@ -14,6 +14,8 @@
 
 [Lokale Testzahlen, Messungen und Befunde](docs/TEST_REPORT.md) · [Anforderungsmatrix](docs/IMPLEMENTATION_STATUS.md) · [Screenshots und Rohmessungen](docs/review/task011b) · [Teilnehmeranleitung, Geräte- und Freigabeliste](docs/USER_TEST_RELEASE.md) · [Hosted-Migrationsvertrag](docs/HOSTED_TEST_VERTRAG.md)
 
+Der lokal geprüfte PR-Kandidat ist `1066454ef6859721145e277efcedc848d11acb07`. Das [GitHub-Prüfprotokoll zu PR #5](https://github.com/AnikaA13/zaeme-m245/pull/5/checks) führt die wirklichen Prüfläufe und Resultate.
+
 Der lokale Lauf verwendete ausschliesslich den Wegwerfstack `zaeme-task011-local`. Das Archiv enthält weder dessen Schlüssel noch Sitzungen, Bestätigungsmails oder Einladungslinks. Der letzte Abschnitt im ausgelieferten ZIP nennt den zum Verpackungszeitpunkt tatsächlich verifizierten GitHub-Stand.
 
 ## Frühere Übergaben
