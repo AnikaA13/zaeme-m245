@@ -1,0 +1,28 @@
+{
+  "projekt": "rfvtspjxtaetytwbqaqd",
+  "merge": "de72cf659b5f59c5cc923d2faeab42990bfb21d5",
+  "dry_run": 6,
+  "angewendet": 6,
+  "exit": 0,
+  "leerstand_vorher": true,
+  "typen_bytegleich": false,
+  "fachvertrag_kompatibel": true,
+  "generatorunterschiede": [
+    "PostgREST-Versionsmetadatum 17.1",
+    "9 ComputedFields: never nur lokal",
+    "10 direkte NOT-NULL-Basisspalten der security_invoker-Vorratssicht im Hosted-Generator als nullable"
+  ],
+  "view_not_null_quelle": [
+    "category",
+    "created_at",
+    "household_id",
+    "id",
+    "name",
+    "quantity",
+    "status",
+    "unit",
+    "updated_at",
+    "version"
+  ],
+  "wiederherstellungspunkte_vorher": 0
+}

@@ -1,5 +1,7 @@
 # Änderungsprotokoll
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 Der serverseitige EAN-Import verwendet den kompilierten JavaScript-Modulpfad. Die vier Browser mit realem Hosted-Backend und die erste geschützte Preview sind dokumentiert. [Abnahmestand](USER_TEST_RELEASE.md)
 
 Der PWA-Test beobachtet die Controller-Identität über den gesamten Revisionswechsel und vergleicht die vom Server ausgelieferten Bytes.

@@ -1,5 +1,7 @@
 # zäme
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](docs/review/task011b/RELEASE_ABNAHME.md)
+
 Die erste interne HTTPS-Preview und alle sechs Hosted-Migrationen sind verifiziert. Die Produktabfrage auf der ersten Preview und die physischen Geräte blockieren den Haushaltstest. [Abnahmestand](docs/USER_TEST_RELEASE.md)
 
 Lebensmittelmanagement für Haushalte ab drei Personen. zäme ist ein Schulprojekt

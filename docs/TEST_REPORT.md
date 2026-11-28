@@ -1,5 +1,7 @@
 # Prüfbericht
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 ## Hosted-Abnahme vom 28. November 2026
 
 **PARTIALLY VERIFIED.** PR #5 ist mit `de72cf659b5f59c5cc923d2faeab42990bfb21d5` gemergt. Der getestete Kandidat `0a2be630344ca0adc38611834ada5dd90aabb989` hat denselben Baum. Beide PR-Prüfungen und der main-Build bestanden. [PR und geprüfter Umfang](https://github.com/AnikaA13/zaeme-m245/pull/5)

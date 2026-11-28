@@ -1,0 +1,14 @@
+{
+  "site_url": "https://zaeme-m245-182mg7h5p-zaeme1.vercel.app",
+  "redirects": [
+    "https://zaeme-m245-182mg7h5p-zaeme1.vercel.app/auth/callback",
+    "https://zaeme-m245-182mg7h5p-zaeme1.vercel.app/auth/reset-password"
+  ],
+  "schemas": [
+    "public"
+  ],
+  "passwort_min": 8,
+  "abgleich": "keine offenen deklarierten Änderungen",
+  "smtp": "laut PO fehlt",
+  "versand": "NOT RUN"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "dpl_DQD83rwz9ppGvjMxXMDiQHNDSmrt",
+  "projekt": "prj_zOBuG3OC2Bin9crch9YhLLRurWKw",
+  "url": "https://zaeme-m245-hv0zmwwwg-zaeme1.vercel.app",
+  "quelle": "cli",
+  "zustand": "READY",
+  "umgebung": "Preview",
+  "schutz": "Vercel Authentication",
+  "anonym_http": 302,
+  "git_sha": "de72cf659b5f59c5cc923d2faeab42990bfb21d5",
+  "kandidatmetadatum": "de72cf659b5f59c5cc923d2faeab42990bfb21d5",
+  "node": "24.x",
+  "install": "npm ci",
+  "build": "npm run build",
+  "ausgabe": "dist",
+  "funktion": "api/product (lambda)",
+  "chrome_willkommensseite": "Gemeinsam alles im Blick. /welcome im angemeldeten Chrome verifiziert"
+}

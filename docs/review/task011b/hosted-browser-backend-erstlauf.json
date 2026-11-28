@@ -1,0 +1,28 @@
+{
+  "origin": "http://127.0.0.1:8189",
+  "phase": "Einkauf",
+  "checks": [
+    "Lokaler Produktionsbuild mit Hosted-Backend",
+    "Lokale Routen, PWA-Ressourcen und externer Produktabruf",
+    "Vier getrennte Konten und Browsersitzungen ohne E-Mail-Versand",
+    "Zwei Beitritte über echten Einladungslink",
+    "Gemeinsamer Vorrat, Fremdschutz, Verbrauch der eigenen Reservation und Haushaltsisolation"
+  ],
+  "latency": [
+    {
+      "aktion": "Vorrat",
+      "ms": 665
+    },
+    {
+      "aktion": "Reservation",
+      "ms": 1186
+    },
+    {
+      "aktion": "Einkauf hinzufügen",
+      "ms": 256
+    }
+  ],
+  "erfolg": false,
+  "konten": 4,
+  "bereinigung": false
+}

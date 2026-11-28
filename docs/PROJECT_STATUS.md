@@ -1,5 +1,7 @@
 # Projektstand
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 PR #5 und der main-Build sind grün. Die geschützte Preview startet, alle sechs Hosted-Migrationen und die technische Datenisolation sind verifiziert. Der erste HTTPS-Produktabruf scheiterte beim Laden des Moduls. [Abnahmestand](USER_TEST_RELEASE.md)
 
 GitHub hat beim Stand cc7bd29 den Scannerlauf bestanden. Der PWA-Lauf erreichte das erwartete Ereignis beim Workerwechsel nicht. Der Nachtest vergleicht die tatsächlich ausgelieferte zweite Datei und die Identität des aktivierten Controllers.

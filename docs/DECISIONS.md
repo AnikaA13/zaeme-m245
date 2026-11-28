@@ -1,5 +1,7 @@
 # Technische Entscheidungen
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 Nach ERR_MODULE_NOT_FOUND im Vercel-Laufzeitprotokoll verwendet der relative Function-Import die ESM-Ausgabeendung .js. Die fachliche EAN-Validierung bleibt gemeinsam mit dem Browsercode. [Abnahmestand](USER_TEST_RELEASE.md)
 
 ## 011B · Installation und Produktsuche

@@ -1,0 +1,18 @@
+{
+  "id": "dpl_ED1RcAtHu9HFSnCugeoEkx15egBo",
+  "projekt": "prj_zOBuG3OC2Bin9crch9YhLLRurWKw",
+  "url": "https://zaeme-m245-182mg7h5p-zaeme1.vercel.app",
+  "quelle": "cli",
+  "zustand": "READY",
+  "umgebung": "Preview",
+  "schutz": "Vercel Authentication",
+  "anonym_http": 302,
+  "git_sha": "123d02b674759dfc2253827ab4af5a47710cbf43",
+  "verifizierte_sha": "123d02b674759dfc2253827ab4af5a47710cbf43",
+  "node": "24.x",
+  "install": "npm ci",
+  "build": "npm run build",
+  "ausgabe": "dist",
+  "funktion": "api/product (lambda)",
+  "temporaerer_testlink_widerrufen": true
+}

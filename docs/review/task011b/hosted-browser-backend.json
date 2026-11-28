@@ -1,0 +1,41 @@
+{
+  "origin": "http://127.0.0.1:8189",
+  "phase": "Entzug und Wiederverbindung",
+  "checks": [
+    "Lokaler Produktionsbuild mit Hosted-Backend",
+    "Lokale Routen, PWA-Ressourcen und externer Produktabruf",
+    "Vier getrennte Konten und Browsersitzungen ohne E-Mail-Versand",
+    "Zwei Beitritte über echten Einladungslink",
+    "Gemeinsamer Vorrat, Fremdschutz, Verbrauch der eigenen Reservation und Haushaltsisolation",
+    "Einkauf gespeichert und haushaltsintern synchronisiert",
+    "Warnfrist und Ablaufklassifikation",
+    "Optischer Testvideodecode und explizites Speichern im Hosted-Vorrat",
+    "Neuverbinden, Rechteentzug, Logout und private Browserspeicher",
+    "Eigene synthetische Konten entfernt"
+  ],
+  "latency": [
+    {
+      "aktion": "Vorrat",
+      "ms": 692
+    },
+    {
+      "aktion": "Reservation",
+      "ms": 1199
+    },
+    {
+      "aktion": "Einkauf hinzufügen",
+      "ms": 241
+    },
+    {
+      "aktion": "Einkauf abhaken",
+      "ms": 719
+    },
+    {
+      "aktion": "Warnfrist",
+      "ms": 715
+    }
+  ],
+  "erfolg": true,
+  "konten": 4,
+  "bereinigung": true
+}

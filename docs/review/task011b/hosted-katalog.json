@@ -1,0 +1,17 @@
+{
+  "callable": "check_shopping,consume_item,create_household,create_invite,create_item,create_shopping,delete_item,delete_shopping,dissolve_household,edit_item,edit_shopping,join_household,leave_household,list_invites,preview_invite,remove_member,revoke_invite,save_profile,set_reservation,set_warning_days",
+  "columnwrite": 0,
+  "households": 0,
+  "inventory": 0,
+  "profiles": 0,
+  "publication": "household_signals",
+  "reservations": 0,
+  "rls": 10,
+  "shopping": 0,
+  "signal_fields": "id,revision",
+  "tables": 10,
+  "update_only": true,
+  "users": 0,
+  "versions": "20261125000100,20261125000200,20261125000300,20261125000400,20261127000500,20261127000600",
+  "writegrants": 0
+}

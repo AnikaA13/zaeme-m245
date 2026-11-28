@@ -1,5 +1,7 @@
 # Hosted-Testvertrag · Task 011A
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 Der Merge von PR #5 ist manuell als geschützte Preview ausgerollt. Alle sechs Migrationen sind eingespielt. Für das Prüfergebnis der ersten HTTPS-Produktabfrage und der isolierten Konten gilt die aktuelle Hosted-Abnahme. [Abnahmestand](USER_TEST_RELEASE.md)
 
 **Freigabe für Haushaltstests: BLOCKIERT.** Stand der Vorbereitung am 27.11.2026. Die lokale Baseline lässt sich bauen und ihr Gast-Routing funktioniert. Es gibt in diesem Lauf keinen Nachweis für ein dediziertes Hosted-Projekt, eine HTTPS-Auslieferung oder eine zugestellte E-Mail.

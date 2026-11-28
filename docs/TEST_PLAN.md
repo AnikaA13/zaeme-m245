@@ -1,5 +1,7 @@
 # Testplan
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 Nach jedem manuellen Vercel-Deployment einen bekannten EAN über die geschützte HTTPS-Adresse abrufen und die JSON-Antwort prüfen. Zusätzlich den kompilierten Node-Einstieg ohne Vite aufrufen. [Abnahmestand](USER_TEST_RELEASE.md)
 
 ## Task 011B · Technische Freigabe

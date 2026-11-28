@@ -1,0 +1,54 @@
+{
+  "main": "123d02b674759dfc2253827ab4af5a47710cbf43",
+  "kandidat": "3a81f5de0691072881fd35ce9edee59642898327",
+  "baum": "b4bdb0714987730045e2b3998a40c265babbf5ca",
+  "pr": "https://github.com/AnikaA13/zaeme-m245/pull/6",
+  "merged_at": "2026-11-28T11:19:31Z",
+  "ci": [
+    {
+      "sha": "3a81f5de0691072881fd35ce9edee59642898327",
+      "name": "Qualitätsprüfungen",
+      "ereignis": "pull_request",
+      "status": "completed",
+      "ergebnis": "success",
+      "url": "https://github.com/AnikaA13/zaeme-m245/actions/runs/46138856859",
+      "jobs": [
+        {
+          "name": "Lint, Typen, Formatierung, Tests und Build",
+          "ergebnis": "success",
+          "url": "https://github.com/AnikaA13/zaeme-m245/actions/runs/46138856859/job/140960108475"
+        }
+      ]
+    },
+    {
+      "sha": "3a81f5de0691072881fd35ce9edee59642898327",
+      "name": "Datenbankprüfung",
+      "ereignis": "pull_request",
+      "status": "completed",
+      "ergebnis": "success",
+      "url": "https://github.com/AnikaA13/zaeme-m245/actions/runs/46138856876",
+      "jobs": [
+        {
+          "name": "database",
+          "ergebnis": "success",
+          "url": "https://github.com/AnikaA13/zaeme-m245/actions/runs/46138856876/job/140960108838"
+        }
+      ]
+    },
+    {
+      "sha": "123d02b674759dfc2253827ab4af5a47710cbf43",
+      "name": "Qualitätsprüfungen",
+      "ereignis": "push",
+      "status": "completed",
+      "ergebnis": "success",
+      "url": "https://github.com/AnikaA13/zaeme-m245/actions/runs/46139339783",
+      "jobs": [
+        {
+          "name": "Lint, Typen, Formatierung, Tests und Build",
+          "ergebnis": "success",
+          "url": "https://github.com/AnikaA13/zaeme-m245/actions/runs/46139339783/job/140961588372"
+        }
+      ]
+    }
+  ]
+}

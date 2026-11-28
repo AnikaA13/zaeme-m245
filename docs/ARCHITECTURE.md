@@ -1,5 +1,7 @@
 # Architektur
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 Vercel kompiliert die TypeScript-Function zu einem ES-Modul. Ihr relativer EAN-Import adressiert die JavaScript-Ausgabedatei. Der Node-Test führt das emittierte Modul ohne Vite aus. [Abnahmestand](USER_TEST_RELEASE.md)
 
 ## Integration 011B

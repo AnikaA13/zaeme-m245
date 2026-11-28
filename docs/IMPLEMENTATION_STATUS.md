@@ -1,5 +1,7 @@
 # Nachweis je Anforderung
 
+Der getestete und ausgelieferte Commit ist 123d02b. Die korrigierte Produktfunktion und vier getrennte Sitzungen haben die technische Prüfung auf der geschützten HTTPS-Preview bestanden. E-Mail-Zustellung, physische Geräte und Teilnehmerfreigabe sind offen. [Abschluss mit Messwerten und Gerätenachweis](review/task011b/RELEASE_ABNAHME.md)
+
 F02–F05, F07–F10, F17 und F19 haben technische Nachweise gegen das echte Hosted-Backend. F06 ist auf der ersten Vercel-Preview wegen HTTP 500 blockiert. F01 wartet auf realen Mailversand, F11 und F15 auf die Geräteabnahme. [Abnahmestand](USER_TEST_RELEASE.md)
 
 ## Task 011B · Integrierter Funktionsstand

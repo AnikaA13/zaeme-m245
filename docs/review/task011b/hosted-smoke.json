@@ -1,0 +1,62 @@
+{
+  "origin": "https://zaeme-m245-182mg7h5p-zaeme1.vercel.app",
+  "phase": "Entzug und Wiederverbindung",
+  "checks": [
+    "Geschützte Preview im angemeldeten Browser geöffnet",
+    "Direkte Routen, PWA-Ressourcen und Produktfunktion",
+    "Vier getrennte Konten und Browsersitzungen ohne E-Mail-Versand",
+    "Zwei Beitritte über echten Einladungslink",
+    "Gemeinsamer Vorrat, Fremdschutz, Verbrauch der eigenen Reservation und Haushaltsisolation",
+    "Einkauf gespeichert und haushaltsintern synchronisiert",
+    "Warnfrist und Ablaufklassifikation",
+    "Optischer Testvideodecode und explizites Speichern in der Preview",
+    "Neuverbinden, Rechteentzug, Logout, private Browserspeicher und Browseranfragen ohne privilegierten Schlüssel",
+    "Eigene synthetische Konten entfernt"
+  ],
+  "latency": [
+    {
+      "aktion": "Vorrat",
+      "ms": 1194
+    },
+    {
+      "aktion": "Reservation",
+      "ms": 1180
+    },
+    {
+      "aktion": "Einkauf hinzufügen",
+      "ms": 756
+    },
+    {
+      "aktion": "Einkauf abhaken",
+      "ms": 706
+    },
+    {
+      "aktion": "Warnfrist",
+      "ms": 102
+    }
+  ],
+  "lookup": [
+    {
+      "fall": "ungültig",
+      "http": 400,
+      "ms": 636
+    },
+    {
+      "fall": "bekannt",
+      "http": 200,
+      "ms": 710
+    },
+    {
+      "fall": "unbekannt",
+      "http": 404,
+      "ms": 243
+    }
+  ],
+  "anfragen": {
+    "zaeme-m245-182mg7h5p-zaeme1.vercel.app": 157,
+    "rfvtspjxtaetytwbqaqd.supabase.co": 586
+  },
+  "erfolg": true,
+  "konten": 4,
+  "bereinigung": true
+}
