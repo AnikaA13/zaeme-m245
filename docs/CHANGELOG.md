@@ -20,6 +20,10 @@ Scanner liest Kamerabilder lokal und beendet die Vorschau nach einem Treffer, Ab
 
 Start, Vorrat, manuelle Erfassung, Detail, Bearbeitung, Verbrauch und eigene Reservierungen verwenden die vorhandene Datenbank. Lade- und Konfliktzustände, Datumsprüfung, Navigation und Abgleich offener Anfragen sind integriert. Gemeinsame Validierungsfälle und Browserabläufe mit PostgreSQL-Gegenprüfung ergänzen die bisherigen Regressionen. Alle vier Migrationen und die generierten Datenbanktypen bleiben auf dem Stand von 007.2.
 
+## Task 011A · Hosting-Vorbereitung
+
+Ein lesender SQL-Vorprüfer erfasst die tatsächlichen Migrationsrechte. Ein Chromium-Prüfer kontrolliert Gast-Routen, Manifest, sicheren Kontext und wirksame Kamerarichtlinie. Der [Hosted-Testvertrag](HOSTED_TEST_VERTRAG.md) hält tatsächliche Befunde, erforderliche Anbieterfreigaben und den Ablauf für 011B fest.
+
 ## Task 007.2 · Registrierung im Browserlauf
 
 Der Browserprüfer wartet bei Registrierung, Anmeldung und Passwortwiederherstellung auf die Überschrift des jeweiligen Formulars, bevor er das gleich beschriftete E-Mail-Feld ausfüllt.
