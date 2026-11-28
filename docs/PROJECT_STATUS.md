@@ -1,8 +1,12 @@
 # Projektstand
 
+## Task 010B · Scanner im geschützten Erfassungsablauf
+
+Auf dem lokalen Branch `feature/m6-scanner-integration` führt ein echter Kameratreffer zur Produktprüfung und nach Bestätigung über den vorhandenen RPC in den Vorrat. Der Chromium-Test verwendet synthetisches Video, kontrollierte Anbieterantworten und einen eigenen Supabase-Stack. Die gesonderte Live-Abfrage ist im Review protokolliert. Ein freigegebener HTTPS-Ursprung, beide physischen Geräte und die Erhebung mit Haushalten stehen aus. Die Zusammenführung gehört zu 011B. [Prüfbericht](../REVIEW_HANDOFF.md) · [Messblatt](TASK_010A_GERAETETEST.md)
+
 ## Task 010A · isolierter F06-Kern
 
-Der separate Branch `feature/m6-barcode-lookup-core` enthält die optische EAN-13-Erkennung, den Kameralebenszyklus, die abbrechbare Produktabfrage und einen lokalen Prüfstand. Chromium hat die Videofixture zweimal gelesen. Zwei separate Live-Abfragen bestätigten einen Namen und eine unbekannte EAN. Android Chrome und iOS Safari physisch **NOT RUN**. F06 bleibt bis zur Einbindung in F05 und zur Geräteabnahme offen. [Prüfnachweis](../REVIEW_HANDOFF.md) · [Vertrag für 010B](TASK_010B_VERTRAG.md)
+Der separate Branch `feature/m6-barcode-lookup-core` enthält die optische EAN-13-Erkennung, den Kameralebenszyklus, die abbrechbare Produktabfrage und einen lokalen Prüfstand. Chromium hat die Videofixture zweimal gelesen. Zwei separate Live-Abfragen bestätigten einen Namen und eine unbekannte EAN. Android Chrome und iOS Safari physisch **NOT RUN**. F06 bleibt bis zur Einbindung in F05 und zur Geräteabnahme offen. [Prüfnachweis 010A](TASK_010A_PRUEFBERICHT.md) · [Vertrag für 010B](TASK_010B_VERTRAG.md)
 
 ## Task 008 · Vorratsoberfläche
 

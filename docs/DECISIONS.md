@@ -1,5 +1,9 @@
 # Technische Entscheidungen
 
+## Task 010B · Scanversuch und geprüfte Formularvorbelegung
+
+Die geschützte Route lädt die Scanansicht beim Öffnen. Erst «Kamera starten» fordert Video an. Ein Abbruchsignal begrenzt Kamera und anschliessende Einzelabfrage auf denselben Versuch innerhalb der aktuellen Mitgliedschaft. Die EAN und der Vorschlag bleiben bis zur Formulareingabe im Arbeitsspeicher der Ansicht. Der Browser-Verlauf enthält nur die Route. Ein neuer Routeneintrag erzeugt nach bestätigtem Speichern eine frische Erfassung. Der Decoder wird separat nach Kamerafreigabe geladen. Vite legt die Drittanbieter-Lizenztexte im Build ab.
+
 ## Task 010A · Decoder, Kamera und Datenquelle
 
 Für F06 verwenden wir den gezielten EAN-13-Leser von `@zxing/library` 0.23.0 (Apache-2.0, Node ≥24). `@zxing/browser` 0.2.1 (MIT) verwendet denselben Core als Peer. Direkter Zugriff auf den Reader erlaubt die eigene Track-Freigabe auch während verzögerter Browserprompts. Das Paket ist im beitragsbasierten Wartungsmodus. Der kleine Funktionsumfang, der vorhandene Node-24-Stack, die optisch getestete EAN-13-Erkennung und der separate Ladechunk begründen den Einsatz. Die schmalen ESM-Importpfade sind an die gesperrte Version gebunden. Bei Upgrades den optischen Test und den Modulgraphen wiederholen. Ein plattformabhängiger nativer Detector ist keine Voraussetzung. [ZXing Core](https://github.com/zxing-js/library) · [Browseradapter](https://github.com/zxing-js/browser)

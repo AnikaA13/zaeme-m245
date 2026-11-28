@@ -2,6 +2,10 @@
 
 010B verwendet die folgenden Module für den Scan-Einstieg im geschützten Erfassungsablauf von Task 008. Der technische Durchstich endet mit einer editierbaren Vorbelegung. Für das bestätigte Speichern gilt der [Schreib- und Sitzungsvertrag von Task 008](TASK_008_VERTRAG.md).
 
+## Anschluss in 010B
+
+Die geschützte Auswahl liegt unter `/capture`, die Scanansicht unter `/capture/scan` und die manuelle Erfassung unter `/capture/manual`. `ScanPage` übernimmt nach dem einmaligen Abschluss die EAN und übergibt den geprüften Vorschlag als `seed: CaptureInput` an `ProductForm`. Ein manueller Wechsel während der Abfrage bricht sie ab und übernimmt nur die EAN. Bei verborgenem Dokument endet die Kamera. Läuft bereits die Abfrage, bleibt die EAN zur Ergänzung erhalten. Die Rückkehr zur ursprünglichen Ansicht stellt Suchpfad und Auslöser innerhalb der Mitgliedschaft wieder her. [Lokale Abnahme und Freigabegrenzen](../REVIEW_HANDOFF.md)
+
 ## Schnittstellen
 
 | Datei                             | Exporte und Bedeutung                                                                                                                                                                                                                                                                        |
@@ -48,4 +52,4 @@ Auf dem Telefon den Scanner als oberste Seite auf einem vertrauenswürdigen HTTP
 
 Der Prüfstand startet mit `npm run dev -- --host 127.0.0.1 --port 5210 --strictPort` unter `/dev/scanner.html`. Er hat einen eigenen HTML-Einstieg ausserhalb von `public`, keine Verbindung zu App-Router oder Supabase und keine Speicheraktion. Der Produktionsbuild verwendet nur `index.html`. Für die automatisierte optische Prüfung den manuellen Server auf 5210 zuerst schliessen und `npm run test:scanner:browser` ausführen.
 
-Chromium hat die EAN `0034000470693` in zwei Durchläufen derselben synthetischen Videosequenz optisch erkannt. Beide Male genau ein Lookup und beendete Tracks. Beim separaten Live-Test lieferte das Modul einen bestätigten Namen und ein explizit unbekanntes Produkt. Physisches Android Chrome und iOS Safari sind **NOT RUN**. Die 20er-Stichprobe und G04 bleiben offen. [Prüfnachweis](../REVIEW_HANDOFF.md) · [Gerätetestblatt](TASK_010A_GERAETETEST.md)
+Chromium hat die EAN `0034000470693` in zwei Durchläufen derselben synthetischen Videosequenz optisch erkannt. Beide Male genau ein Lookup und beendete Tracks. Beim separaten Live-Test lieferte das Modul einen bestätigten Namen und ein explizit unbekanntes Produkt. Physisches Android Chrome und iOS Safari sind **NOT RUN**. Die 20er-Stichprobe und G04 bleiben offen. [Prüfnachweis 010A](TASK_010A_PRUEFBERICHT.md) · [Gerätetestblatt](TASK_010A_GERAETETEST.md)

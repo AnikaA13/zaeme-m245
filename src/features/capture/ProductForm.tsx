@@ -1,13 +1,13 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useCapture } from '../../components/navigation/Navigation';
+import { announce } from '../auth/session';
 import { Confirm } from '../../components/ui/Confirm';
 import {
   captureDraft,
   categories,
   compatible,
   dateTypes,
-  defaults,
   locations,
   millis,
   quantity,
@@ -46,9 +46,11 @@ const labels: Draft = {
 export function ProductForm({
   item,
   seed,
+  review,
 }: {
   item?: Item;
   seed?: CaptureInput;
+  review?: ReactNode;
 }) {
   const [base, setBase] = useState(item),
     [draft, setDraft] = useState<Draft>(() =>
@@ -59,6 +61,10 @@ export function ProductForm({
     [serverDate, setServerDate] = useState(''),
     [deleted, setDeleted] = useState<number | null>(null),
     [saved, setSaved] = useState('');
+  const confirmation = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (saved) confirmation.current?.focus();
+  }, [saved]);
   const write = useWrite(),
     navigate = useNavigate(),
     capture = useCapture(),
@@ -194,18 +200,22 @@ export function ProductForm({
       </div>
     );
   }
+  function nextCapture(path: '/capture/scan' | '/capture/manual') {
+    announce('');
+    void navigate(path);
+  }
   if (saved)
     return (
       <>
-        <h1>Lebensmittel hinzugefügt</h1>
+        <h1 tabIndex={-1} ref={confirmation}>
+          Lebensmittel hinzugefügt
+        </h1>
+        <button onClick={() => nextCapture('/capture/scan')}>
+          Weiter scannen
+        </button>
         <button
-          onClick={() => {
-            setDraft({ ...defaults });
-            setSaved('');
-            setAttempted(false);
-            setAck(false);
-            setServerDate('');
-          }}
+          className="secondary"
+          onClick={() => nextCapture('/capture/manual')}
         >
           Weiteres Lebensmittel hinzufügen
         </button>
@@ -217,6 +227,7 @@ export function ProductForm({
   return (
     <>
       <h1>{item ? 'Lebensmittel bearbeiten' : 'Lebensmittel hinzufügen'}</h1>
+      {review}
       {changed && item && base && (
         <section className="pending">
           <p role="alert">

@@ -1,5 +1,9 @@
 # Prüfbericht
 
+## Task 010B · Scanner bis zur bestätigten Anlage
+
+Der Scanner-Prüfstand, die App-Regression und die Live-Abfrage haben unterschiedliche Beweiskraft. Der Übergabebericht führt Befehle, Zählung, Kamerakonfiguration, Datenbankgegenprüfung und offene Geräteabnahmen getrennt auf. [Lokale Ergebnisse](../REVIEW_HANDOFF.md) · [Bildnachweise](review/task010b) · [Messblatt](TASK_010A_GERAETETEST.md)
+
 ## Task 008 · Abnahme der Vorratsoberfläche am 27. November 2026
 
 Primärcheckout `zaeme-m245`, Branch `feature/m4-core-inventory-ux`, Basis `b229f9354c73332b0da8f0c82bdfdd6795bcb02d`. Windows 11 Pro x64, Intel Core i5-1345U, Node 24.14.1, npm 11.21.3, Playwright 1.65.1 und Desktop-Chromium 159.0.8154.6. Der lokale Teststack `zaeme-task005-local` verwendete `supabase_db_zaeme-task005-local`, die API auf 127.0.0.1:54321 und PostgreSQL auf Port 54322. Projektkennung, Loopback-Listener und leere Konten-/Haushaltstabellen wurden vor dem Reset geprüft.

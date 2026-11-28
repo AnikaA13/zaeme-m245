@@ -4,6 +4,8 @@ import { randomUUID, randomBytes } from 'node:crypto';
 import { setTimeout as wait } from 'node:timers/promises';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
+import { cameraFixture } from '../scanner/camera-fixture.mjs';
+import { scanCapture } from './browser-scan.mjs';
 import { coreInventory } from './browser-core.mjs';
 import { householdInventory } from './browser-inventory.mjs';
 import { api, mail, localStatus, checkBindings, sql } from './local.mjs';
@@ -154,7 +156,7 @@ async function layout(p) {
   });
   await p.setViewportSize({ width: 390, height: 844 });
 }
-let a, b, c, d, invitation;
+let a, b, c, d, invitation, fixture;
 try {
   server = await createServer({
     logLevel: 'silent',
@@ -162,7 +164,11 @@ try {
   });
   await server.listen();
   assert.ok(server.resolvedUrls.local.includes(origin + '/'));
-  browser = await chromium.launch();
+  fixture = await cameraFixture(20);
+  browser = await chromium.launch({
+    channel: 'chromium',
+    args: fixture.args,
+  });
   console.log(
     'Chromium ' +
       browser.version() +
@@ -257,6 +263,11 @@ try {
     );
   });
   await coreInventory({ a, b, step, layout, origin });
+  const scanTab = await page();
+  await login(scanTab, 'Anna');
+  await heading(scanTab, 'Haltbarkeitsdaten prüfen');
+  await scanCapture({ page: scanTab, step, layout, origin, signOut });
+  await scanTab.context().close();
   const verifyDissolution = await householdInventory({
     a,
     b,
@@ -649,7 +660,7 @@ try {
   // Playwright-Fehler können URLs und Eingabewerte enthalten. Nur sichere Diagnose ausgeben.
   const lines = [
     ...String(error.stack).matchAll(
-      /browser(?:-core|-inventory)?\.mjs:(\d+):\d+/g,
+      /browser(?:-core|-inventory|-scan)?\.mjs:(\d+):\d+/g,
     ),
   ].map((m) => m[1]);
   console.error(
@@ -664,6 +675,7 @@ try {
   process.exitCode = 1;
 } finally {
   await browser?.close();
+  await fixture?.close();
   await server?.close();
   const ids =
     "select id from auth.users where email like 'task006-" +

@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 010B · Scannen im Haushalt
+
+Start und die zentrale Erfassung bieten Scannen und manuelles Hinzufügen an. Ein gültiger EAN-13 führt nach der Produktsuche ins gemeinsame Formular. Bei unbekanntem Produkt, Suchabbruch und Anbieterfehler bleibt die EAN erhalten. Nach bestätigtem Speichern kann die Person weiterscannen, manuell erfassen oder den Vorrat öffnen. [Prüfbericht und Geräteabnahme](../REVIEW_HANDOFF.md)
+
 ## Task 010A · EAN-13 und Produktabfrage
 
 Scanner liest Kamerabilder lokal und beendet die Vorschau nach einem Treffer, Abbruch oder Kontextverlust. Die Einzelabfrage bei Open Food Facts liefert den geprüften Barcode und gegebenenfalls einen editierbaren Namen. Fehler und unvollständige Daten erlauben die manuelle Weiterarbeit. Neu sind der Entwicklungsprüfstand, die optische Chromium-Fixture, Modulprüfungen und das [Testblatt für die physischen Geräte](TASK_010A_GERAETETEST.md).

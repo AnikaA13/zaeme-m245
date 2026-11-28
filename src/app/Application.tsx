@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react';
+import { lazy, Suspense, useSyncExternalStore } from 'react';
 import { Link, Navigate, useLocation } from 'react-router';
 import { AuthForm, ConfirmPage, ResetPage } from '../features/auth/AuthPages';
 import { intent } from '../features/auth/intent';
@@ -21,6 +21,17 @@ import { InventoryList } from '../features/inventory/List';
 import { Detail } from '../features/inventory/Detail';
 import { ProductForm } from '../features/capture/ProductForm';
 import { PendingWrites } from '../features/inventory/writes';
+import {
+  CaptureSelection,
+  ScannerLoading,
+} from '../features/capture/CaptureActions';
+
+const ScanPage = lazy(() =>
+  import('../features/capture/ScanPage').catch(() => ({
+    default: () => <ScannerLoading failed />,
+  })),
+);
+
 function subscribeConnection(fn: () => void) {
   window.addEventListener('online', fn);
   window.addEventListener('offline', fn);
@@ -35,7 +46,7 @@ export function Application() {
     () => navigator.onLine,
   );
   const state = useSyncExternalStore(subscribe, snapshot);
-  const { pathname: path } = useLocation();
+  const { pathname: path, key } = useLocation();
   const { phase, account, user } = state;
   const target = (to: string) => <Navigate replace to={to} />;
   function page() {
@@ -174,8 +185,14 @@ export function Application() {
           days={account.home.warning_days}
         />
       );
-    if (path === '/capture' || path === '/capture/manual')
-      return <ProductForm />;
+    if (path === '/capture') return <CaptureSelection />;
+    if (path === '/capture/manual') return <ProductForm key={key} />;
+    if (path === '/capture/scan')
+      return (
+        <Suspense fallback={<ScannerLoading />}>
+          <ScanPage key={key} />
+        </Suspense>
+      );
     if (path === '/shopping')
       return (
         <>

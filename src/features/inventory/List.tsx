@@ -6,6 +6,7 @@ import {
   useState,
 } from 'react';
 import { Link, useLocation } from 'react-router';
+import { CaptureActions } from '../capture/CaptureActions';
 import { useCapture } from '../../components/navigation/Navigation';
 import { activeScope } from '../auth/session';
 import { FlowError } from '../../lib/operations/protocol';
@@ -172,8 +173,17 @@ export function InventoryList({
   const [restore] = useState(() => prefs.scroll);
   const loaded = !!list.data;
   useLayoutEffect(() => {
-    if (!overview && loaded) window.scrollTo(0, restore);
-  }, [overview, loaded, restore]);
+    if (overview || !loaded) return;
+    window.scrollTo(0, restore);
+    // Die Schnellaktionen im leeren Vorrat erscheinen erst nach dem Lesen.
+    const id = location.state?.captureFocus;
+    if (
+      document.activeElement?.tagName === 'MAIN' &&
+      (id === 'scan-add' || id === 'manual-add')
+    ) {
+      document.getElementById(id)?.focus({ preventScroll: true });
+    }
+  }, [overview, loaded, restore, location.state]);
   useEffect(() => {
     if (overview || !loaded) return;
     const remember = () => {
@@ -288,10 +298,7 @@ export function InventoryList({
       {(overview || list.data?.length === 0) && (
         <section className="capture-entry">
           <h2>Lebensmittel hinzufügen</h2>
-          <button id="manual-add" onClick={() => capture.open('manual-add')}>
-            Manuell erfassen
-          </button>
-          <small>Scannen mit der Kamera ist noch nicht verfügbar.</small>
+          <CaptureActions />
         </section>
       )}
       <button

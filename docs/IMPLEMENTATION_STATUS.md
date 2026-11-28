@@ -1,5 +1,21 @@
 # Nachweis je Anforderung
 
+## Task 010B · Stand auf dem lokalen Integrationsbranch
+
+| ID   | Umsetzung und tatsächlich geprüfter Umfang                                                                                                                                                             | Offene Abnahme                                                                 |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| F06  | ZXing liest EAN-13 aus der Chromium-Videofixture. A–F prüfen Berechtigung, Kameraende, Treffer, unbekanntes Produkt, Ausfall und Abbruch. Zwei gesonderte Live-GETs prüfen die Anbieterklassifikation. | Physische Decodes, echte Trefferquote und G04.                                 |
+| F05  | Manuell und nach Scan derselbe editierbare Entwurf. Die Datenbank bestätigt den korrigierten Namen, die EAN mit führenden Nullen, Menge 1 und NULL-Datum.                                              | Erfassungszeit mit Haushalten.                                                 |
+| F11  | Beide Einstiege, fünf Navigationsaktionen, Abbruch zum Ausgangsziel und Tastaturfokus im Browser.                                                                                                      | Gesamtabnahme einschliesslich Einkauf in 011B.                                 |
+| NF02 | Videobilder bleiben lokal. Der kontrollierte Anbieterrequest enthielt nur die EAN und die öffentliche Feldauswahl. Prüfung auf Cookies, Referrer, API-Schlüssel und Autorisierung.                     | Anbieterkennung des regulären Browsers vor öffentlichem Betrieb klären.        |
+| NF05 | Vollständiger Desktop-Chromium mit kontrolliertem Videogerät.                                                                                                                                          | Android Chrome und iOS Safari physisch **NOT RUN**, Standalone separat in 011. |
+| NF06 | Scanner-Geometrie in fünf Breiten ab 320 CSS-px bei 100 und 200 Prozent Schriftgrösse.                                                                                                                 | Touch, Bildschirmtastatur und Browserleisten am Gerät.                         |
+| NF07 | Beschriftete Aktionen, Meldungen in Text, editierbare Felder, Fokusrückgabe und Fokus bei Produktprüfung.                                                                                              | VoiceOver und TalkBack.                                                        |
+| NF08 | Späte Kamera- und Anbieterantworten, wiederholte Frames, Doppelklick, verlorene echte Quittung und identische Operations-ID bei Wiederholung geprüft.                                                  | Gerätewechsel zwischen Vorder- und Hintergrund physisch prüfen.                |
+| NF13 | Modul-, optische und authentifizierte Browserprüfungen mit PostgreSQL-Gegenprüfung, sechs Bildschirmfotos und getrenntes physisches Messblatt.                                                         | Nutzertests **NOT RUN**.                                                       |
+
+[Ergebnisse und Befehle](../REVIEW_HANDOFF.md) · [Physisches Testblatt](TASK_010A_GERAETETEST.md)
+
 ## Task 008 · Umfang und Nachweise
 
 Der lokale Abschlusslauf ist bestanden. Die PR-Prüfungen beziehen sich auf den veröffentlichten Commit. Das Reviewpaket führt deren tatsächlichen Status und den Merge-Stand separat auf.

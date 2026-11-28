@@ -1,5 +1,11 @@
 # Testplan
 
+## Task 010B · Abnahme der Erfassung
+
+Die App-Browsersuite prüft die beiden Einstiege und die Herkunft bei Abbruch, verspätete Kamerazusage, verweigerte Freigabe, optische EAN aus Video, korrigierten Produktnamen, explizite Anlage, verlorene Quittung, echten Retry und weitere Erfassung. Die Providerantworten bleiben kontrolliert. Unabhängige Datenbankabfragen prüfen Anzahl und Inhalte der Chargen. Der getrennte 010A-Prüfstand und die Lebenszyklustests bleiben Bestandteil der Regression.
+
+Android Chrome und iOS Safari jeweils auf dem freigegebenen HTTPS-Build mit dem 20er-Blatt prüfen. Modell, Versionen, Ursprung und Revision vor Beginn eintragen. Für NF06 und NF07 zusätzlich mit offener Tastatur, Vergrösserung und aktivem TalkBack beziehungsweise VoiceOver Feldfehler, Fokus, Abbruch und Rückkehr prüfen. [Gerätetestblatt](TASK_010A_GERAETETEST.md)
+
 ## Regression 008 · Vorratsoberfläche
 
 `npm run test` prüft die geteilten Grenzfälle, lokale Datumsklassifizierung, Leseinvalidierung, mehrere Reservierungsseiten und offene Aufträge isoliert. `npm run test:browser` führt die bestehenden Mailpit-, Auth- und Haushaltsszenarien sowie `browser-core.mjs` aus. Eine echte verlorene Antwort wird erst nach der Serverquittung verworfen. SQL prüft gespeicherte Mengen, Versionen, NULL-Werte und Löschungen unabhängig von der UI. Zwei Browserkontexte ändern dieselbe Charge. Separate Haushalte und verspätete Antworten prüfen die Sichtgrenze. Für den Leistungstest werden 200 und anschliessend insgesamt 1005 zusätzliche synthetische Chargen eingefügt. Die Zeitmessung umfasst eine echte Navigation bis zur ersten sichtbaren Listenzeile. `ZAEME_SCREENSHOTS=1` aktiviert repräsentative PNG-Aufnahmen des synthetischen Haushalts. Geräte- und Nutzertests erfolgen getrennt.

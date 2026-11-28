@@ -22,21 +22,22 @@ const paths = [
   '/inventory/:id/reserve',
   '/capture',
   '/capture/manual',
+  '/capture/scan',
   '/shopping',
 ];
 export function App() {
-  const { pathname, state } = useLocation();
+  const { key, state } = useLocation();
   const session = useSyncExternalStore(subscribe, snapshot);
   const main = useRef<HTMLElement>(null);
   useEffect(() => {
     const id = state?.captureFocus;
     const target =
       typeof id === 'string' &&
-      ['nav-add', 'list-add', 'manual-add'].includes(id)
+      ['nav-add', 'list-add', 'manual-add', 'scan-add'].includes(id)
         ? document.getElementById(id)
         : null;
     (target ?? main.current)?.focus({ preventScroll: true });
-  }, [pathname, state]);
+  }, [key, state]);
   return (
     <main className="app-shell" ref={main} tabIndex={-1}>
       <div className="app-panel">
