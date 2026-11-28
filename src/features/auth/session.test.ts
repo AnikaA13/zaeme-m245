@@ -104,3 +104,29 @@ it('widerruft alte Operationskontexte bei Generationenwechsel, Entzug und Logout
   expect(store.snapshot().phase).toBe('guest');
   expect(store.snapshot().account).toBeNull();
 });
+
+it('verwirft private Aufträge bei neuer Sitzung desselben Kontos und behält sie bei Tokenrotation', async () => {
+  const { store, emit } = await start();
+  mocks.load.mockResolvedValue({
+    profile: profile('A'),
+    home: { id: 'haus', g: 'g1' },
+  });
+  const login = (id: string, tokenVersion: number) =>
+    emit({
+      ...session('a'),
+      access_token:
+        'test.' +
+        btoa(JSON.stringify({ session_id: id, iat: tokenVersion })) +
+        '.test',
+    });
+  login('s1', 1);
+  await vi.advanceTimersByTimeAsync(0);
+  const original = store.activeScope();
+  login('s1', 2);
+  expect(store.activeScope().signal).toBe(original.signal);
+  login('s2', 3);
+  expect(original.signal.aborted).toBe(true);
+  expect(store.snapshot().account).toBeNull();
+  await vi.advanceTimersByTimeAsync(0);
+  expect(store.activeScope().generation).toBe('g1');
+});

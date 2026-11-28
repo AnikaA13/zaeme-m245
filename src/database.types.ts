@@ -92,6 +92,22 @@ export type Database = {
           },
         ];
       };
+      household_signals: {
+        Row: {
+          id: string;
+          revision: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          id: string;
+          revision?: number;
+        };
+        Update: {
+          id?: string;
+          revision?: number;
+        };
+        Relationships: [];
+      };
       households: {
         Row: {
           created_at: string;
@@ -289,6 +305,51 @@ export type Database = {
           },
         ];
       };
+      shopping_items: {
+        Row: {
+          checked: boolean;
+          created_at: string;
+          household_id: string;
+          id: string;
+          name: string;
+          quantity: number | null;
+          unit: string | null;
+          updated_at: string;
+          version: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          checked?: boolean;
+          created_at?: string;
+          household_id: string;
+          id?: string;
+          name: string;
+          quantity?: number | null;
+          unit?: string | null;
+          updated_at?: string;
+          version?: number;
+        };
+        Update: {
+          checked?: boolean;
+          created_at?: string;
+          household_id?: string;
+          id?: string;
+          name?: string;
+          quantity?: number | null;
+          unit?: string | null;
+          updated_at?: string;
+          version?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'shopping_items_household_id_fkey';
+            columns: ['household_id'];
+            isOneToOne: false;
+            referencedRelation: 'households';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Views: {
       active_inventory: {
@@ -333,6 +394,23 @@ export type Database = {
       };
     };
     Functions: {
+      check_shopping: {
+        Args: {
+          checked: Json;
+          g: string;
+          h: string;
+          id: string;
+          op: string;
+          v: number;
+        };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       consume_item: {
         Args: {
           amount: Json;
@@ -382,6 +460,16 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      create_shopping: {
+        Args: { fields: Json; g: string; h: string; op: string };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       delete_item: {
         Args: {
           confirm: Json;
@@ -391,6 +479,16 @@ export type Database = {
           op: string;
           v: number;
         };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      delete_shopping: {
+        Args: { g: string; h: string; id: string; op: string; v: number };
         Returns: Database['public']['CompositeTypes']['rpc_result'];
         SetofOptions: {
           from: '*';
@@ -412,6 +510,23 @@ export type Database = {
       edit_item: {
         Args: {
           ack: Json;
+          fields: Json;
+          g: string;
+          h: string;
+          id: string;
+          op: string;
+          v: number;
+        };
+        Returns: Database['public']['CompositeTypes']['rpc_result'];
+        SetofOptions: {
+          from: '*';
+          to: 'rpc_result';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      edit_shopping: {
+        Args: {
           fields: Json;
           g: string;
           h: string;

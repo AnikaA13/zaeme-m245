@@ -30,6 +30,7 @@ const workdir = integration
   : offset
     ? resolve('.local-stack', project)
     : process.cwd();
+export const browserPort = 5173 + offset;
 const apiPort = 54321 + offset;
 const dbPort = 54322 + offset;
 export const network = project + '-loopback';
@@ -45,6 +46,7 @@ function prepareWorkdir() {
       'project_id = "zaeme-task005-local"',
       'project_id = "' + project + '"',
     )
+    .replaceAll('127.0.0.1:5173', '127.0.0.1:' + browserPort)
     .replace(
       /^(# )?((?:\w+_)?port = )(5432\d|8083)$/gm,
       (_, comment, key, port) =>

@@ -13,22 +13,29 @@ import { activeScope, announce } from '../auth/session';
 import type { Account } from './load';
 
 export function ProfileForm({ account }: { account: Account }) {
-  const [base] = useState(account.profile),
+  const [base, setBase] = useState(account.profile),
     [name, setName] = useState(base?.display_name ?? '');
   const action = useAction();
+  const stale = base?.version !== account.profile?.version;
   return (
     <Form
       submit={() =>
         void action.run(async () => {
+          if (stale) return;
           const home = account.home;
           const scope = activeScope();
-          await mutate('save_profile', {
+          const receipt = await mutate('save_profile', {
             name: nameValue(name),
             v: base?.version ?? 0,
             ...(home ? { h: home.id, g: home.g } : {}),
           });
-          if (!scope.signal.aborted)
+          if (!scope.signal.aborted && receipt.version) {
+            setBase({
+              display_name: nameValue(name),
+              version: receipt.version,
+            });
             announce('Dein Anzeigename ist gespeichert.');
+          }
         })
       }
     >
@@ -42,7 +49,15 @@ export function ProfileForm({ account }: { account: Account }) {
         />
       </label>
       {action.feedback}
-      <button disabled={action.busy}>Namen speichern</button>
+      {stale && (
+        <p role="status">
+          Aktuell gespeicherter Anzeigename: {account.profile?.display_name}.
+          <button type="button" onClick={() => setBase(account.profile)}>
+            Aktuellen Namen als Grundlage übernehmen
+          </button>
+        </p>
+      )}
+      <button disabled={action.busy || stale}>Namen speichern</button>
     </Form>
   );
 }

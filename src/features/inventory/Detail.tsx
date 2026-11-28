@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Confirm } from '../../components/ui/Confirm';
+import { ShoppingForm } from '../shopping/ShoppingForm';
 import { ProductForm } from '../capture/ProductForm';
 import { decimal, expiry, fromMillis, millis, quantity } from './domain';
 import {
@@ -50,7 +51,10 @@ function AmountForm({
     reserve ? 'set_reservation' : 'consume_item',
     item.id,
   );
+  const [version, setVersion] = useState(item.version);
+  const stale = version !== item.version;
   function send(value: string, confirmed?: number) {
+    if (stale) return;
     setError('');
     onConflict('');
     const changed = (code: string) => onConflict(new FlowError(code).message);
@@ -173,14 +177,29 @@ function AmountForm({
         {(error || write.message || conflict) && (
           <p role="alert">{error || write.message || conflict}</p>
         )}
-        <button disabled={blocked || (!reserve && !item.consumable_quantity)}>
+        <button
+          disabled={stale || blocked || (!reserve && !item.consumable_quantity)}
+        >
           {reserve ? 'Reservierung speichern' : verb}
         </button>
       </form>
+      {stale && (
+        <section role="alert">
+          Der Bestand hat sich geändert. Prüfe die aktuellen Mengen.
+          <button
+            onClick={() => {
+              setFull(null);
+              setVersion(item.version);
+            }}
+          >
+            Aktuellen Stand übernehmen
+          </button>
+        </section>
+      )}
       {reserve && item.own_quantity > 0 && (
         <button
           className="secondary"
-          disabled={blocked}
+          disabled={blocked || stale}
           onClick={() => send('0')}
         >
           Reservierung freigeben
@@ -190,7 +209,7 @@ function AmountForm({
         millis(item.quantity) === millis(item.consumable_quantity) && (
           <button
             className="secondary"
-            disabled={blocked}
+            disabled={blocked || stale}
             onClick={() => send(String(item.quantity))}
           >
             Gesamten Bestand entfernen
@@ -246,7 +265,12 @@ export function Detail({
     [id],
   );
   const result = useResource(id, load);
-  if (result.error) return <ReadFailure again={result.again} />;
+  if (
+    result.error &&
+    (!result.data ||
+      !['edit', 'reserve', 'consume', 'shopping'].includes(action))
+  )
+    return <ReadFailure again={result.again} />;
   if (result.data === undefined)
     return <p role="status">Eintrag wird geladen …</p>;
   if (!result.data)
@@ -261,17 +285,27 @@ export function Detail({
   const remove =
     item.date_type === 'Verbrauchsdatum' &&
     expiry(item.expiry_date, days, day).kind === 'overdue';
-  if (action === 'edit') return <ProductForm key={id} item={item} />;
+  const form = (child: React.ReactNode) => (
+    <>
+      {result.error && <ReadFailure again={result.again} />}
+      <div hidden={result.error}>{child}</div>
+    </>
+  );
+  if (action === 'shopping')
+    return form(
+      <ShoppingForm initialName={item.name} back={'/inventory/' + id} />,
+    );
+  if (action === 'edit') return form(<ProductForm key={id} item={item} />);
   if (action === 'reserve' || action === 'consume')
-    return (
+    return form(
       <AmountForm
-        key={[action, id, item.version].join('-')}
+        key={[action, id].join('-')}
         item={item}
         reserve={action === 'reserve'}
         remove={remove}
         conflict={conflict}
         onConflict={onConflict}
-      />
+      />,
     );
   const base = '/inventory/' + id,
     q = (n: number) => quantity(n, item.unit);
@@ -319,6 +353,9 @@ export function Detail({
       <div className="choices">
         <Link className="secondary" to={base + '/reserve'}>
           {item.own_quantity ? 'Reservierung bearbeiten' : 'Reservieren'}
+        </Link>
+        <Link className="secondary" to={base + '/shopping'}>
+          Auf Einkaufsliste setzen
         </Link>
         <Link className="secondary" to={base + '/edit'}>
           Bearbeiten

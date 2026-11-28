@@ -1,5 +1,15 @@
 # Technische Entscheidungen
 
+## Task 009B · Einkauf und Synchronisation
+
+Ein Kanal je aktivem Haushalt genügt für Vorrat, Einkauf und Einstellungen. Die UI sammelt Ereignisse für 45 ms und merkt während einer laufenden Prüfung einen weiteren Durchlauf vor. Ein ausbleibendes Signal kann auch auf einen Mitgliedschaftsentzug zurückgehen. Deshalb liest der Client bei bestehender Netzwerkverbindung alle 1,5 Sekunden zusätzlich die autorisierte Revision. Eine fehlende Zeile löst sofort die Mitgliedschaftsprüfung aus. Eine verpasste Revision löst denselben Abgleich wie ein Kanalsignal aus. Die bestehende Sitzungsinvalidierung räumt Requests, offene Aufträge, Formulare und Kanal bei einem Kontextwechsel auf.
+
+## 009A · Revisionszähler und Kanalbeitritt
+
+Fachzeilen invalidieren den Haushalt in derselben Transaktion. Die Haushaltsanlage reserviert die Signal-ID inklusive erster Mitgliedschaft mit Revision 1. Bei der Auflösung bleiben nur ID und letzte Revision erhalten. Einladungsanlage, Vorschau, Widerruf, Ablauf und interne Bereinigung betreffen den privaten Einladungsablauf. Erst der wirksame Beitritt invalidiert die gemeinsame Ansicht. Die Warnfrist und das Profil melden auch eine neue Fachversion bei erneutem Speichern desselben Werts. Identische Quittungswiederholungen und unveränderte Reservierungen schreiben keine Fachzeile.
+
+Der Integrationstest setzt vor dem Kanalbeitritt das Benutzer-JWT explizit und wartet auf die PostgreSQL-Registrierung. Dadurch kann der erste Refetch die Lücke beim Anmelden des Kanals schliessen. Die Auslieferung prüft den aktuellen RLS-Lesezugriff je Signal. [Supabase Postgres Changes](https://supabase.com/docs/guides/realtime/postgres-changes) · [Kanalimplementierung v2.147.1](https://github.com/supabase/realtime/blob/v2.147.1/lib/realtime_web/channels/realtime_channel.ex)
+
 ## Task 008 · Vollständige Liste und bewusste Konfliktauflösung
 
 Die Implementierung lädt die aktive Sicht in 100er-Seiten, bevor sie nach Datum sortiert oder nach Namen sucht. Damit wirken Suchsonderzeichen wörtlich und späte ID-Seiten können die dringendste Charge enthalten. Die Anzeige begrenzt zunächst die gerenderten Treffer. Reservierungen werden je sichtbarer Gruppe geladen. Ein Versionskonflikt erfordert einen erneuten Entscheid. Eine fehlende Antwort hält den ursprünglichen Auftrag im Sitzungskontext. Die bestehende Navigationsentscheidung platziert die manuelle Erfassung zentral. Der Einkauf zeigt seinen aktuellen Entwicklungsstand. Alphabetische Sortierung bleibt mit den zusätzlichen P1-Filtern zurückgestellt.

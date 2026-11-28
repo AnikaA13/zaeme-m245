@@ -1,16 +1,25 @@
-/* global document, window, innerWidth -- Callbacks in Playwrights Browserkontext. */
+/* global document, window -- Callbacks in Playwrights Browserkontext. */
 import assert from 'node:assert/strict';
 import { randomUUID, randomBytes } from 'node:crypto';
 import { setTimeout as wait } from 'node:timers/promises';
 import { chromium } from 'playwright';
 import { createServer } from 'vite';
+import { layout } from './browser-layout.mjs';
+import { shoppingSync } from './browser-shopping.mjs';
 import { coreInventory } from './browser-core.mjs';
 import { householdInventory } from './browser-inventory.mjs';
-import { api, mail, localStatus, checkBindings, sql } from './local.mjs';
+import {
+  api,
+  mail,
+  browserPort,
+  localStatus,
+  checkBindings,
+  sql,
+} from './local.mjs';
 
 const stack = localStatus();
 checkBindings();
-const origin = 'http://127.0.0.1:5173';
+const origin = 'http://127.0.0.1:' + browserPort;
 assert.equal(stack.MAILPIT_URL ?? stack.INBUCKET_URL, mail);
 process.env.VITE_SUPABASE_URL = api;
 process.env.VITE_SUPABASE_PUBLISHABLE_KEY =
@@ -20,6 +29,7 @@ const run = randomUUID(),
 const address = (n) => 'task006-' + run + '-' + n + '@example.invalid';
 const messages = new Set();
 let browser,
+  mobileBrowser,
   server,
   stage = 'Start';
 async function step(name, fn) {
@@ -27,8 +37,8 @@ async function step(name, fn) {
   await fn();
   console.log('PASS ' + name);
 }
-async function page() {
-  const context = await browser.newContext({
+async function page(instance = browser) {
+  const context = await instance.newContext({
     viewport: { width: 390, height: 844 },
     locale: 'de-CH',
   });
@@ -130,35 +140,16 @@ async function confirm(p, action, accept = true) {
   p.once('dialog', (d) => (accept ? d.accept() : d.dismiss()));
   await button(p, action).click();
 }
-async function layout(p) {
-  for (const width of [320, 375, 390, 430, 1280]) {
-    await p.setViewportSize({ width, height: 844 });
-    for (const size of ['100%', '200%']) {
-      const fits = await p.evaluate((size) => {
-        document.documentElement.style.fontSize = size;
-        const targets = [
-          ...document.querySelectorAll('a,button,input,select,summary'),
-        ]
-          .map((el) => el.getBoundingClientRect())
-          .filter((r) => r.width && r.height);
-        return (
-          targets.every((r) => r.height >= 44 && r.width >= 44) &&
-          document.documentElement.scrollWidth <= innerWidth
-        );
-      }, size);
-      assert.ok(fits, 'Horizontales Scrollen');
-    }
-  }
-  await p.evaluate(() => {
-    document.documentElement.style.fontSize = '100%';
-  });
-  await p.setViewportSize({ width: 390, height: 844 });
-}
 let a, b, c, d, invitation;
 try {
   server = await createServer({
     logLevel: 'silent',
-    server: { host: '127.0.0.1', port: 5173, strictPort: true, hmr: false },
+    server: {
+      host: '127.0.0.1',
+      port: browserPort,
+      strictPort: true,
+      hmr: false,
+    },
   });
   await server.listen();
   assert.ok(server.resolvedUrls.local.includes(origin + '/'));
@@ -218,7 +209,8 @@ try {
     invitation = await a.getByLabel('Einladungslink').inputValue();
     assert.ok(original && (await retry).postData() === original);
     await layout(a);
-    b = await page();
+    mobileBrowser = await chromium.launch();
+    b = await page(mobileBrowser);
     await b.goto(invitation);
     await heading(b, 'Haushalt beitreten');
     assert.equal(new URL(b.url()).hash, '');
@@ -256,18 +248,6 @@ try {
       0,
     );
   });
-  await coreInventory({ a, b, step, layout, origin });
-  const verifyDissolution = await householdInventory({
-    a,
-    b,
-    c,
-    invitation,
-    join,
-    confirm,
-    heading,
-    step,
-    publicKey: process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-  });
   await step('E Getrennter Haushalt und RLS', async () => {
     d = await page();
     await d.goto(origin + '/auth/login');
@@ -284,6 +264,19 @@ try {
       return !r.error && r.data.every((h) => h.name === 'WG D');
     });
     assert.ok(foreign);
+  });
+  await shoppingSync({ a, b, c, d, origin, layout, step });
+  await coreInventory({ a, b, step, layout, origin });
+  const verifyDissolution = await householdInventory({
+    a,
+    b,
+    c,
+    invitation,
+    join,
+    confirm,
+    heading,
+    step,
+    publicKey: process.env.VITE_SUPABASE_PUBLISHABLE_KEY,
   });
   await step(
     '008 J · Fremdhaushalt und verspätete Vorratsantwort beim Kontowechsel',
@@ -358,15 +351,29 @@ try {
   await step('G Entzug und erneute Zugangsprüfung', async () => {
     await button(b, 'Anzeigenamen bearbeiten').click();
     await b.getByLabel('Anzeigename', { exact: true }).fill('Bea Neu');
-    await confirm(a, 'Bea entfernen');
-    await a.getByText('Bea', { exact: true }).waitFor({ state: 'detached' });
-    const denied = b.waitForResponse(
-      (r) =>
-        r.url() === api + '/rest/v1/rpc/save_profile' &&
-        r.request().method() === 'POST',
+    const held = Promise.withResolvers(),
+      release = Promise.withResolvers(),
+      denied = Promise.withResolvers();
+    await b.route(
+      '**/rpc/save_profile',
+      async (route) => {
+        held.resolve();
+        await release.promise;
+        const response = await route.fetch();
+        denied.resolve(await response.json());
+        await route.fulfill({ response }).catch(() => {});
+      },
+      { times: 1 },
     );
     await button(b, 'Namen speichern').click();
-    assert.equal((await (await denied).json()).code, 'FORBIDDEN');
+    await held.promise;
+    try {
+      await confirm(a, 'Bea entfernen');
+      await a.getByText('Bea', { exact: true }).waitFor({ state: 'detached' });
+    } finally {
+      release.resolve();
+    }
+    assert.equal((await denied.promise).code, 'FORBIDDEN');
     await b.evaluate(() => window.dispatchEvent(new Event('focus')));
     await heading(b, 'Dein Haushalt');
     assert.equal(await b.getByText('WG A', { exact: true }).count(), 0);
@@ -649,7 +656,7 @@ try {
   // Playwright-Fehler können URLs und Eingabewerte enthalten. Nur sichere Diagnose ausgeben.
   const lines = [
     ...String(error.stack).matchAll(
-      /browser(?:-core|-inventory)?\.mjs:(\d+):\d+/g,
+      /browser(?:-core|-inventory|-shopping)?\.mjs:(\d+):\d+/g,
     ),
   ].map((m) => m[1]);
   console.error(
@@ -663,8 +670,11 @@ try {
   );
   process.exitCode = 1;
 } finally {
+  await mobileBrowser?.close();
   await browser?.close();
   await server?.close();
+  localStatus();
+  checkBindings();
   const ids =
     "select id from auth.users where email like 'task006-" +
     run +

@@ -170,6 +170,8 @@ it('bindet auch ein Einzelstück an einen separaten bestätigten Vollverbrauch',
   act(invalidateInventory);
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
   expect(mutation).not.toHaveBeenCalled();
+  expect(button('Verbrauchen')).toBeDisabled();
+  fireEvent.click(button('Aktuellen Stand übernehmen'));
   fireEvent.click(button('Verbrauchen'));
   await waitFor(() =>
     expect(mutation).toHaveBeenCalledWith('consume_item', {

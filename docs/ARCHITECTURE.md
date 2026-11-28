@@ -1,5 +1,13 @@
 # Architektur
 
+## Task 009B · Einkauf und Synchronisation
+
+Die bestehende Sitzung bindet einen gefilterten UPDATE-Kanal an die Haushalts-ID und die Mitgliedschaftsgeneration. Das Abonnement wartet auf die PostgreSQL-Registrierung. Beim Beitritt zum Kanal, bei Fokus und nach Netzrückkehr werden Mitgliedschaft und Revision erneut gelesen. Bei Ereignissen werden die montierten Vorrats- und Einkaufsansichten invalidiert. Autorisierte Fachabfragen lesen den Revisionszähler vor und nach den Seiten. Ändert er sich, wird das Teilergebnis verworfen. Alle Einträge und Formulare liegen im Arbeitsspeicher. Die Anmeldung stellt das aktualisierte JWT für neue Requests und den Kanal bereit.
+
+## Synchronisation 009A
+
+Die einzige Tabelle in `supabase_realtime` ist `public.household_signals`, mit Publikationsoption `publish='update'`. Standard-Replica-Identity genügt für den Primärschlüssel. Eine bereits belegte Publikation bricht die Migration zur Prüfung ab. Initialisierung und Invalidierung erfolgen über tabellengebundene Trigger. Die vorhandenen Vorrats-RPCs erhöhen bei jeder wirksamen Reservierung die Chargenversion. Damit erfasst der Chargentrigger auch Erhöhung, Verringerung und Freigabe. Ein Austritt mit mehreren Freigaben kann mehrere Revisionen auslösen. Eine Auflösung lässt den Zähler beim letzten Wert stehen. [PostgreSQL-Publikationen](https://www.postgresql.org/docs/17/sql-createpublication.html) · [Clientvertrag](TASK_009B_VERTRAG.md)
+
 ## Task 008 · Vorrat im Browser
 
 Die vorhandene Sitzung begrenzt alle privaten Reads und offenen Aufträge. Listen und Details halten autorisierte Ergebnisse im RAM. `read.ts` übernimmt Cursor und Versionsprüfung, `domain.ts` die Dezimaltexte und Zürcher Kalendertage. Die Formulare verwenden die fünf bestehenden RPCs über `mutate`. Fokus, Reconnect und bestätigte Änderungen aktualisieren die Ansichten. [Datenfluss und Erweiterungspunkte](TASK_008_ANSCHLUSS.md)

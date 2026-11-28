@@ -1,5 +1,57 @@
 # Prüfbericht
 
+## Task 009B · Lokaler Kombinationslauf
+
+Windows und Docker Desktop, PostgreSQL 17, Supabase CLI 2.122.1, Supabase JS 2.119.2, Node 24.14.1, Chromium 159.0.8154.6. Der Lauf verwendet `ZAEME_TEST_STACK=task012`, Projekt `zaeme-task012-local`, API 57821, PostgreSQL 57822, Mailpit 57824 und Vite 8673 auf Loopback. Die Primärdatenbank blieb in Betrieb. Der zuerst gewählte Port 61322 war belegt.
+
+| Prüfung                                   | Beobachtung                                                                                                                                                                                                    |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm ci`                                  | Frische Installation von 278 Paketen                                                                                                                                                                           |
+| `db:start`                                | Alle sechs Migrationen auf leerem Stack ausgeführt                                                                                                                                                             |
+| `db:upgrade:check`, `db:upgrade:shopping` | Upgrade ab der zweiten sowie der vierten Migration bestanden, Altdaten geprüft                                                                                                                                 |
+| `db:test`                                 | 307 pgTAP-Prüfungen in vier Dateien bestanden                                                                                                                                                                  |
+| `db:test:api`, `db:test:shopping`         | 22 bzw. 6 Node-Testeinträge bestanden, einschliesslich der parallelen Schreibvorgänge                                                                                                                          |
+| `db:test:realtime`                        | WebSocket-Prüfung einschliesslich Entzug, altem JWT, Wiederbeitritt und Fremdhaushalt bestanden. Je zehn Messungen vom RPC-Start zum Callback, Maximum 535 ms auf frischem und 549 ms auf aktualisiertem Stack |
+| `db:types`, `db:types:check`              | Typen aus dem kombinierten Schema generiert und vor sowie nach dem Upgrade unabhängig verglichen                                                                                                               |
+
+Frühere Browserläufe deckten einen fehlenden Eintrag im React-Router für Einkaufsformulare und einen ausbleibenden sichtbaren Vorratsabgleich auf. Der Router kennt die drei neuen Formularwege. Zusätzlich zum Hauskanal prüft der Client die autorisierte Revision periodisch. In zwei Diagnoseläufen mit allen vier Kontexten im selben Chromium-Prozess dauerte die sichtbare Einkaufslöschung bei gleichzeitig emulierter Netztrennung eines anderen Kontexts 18 357 bzw. 18 872 ms. Diese Läufe verfehlten die Zeitvorgabe. Die Übergabe führt die abschliessenden Messungen und deren Umgebung separat auf.
+
+### Abschlusslauf 009B
+
+`npm run lint`, `typecheck`, `format:check`, `test` und `build` bestanden. 104 Vitest-Tests und 34 kombinierte Chromium-Szenarien bestanden. Die sieben Einkaufs- und Synchronisationsszenarien bestanden zusätzlich im separaten Browserlauf. 49 Beobachtungen ab bestätigter Serverantwort ergaben einen Median von 761 ms und ein Maximum von 1295 ms. Die zwei Netzrückkehrmessungen dauerten 925 und 340 ms. Der kombinierte Lauf prüfte den Zeitbedarf des Mitgliedschaftsentzugs ohne manuelle Aktualisierung. Die Netzwerkemulation verwendete für den zeitweise getrennten Client einen eigenen Chromium-Prozess. Beim Lasttest trat zuvor `MessagePerSecondRateLimitReached` im lokalen Realtime-Dienst auf. Die stabilen Latenzmessungen erfolgen deshalb vor der getrennten Massendatenprüfung. Der Produktionsbuild meldet eine Chunkgrössenwarnung. [Messpunkte, Rohdaten und Abnahmegrenzen](../REVIEW_HANDOFF.md)
+
+## 27. November 2026 · Backend 009A
+
+Lokaler Worktree `zaeme-m245-task009a`, Basis `b229f9354c73332b0da8f0c82bdfdd6795bcb02d`. Windows, Docker Desktop mit 12 virtuellen CPUs und rund 8 GB VM-Speicher, PostgreSQL 17.11, Realtime v2.147.1, PostgREST v16.5, CLI 2.122.1, Supabase JS 2.119.2, Node 24.14.1, npm 11.21.3. Der vorhandene Stackselektor `ZAEME_TEST_STACK=task009` erzeugte `zaeme-task009-local`. Die Windows-Listener für API 56321, DB 56322 und Mailpit 56324 banden an 127.0.0.1. Chromium verwendete Port 7173.
+
+| Ausgeführter Befehl                          | Ergebnis                                                                                                                                                         | Exit      |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `npm ci`                                     | 278 Pakete installiert                                                                                                                                           | 0         |
+| `npm run lint`, `typecheck`, `format:check`  | Alle drei bestanden                                                                                                                                              | jeweils 0 |
+| `npm run test`                               | 35 Tests in 7 Dateien                                                                                                                                            | 0         |
+| `npm run build`                              | Produktionsbuild, bestehende Chunkwarnung bei 510,55 kB JavaScript                                                                                               | 0         |
+| `npm run db:start`                           | Frische Installation mit sechs Migrationen und separatem Realtime-Dienst                                                                                         | 0         |
+| `npm run db:upgrade:check`                   | Upgrade von zwei auf sechs Migrationen, frühere Haushaltsdaten erhalten                                                                                          | 0         |
+| `npm run db:upgrade:shopping`                | Upgrade von vier auf sechs Migrationen, identische Profile, Haushalte, Mitgliedschaften, Chargen und Reservierungen. Signal 1 beim Altbestand und nach Auflösung | 0         |
+| `npm run db:test`                            | 307 pgTAP-Prüfungen in vier Dateien                                                                                                                              | 0         |
+| `npm run db:test:api`                        | 21 bestehende Fachszenarien, 22 Node-Testeinträge inklusive Haupttest                                                                                            | 0         |
+| `npm run db:test:shopping`                   | 5 Fachszenarien, 6 Node-Testeinträge inklusive Haupttest                                                                                                         | 0         |
+| `npm run db:test:realtime`                   | 1 WebSocket-Szenario mit unabhängigen Clients, auf frischem und aktualisiertem Stack bestanden                                                                   | 0         |
+| `npm run db:types`, `npm run db:types:check` | Generierung aus laufender DB und identische unabhängige Neugenerierung, auch nach Upgrade verglichen                                                             | jeweils 0 |
+| `npm run test:browser`                       | 17 Szenarien auf der integrierten Vier-Migrations-Codebasis mit dem neuen Backend, Testkonten bereinigt                                                          | 0         |
+
+Ein abschliessender `npm run db:reset` installierte alle sechs Migrationen auf der erneut leeren Datenbank (Exit 0).
+
+**Realtime-Messung.** Gemessen über die monotone Node-Uhr vom Start des schreibenden HTTP-RPC bis zum Eingang des UPDATE-Callbacks beim berechtigten Abonnenten. Zehn sequenzielle Änderungen je Lauf, identifizierte Revisionen, keine Mock-Callbacks. Frischer Stack in ms: 406, 556, 521, 548, 520, 533, 526, 510, 533, 512. Nach Upgrade: 328, 530, 582, 519, 508, 549, 566, 540, 558, 595. Das Maximum aller 20 Beobachtungen betrug 595 ms. Der Messpunkt endet vor dem UI-Refetch.
+
+**Zugriff.** Ein passender Filter und ein berechtigter Kanal ohne Filter erhielten die eigene Revision. Beim fremden Filter und Konto ohne Mitgliedschaft blieb der offene Kanal stumm. Der ungefilterte fremde Client erhielt die Positivkontrolle seines eigenen Haushalts. Nach der Entfernung erhielten weder die bestehende Verbindung noch ein neuer Kanal mit altem JWT weitere Revisionen des Haushalts. Die Prüfung beobachtete zwei zusätzliche Fenster von je 3,2 s, mit positivem Vergleichskanal und echtem Tokenrefresh. Nach dem Wiederbeitritt durften bestehende gültige Sitzungen erneut lesen. Die neue Mitgliedschaft hatte eine neue Generation. Eine während der Trennung verpasste Revision war nach dem Wiederverbinden beim autorisierten Lesen sichtbar. Die neue Subscription empfing die folgende Revision.
+
+**Datenintegrität.** Drei Mitglieder lasen denselben Einkauf. Direkte Tabellenmutationen und fremde RPC-Ziele wurden abgelehnt. Versionskonflikte, Operations-ID mit geändertem Auftrag, identische Wiederholungen, explizites Wiederöffnen und Löschkonkurrenz sind geprüft. Zwei nachweislich wartende Datenbanksitzungen erzwangen Überlappung. Die unabhängige Bestandsabfrage blieb beim Abhaken und Wiederöffnen identisch. Erfolge, Replay, Fehler und SQL-Rollback zeigten die erwarteten Revisionsdifferenzen. Die verwaiste Signal-ID liess sich bei einer erneuten Haushaltsanlage nicht wiederverwenden.
+
+**Korrekturen während der Prüfung.** Der erste frische Migrationslauf stoppte mit SQLSTATE 25P01. Die Tabellensperre für die Altbestandsübernahme steht jetzt in einem expliziten Transaktionsblock. Ein erster Lintlauf meldete einen verwaisten Import. Zwei frühe WebSocket-Läufe scheiterten bei der Zustellung respektive Registrierung des gefilterten Kanals. Der erfolgreiche Aufbau setzt das Benutzer-JWT vor dem Subscribe und verlangt eine bestätigte PostgreSQL-Registrierung. Rechte und RLS blieben dafür unverändert.
+
+Die Abnahme von F04 auf zwei sichtbaren Geräten, die Einkaufsoberfläche F09, die Warnfrist-Bedienung F19 und der Hosted-Test stehen aus. Die Fälle für NF01, NF08, NF09 und NF13 sind der [Anforderungsmatrix](IMPLEMENTATION_STATUS.md) zugeordnet. Remote-CI ist für diesen lokalen Branch offen.
+
 ## Task 008 · Abnahme der Vorratsoberfläche am 27. November 2026
 
 Primärcheckout `zaeme-m245`, Branch `feature/m4-core-inventory-ux`, Basis `b229f9354c73332b0da8f0c82bdfdd6795bcb02d`. Windows 11 Pro x64, Intel Core i5-1345U, Node 24.14.1, npm 11.21.3, Playwright 1.65.1 und Desktop-Chromium 159.0.8154.6. Der lokale Teststack `zaeme-task005-local` verwendete `supabase_db_zaeme-task005-local`, die API auf 127.0.0.1:54321 und PostgreSQL auf Port 54322. Projektkennung, Loopback-Listener und leere Konten-/Haushaltstabellen wurden vor dem Reset geprüft.

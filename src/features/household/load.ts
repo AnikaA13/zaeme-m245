@@ -1,17 +1,23 @@
 import { backend } from '../../lib/supabase/client';
-export async function loadAccount(user: string, signal: AbortSignal) {
+export async function loadAccount(
+  user: string,
+  signal: AbortSignal,
+  jwt: string,
+) {
   const db = backend();
   const [profile, member] = await Promise.all([
     db
       .from('profiles')
       .select('display_name,version')
       .eq('id', user)
+      .setHeader('Authorization', 'Bearer ' + jwt)
       .abortSignal(signal)
       .maybeSingle(),
     db
       .from('household_members')
       .select('household_id,generation')
       .eq('user_id', user)
+      .setHeader('Authorization', 'Bearer ' + jwt)
       .abortSignal(signal)
       .maybeSingle(),
   ]);
@@ -26,6 +32,7 @@ export async function loadAccount(user: string, signal: AbortSignal) {
       'id,name,owner_id,version,warning_days,household_members!household_members_household_id_fkey(user_id,generation,profiles!household_members_user_id_fkey(display_name))',
     )
     .eq('id', h)
+    .setHeader('Authorization', 'Bearer ' + jwt)
     .abortSignal(signal)
     .maybeSingle();
   if (response.error)

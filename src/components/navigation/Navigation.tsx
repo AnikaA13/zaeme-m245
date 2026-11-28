@@ -64,7 +64,7 @@ export function Navigation() {
             to={url}
             aria-current={
               pathname === url ||
-              (url === '/inventory' && pathname.startsWith(url + '/'))
+              (url !== '/' && pathname.startsWith(url + '/'))
                 ? 'page'
                 : undefined
             }

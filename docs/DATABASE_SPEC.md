@@ -1,5 +1,9 @@
 # Datenmodell für den gemeinsamen Haushalt
 
+## Migrationen 009A
+
+`20261127000500_shopping_signals.sql` erstellt Einkauf und Signalzeilen mit den unten angegebenen Spalten und dem Index `(household_id,checked,id)`. Bestehende Haushalte erhalten Revision 1. Ein INSERT-Trigger reserviert die ID jedes künftigen Haushalts dauerhaft. `20261127000600_shopping_rpc.sql` ergänzt die vier Schreibpfade. [Lese- und Schreibvertrag](TASK_009B_VERTRAG.md)
+
 ## Ausgeführte Migrationen 005
 
 1. `20261125000100_household_schema.sql` erstellt `profiles`, `households`, `household_members`, `household_invites`, `private.operation_results` und `private.invite_attempts` mit den unten spezifizierten Schlüsseln, Checks und Indizes. Alle sechs gehören `postgres` und verwenden RLS. Die private Sicht `confirmed_self` projiziert höchstens die eigene bestätigte Konto-ID.

@@ -1,5 +1,15 @@
 # Testplan
 
+## Task 009B · Einkauf und Synchronisation
+
+Der kombinierte Browserlauf ergänzt die bisherigen Fälle um echte Haushaltsänderungen mit drei angemeldeten Mitgliedern und einem zweiten Haushalt. Er erfasst die Zeit vom Empfang der erfolgreichen RPC-Antwort bis Playwright den neuen sichtbaren Zustand im anderen Kontext beobachtet. Die Netzrückkehr hat einen eigenen Startpunkt beim Einschalten der Verbindung. Jede Beobachtung wird einzeln gegen die Grenze von 3000 ms geprüft. Die RLS-, Quittungs-, Konkurrenz- und WebSocket-Tests aus 009A bleiben Teil der Regression.
+
+## Regression 009A
+
+Einen separaten lokalen Stack über `ZAEME_TEST_STACK=task009` auswählen. Vor einer Neuinstallation oder einem Upgrade Projektlabel, DB-Port, lokale CLI-Konfiguration und Hostlistener prüfen. Nach frischem Start `db:upgrade:check` für die frühere Basis und `db:upgrade:shopping` für vier Migrationen ausführen. Anschliessend `db:test`, `db:test:api`, `db:test:shopping`, `db:test:realtime`, Typvergleich und Chromium ausführen. Der Rennprüfer blockiert die Haushaltszeile, weist zwei wartende PostgreSQL-Sitzungen nach und gibt beide frei. Die Realtime-Prüfung enthält positive Vergleichskanäle sowie begrenzte Beobachtungsfenster nach Rechteentzug.
+
+009B prüft zwei gleichzeitig sichtbare Clients, Fokus/Reconnect bei laufender Abfrage, Markierung, Konfliktanzeige, Namensvorbelegung und Owner-Warnfrist. Auf dem Hosted-Stack Publikation, Rechteentzug und Latenz mit öffentlichem Projektschlüssel erneut messen.
+
 ## Regression 008 · Vorratsoberfläche
 
 `npm run test` prüft die geteilten Grenzfälle, lokale Datumsklassifizierung, Leseinvalidierung, mehrere Reservierungsseiten und offene Aufträge isoliert. `npm run test:browser` führt die bestehenden Mailpit-, Auth- und Haushaltsszenarien sowie `browser-core.mjs` aus. Eine echte verlorene Antwort wird erst nach der Serverquittung verworfen. SQL prüft gespeicherte Mengen, Versionen, NULL-Werte und Löschungen unabhängig von der UI. Zwei Browserkontexte ändern dieselbe Charge. Separate Haushalte und verspätete Antworten prüfen die Sichtgrenze. Für den Leistungstest werden 200 und anschliessend insgesamt 1005 zusätzliche synthetische Chargen eingefügt. Die Zeitmessung umfasst eine echte Navigation bis zur ersten sichtbaren Listenzeile. `ZAEME_SCREENSHOTS=1` aktiviert repräsentative PNG-Aufnahmen des synthetischen Haushalts. Geräte- und Nutzertests erfolgen getrennt.

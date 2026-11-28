@@ -1,4 +1,6 @@
 import type { Database } from '../../database.types';
+import { inventoryScope } from '../../features/inventory/read';
+import { readShopping } from '../../features/shopping/read';
 import { backend } from '../supabase/client';
 import {
   activeScope,
@@ -16,7 +18,11 @@ type Inventory =
   | 'set_reservation'
   | 'consume_item'
   | 'delete_item';
+export type ShoppingMutation =
+  'create_shopping' | 'edit_shopping' | 'check_shopping' | 'delete_shopping';
 type Mutation =
+  | ShoppingMutation
+  | 'set_warning_days'
   | Inventory
   | 'create_household'
   | 'join_household'
@@ -58,6 +64,9 @@ async function reconcile(
   await refresh(true);
   if (scope.signal.aborted) throw new FlowError('FORBIDDEN');
   if (snapshot().phase !== 'ready') throw new FlowError('TRANSPORT');
+  if (name.endsWith('_shopping')) {
+    return readShopping(inventoryScope());
+  }
   if (!inventory.has(name)) return [];
   if (!scope.household || !scope.jwt) throw new FlowError('FORBIDDEN');
   let read = backend()
@@ -116,6 +125,24 @@ async function call<K extends keyof Functions>(
       .abortSignal(AbortSignal.any([scope.signal, AbortSignal.timeout(12000)]));
     if (scope.signal.aborted) throw new FlowError('FORBIDDEN');
     const result = interpret(reply);
+    if (name.endsWith('_shopping') || name === 'set_warning_days') {
+      if (
+        !result.id ||
+        !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(result.id) ||
+        ('id' in args && result.id !== args.id) ||
+        (name === 'set_warning_days' && result.id !== scope.household) ||
+        (name === 'delete_shopping'
+          ? result.version !== null
+          : !Number.isSafeInteger(result.version) ||
+            (result.version ?? 0) < 1) ||
+        (name === 'create_shopping' && result.version !== 1) ||
+        ('v' in args &&
+          name !== 'delete_shopping' &&
+          result.version !== args.v + 1 &&
+          (name === 'set_warning_days' || result.version !== args.v))
+      )
+        throw new FlowError('TRANSPORT');
+    }
     if (
       inventory.has(name) &&
       (!result.id ||
@@ -238,4 +265,13 @@ async function verifyCompletion(
     throw new FlowError('FORBIDDEN');
   }
   if (scope.signal.aborted) throw new FlowError('FORBIDDEN');
+  if (name.endsWith('_shopping')) {
+    try {
+      await readShopping(inventoryScope());
+    } catch {
+      throw new FlowError(
+        scope.signal.aborted ? 'FORBIDDEN' : 'REFRESH_FAILED',
+      );
+    }
+  }
 }
