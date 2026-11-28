@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { isEan13 } from '../src/features/barcode/ean.ts';
+import { isEan13 } from '../src/features/barcode/ean.js';
 
 // Öffentlicher, lesender Produktzugriff. Ziel, Felder und Anbieterkennung sind fest.
 export default async function product(

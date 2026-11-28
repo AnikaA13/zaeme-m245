@@ -1,5 +1,7 @@
 # Architektur
 
+Vercel kompiliert die TypeScript-Function zu einem ES-Modul. Ihr relativer EAN-Import adressiert die JavaScript-Ausgabedatei. Der Node-Test führt das emittierte Modul ohne Vite aus. [Abnahmestand](USER_TEST_RELEASE.md)
+
 ## Integration 011B
 
 Der Produktionsbuild registriert `/sw.js` im Scope `/`. Gewöhnliche Navigationen laden das Dokument aus dem Netz. Scheitert die Verbindung, erzeugt der Worker eine deutschsprachige 503-Seite ohne Fachdaten. Er benutzt keinen Datencache und keine Offline-Warteschlange. Login, Recovery, Beitritt, URL-Abfragen und API-Verkehr durchlaufen keinen Worker-Fallback. Neue Worker übernehmen die Tabs und räumen nur den eigenen reservierten Cache-Präfix `zaeme-public-shell-` auf. Der Browser prüft das Worker-Skript ohne HTTP-Cache. Bestätigte Daten bleiben in PostgreSQL.

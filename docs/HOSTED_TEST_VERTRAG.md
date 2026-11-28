@@ -1,5 +1,7 @@
 # Hosted-Testvertrag · Task 011A
 
+Der Merge von PR #5 ist manuell als geschützte Preview ausgerollt. Alle sechs Migrationen sind eingespielt. Für das Prüfergebnis der ersten HTTPS-Produktabfrage und der isolierten Konten gilt die aktuelle Hosted-Abnahme. [Abnahmestand](USER_TEST_RELEASE.md)
+
 **Freigabe für Haushaltstests: BLOCKIERT.** Stand der Vorbereitung am 27.11.2026. Die lokale Baseline lässt sich bauen und ihr Gast-Routing funktioniert. Es gibt in diesem Lauf keinen Nachweis für ein dediziertes Hosted-Projekt, eine HTTPS-Auslieferung oder eine zugestellte E-Mail.
 
 ## Aktuelle PO-Übergabe · 28. November 2026

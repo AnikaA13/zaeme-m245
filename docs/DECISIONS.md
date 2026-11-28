@@ -1,5 +1,7 @@
 # Technische Entscheidungen
 
+Nach ERR_MODULE_NOT_FOUND im Vercel-Laufzeitprotokoll verwendet der relative Function-Import die ESM-Ausgabeendung .js. Die fachliche EAN-Validierung bleibt gemeinsam mit dem Browsercode. [Abnahmestand](USER_TEST_RELEASE.md)
+
 ## 011B · Installation und Produktsuche
 
 Das App-Symbol verwendet das vollständige quadratische Originalzeichen auf dem cremefarbenen Markenhintergrund. Die gewöhnlichen PNGs zeigen es mit 90 Prozent Kantenlänge, die maskierbare Variante mit 55 Prozent. Damit liegt sogar das umschliessende Quadrat innerhalb des zentralen Sicherheitskreises mit 40 Prozent Radius. Die Originale bleiben erhalten. Eine eigenständige Logo-Neugestaltung oder zusätzliche Gruppenfreigabe ist damit nicht verbunden.

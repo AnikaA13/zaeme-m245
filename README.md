@@ -1,5 +1,7 @@
 # zäme
 
+Die erste interne HTTPS-Preview und alle sechs Hosted-Migrationen sind verifiziert. Die Produktabfrage auf der ersten Preview und die physischen Geräte blockieren den Haushaltstest. [Abnahmestand](docs/USER_TEST_RELEASE.md)
+
 Lebensmittelmanagement für Haushalte ab drei Personen. zäme ist ein Schulprojekt
 für die GBS-Höhle der Löwen in der Schweiz. Die App soll den gemeinsamen
 Lebensmittelvorrat, Ablaufdaten und Einkäufe im Haushalt leichter koordinierbar

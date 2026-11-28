@@ -1,5 +1,7 @@
 # Nachweis je Anforderung
 
+F02–F05, F07–F10, F17 und F19 haben technische Nachweise gegen das echte Hosted-Backend. F06 ist auf der ersten Vercel-Preview wegen HTTP 500 blockiert. F01 wartet auf realen Mailversand, F11 und F15 auf die Geräteabnahme. [Abnahmestand](USER_TEST_RELEASE.md)
+
 ## Task 011B · Integrierter Funktionsstand
 
 Die nachfolgenden älteren Tabellen dokumentieren den jeweiligen Meilenstein. Für die Freigabe gilt diese Übersicht mit dem [Prüfbericht](TEST_REPORT.md) und dem [Releaseblatt](USER_TEST_RELEASE.md).
