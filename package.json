@@ -32,6 +32,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:scanner:browser": "node scripts/scanner/browser.mjs",
+    "test:product:node": "node --test scripts/hosted/product-module.mjs",
     "test:pwa": "node --test scripts/database/browser-pwa.mjs"
   },
   "dependencies": {

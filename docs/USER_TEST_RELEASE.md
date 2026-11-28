@@ -1,5 +1,19 @@
 # zäme für den Haushaltstest
 
+## Hosted-Abnahme vom 28. November 2026
+
+**PARTIALLY VERIFIED.** PR #5 ist mit `de72cf659b5f59c5cc923d2faeab42990bfb21d5` gemergt. Der getestete Kandidat `0a2be630344ca0adc38611834ada5dd90aabb989` hat denselben Baum. Beide PR-Prüfungen und der main-Build bestanden. [PR und geprüfter Umfang](https://github.com/AnikaA13/zaeme-m245/pull/5)
+
+Die erste manuelle geschützte [Preview](https://zaeme-m245-hv0zmwwwg-zaeme1.vercel.app) liefert die Startseite nach Vercel-Anmeldung aus. Vercel bestätigt den Merge-Commit, Vite, Node 24.x, npm ci, npm run build, dist und die Funktion api/product. Anonyme Aufrufe werden mit HTTP 302 zur Vercel-Anmeldung geleitet. Ein tatsächlicher Produktabruf auf der Preview ergab HTTP 500. Im Laufzeitprotokoll fehlt das importierte TypeScript-Modul ean.ts neben der kompilierten Function. Die Korrektur verwendet den Dateinamen der kompilierten JavaScript-Datei. Die erfolgreiche Produktabfrage auf einer neuen geprüften HTTPS-Preview ist ein eigenes Gate.
+
+Supabase führt alle sechs Migrationen im bestätigten Projekt rfvtspjxtaetytwbqaqd. Unmittelbar vor dem Push waren Konten, Fachobjekte, Speicher und Migrationsjournal leer. Nachher hatten alle zehn Fachtabellen RLS, App-Rollen keine direkten Schreibrechte und die Publikation enthielt ausschliesslich Updates an household_signals mit id und revision. Alle 20 öffentlichen RPCs waren für die angemeldete Rolle aufrufbar. Der Hosted-Typgenerator ergänzt die PostgREST-Version 17.1, lässt neun leere ComputedFields-Marker weg und schätzt zehn direkte NOT-NULL-Spalten der Vorratssicht als nullable ein. Der Katalog bestätigt die direkte Projektion dieser Spalten. Alle übrigen Typen, Beziehungen und RPC-Signaturen stimmen überein.
+
+Vier getrennte Chromium-Sitzungen nutzten denselben Produktionscode auf Loopback und das echte Hosted-Backend. Zwei gewöhnliche Konten traten über den Einladungslink bei, ein weiterer Haushalt blieb getrennt. Vorrat, reservierte Mengen, abgewiesener Fremdverbrauch, Eigenverbrauch, Einkauf, Abhaken, Warnfrist, Testvideo-Scan mit explizitem Speichern, Neuverbindung, Rechteentzug, Logout und leere Fachdatencaches bestanden. Sichtbare Änderungen nach RPC-Antwort dauerten 692 ms für Vorrat, 1199 ms für Reservation, 241 ms für Einkauf hinzufügen, 719 ms für Abhaken und 715 ms für Warnfrist. Der Erstlauf wartete beim Checkbox-Klick auf eine synchrone Änderung und brach ab. Der Nachlauf prüfte die persistierte Änderung und deren Empfang. Die vier synthetischen Testidentitäten wurden bereinigt. Der vollständige Mehrpersonenlauf über den geschützten Vercel-Ursprung steht aus.
+
+Reale E-Mail-Bestätigung, Recovery, die beiden physischen Scanner- und Installationsabnahmen sowie die Teilnahmefreigabe sind offen. Keine Zielgruppenbeobachtungen. [Geräteprotokoll](TASK_010A_GERAETETEST.md)
+
+## Historischer Prüfstand vor der Hosted-Abnahme
+
 **PARTIALLY VERIFIED.** Die technische Freigabe für Teilnehmende ist offen. Für die Gruppe 23 gibt es noch keine bestätigte HTTPS-Testadresse und keinen nachgewiesenen Deployment-Commit. Der 1. Dezember 2026 ist das Ziel für den Testbeginn. Bitte erst einladen, wenn die Projektgruppe die geprüfte Testadresse mitteilt.
 
 Der vollständige lokale Abnahmelauf gehört zum Kandidaten `1066454ef6859721145e277efcedc848d11acb07`. Alle 40 Browsergruppen und der separate PWA-Test sind bestanden. Die GitHub-Prüfungen und der spätere Merge-Commit sind im [Release-PR #5](https://github.com/AnikaA13/zaeme-m245/pull/5) nachvollziehbar. Der ausgelieferte Stand bleibt offen, bis die dedizierte HTTPS-Umgebung identifiziert und geprüft ist.

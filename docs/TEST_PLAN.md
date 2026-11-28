@@ -1,5 +1,7 @@
 # Testplan
 
+Nach jedem manuellen Vercel-Deployment einen bekannten EAN über die geschützte HTTPS-Adresse abrufen und die JSON-Antwort prüfen. Zusätzlich den kompilierten Node-Einstieg ohne Vite aufrufen. [Abnahmestand](USER_TEST_RELEASE.md)
+
 ## Task 011B · Technische Freigabe
 
 Im eigens gewählten lokalen Stack sollen Neuinstallation, beide Upgrades, Typen, SQL, API, echte lokale Realtime-Verbindungen und kombinierte Browserregression bestehen. Der PWA-Test baut mit der öffentlichen Konfiguration des ausgewählten Stacks, prüft Manifest und PNG-Abmessungen, echten Login, gespeicherte Charge, Workerwechsel, Offline-Navigation sowie Cache Storage und IndexedDB. Die Geometrieprüfung umfasst zusätzlich 1440 CSS-px. Kandidat erst nach grüner lokaler Prüfung und erforderlicher GitHub-CI zusammenführen.

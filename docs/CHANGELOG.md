@@ -1,5 +1,7 @@
 # Änderungsprotokoll
 
+Der serverseitige EAN-Import verwendet den kompilierten JavaScript-Modulpfad. Die vier Browser mit realem Hosted-Backend und die erste geschützte Preview sind dokumentiert. [Abnahmestand](USER_TEST_RELEASE.md)
+
 Der PWA-Test beobachtet die Controller-Identität über den gesamten Revisionswechsel und vergleicht die vom Server ausgelieferten Bytes.
 
 ## Task 011B · Releasekandidat
