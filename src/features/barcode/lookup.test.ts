@@ -32,7 +32,7 @@ it('sendet nur den Code und die Feldauswahl, übernimmt nur den Namen', async ()
     prefill: { barcode: code, name: 'Kakao' },
   });
   expect(fetcher).toHaveBeenCalledExactlyOnceWith(
-    'https://world.openfoodfacts.org/api/v3/product/0034000470693.json?fields=product_name_de,product_name',
+    '/api/product?ean=0034000470693',
     {
       credentials: 'omit',
       redirect: 'error',

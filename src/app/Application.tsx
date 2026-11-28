@@ -70,8 +70,8 @@ export function Application() {
         <>
           <h1>Konfiguration fehlt</h1>
           <p role="alert">
-            Setze die öffentliche Supabase-URL und den öffentlichen
-            Client-Schlüssel in der lokalen Entwicklungsumgebung.
+            zäme kann die Verbindung zum Testdienst nicht herstellen. Bitte
+            melde dies der Projektgruppe.
           </p>
         </>
       );

@@ -31,7 +31,8 @@
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:scanner:browser": "node scripts/scanner/browser.mjs"
+    "test:scanner:browser": "node scripts/scanner/browser.mjs",
+    "test:pwa": "node --test scripts/database/browser-pwa.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",

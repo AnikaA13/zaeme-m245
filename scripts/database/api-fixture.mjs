@@ -48,6 +48,8 @@ export function apiFixture(t) {
     assert.equal(login.status, 200);
     return {
       id: created.body.id,
+      email,
+      password,
       jwt: login.body.access_token,
       refresh: login.body.refresh_token,
     };

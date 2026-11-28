@@ -68,6 +68,22 @@ export function HouseholdPage({
       </button>
       {edit && <ProfileForm account={account} />}
       <WarningDays home={home} owner={owner} />
+      <details>
+        <summary>zäme installieren</summary>
+        <p>
+          Android mit Chrome: Öffne das Browsermenü und wähle «App installieren»
+          oder «Zum Startbildschirm hinzufügen».
+        </p>
+        <p>
+          iPhone mit Safari: Wähle «Teilen» und «Zu Home-Bildschirm hinzufügen».
+          Aktiviere «Als Web-App öffnen», falls angezeigt, und tippe auf
+          «Hinzufügen».
+        </p>
+        <p>
+          Öffne zäme über das Symbol. Für deinen Haushalt brauchst du eine
+          Internetverbindung.
+        </p>
+      </details>
       {owner && <Invites {...context} />}
       {(!owner || home.household_members.length === 1) && (
         <button

@@ -16,14 +16,12 @@ try {
   });
   const page = await browser.newPage();
   let calls = 0;
-  await page.route('https://world.openfoodfacts.org/**', (route) => {
+  await page.route('**/api/product?ean=*', (route) => {
     calls++;
     assert.equal(route.request().method(), 'GET');
     assert.equal(
       route.request().url(),
-      'https://world.openfoodfacts.org/api/v3/product/' +
-        barcode +
-        '.json?fields=product_name_de,product_name',
+      'http://127.0.0.1:5210' + '/api/product?ean=' + barcode,
     );
     return route.fulfill(
       calls === 1

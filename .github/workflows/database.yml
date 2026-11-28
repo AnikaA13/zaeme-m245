@@ -31,6 +31,8 @@ jobs:
       - run: npm run db:test:realtime
       - run: npm run db:types:check
       - run: npx --no-install playwright install --with-deps chromium
+      - run: npm run test:scanner:browser
       - run: npm run test:browser
+      - run: npm run test:pwa
       - if: always()
         run: npm run db:stop

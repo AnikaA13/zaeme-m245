@@ -25,3 +25,12 @@ createRoot(root).render(
     </AppErrorBoundary>
   </StrictMode>,
 );
+
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Bei gesperrter Registrierung bleibt die Online-App bedienbar.
+    void navigator.serviceWorker
+      .register('/sw.js', { updateViaCache: 'none' })
+      .catch(() => {});
+  });
+}

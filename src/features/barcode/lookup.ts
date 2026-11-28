@@ -79,18 +79,13 @@ export async function lookupProduct(
   signal.addEventListener('abort', cancel, { once: true });
   const timer = setTimeout(cancel, 5000);
   try {
-    const response = await fetch(
-      'https://world.openfoodfacts.org/api/v3/product/' +
-        barcode +
-        '.json?fields=product_name_de,product_name',
-      {
-        signal: controller.signal,
-        credentials: 'omit',
-        cache: 'no-store',
-        redirect: 'error',
-        referrerPolicy: 'no-referrer',
-      },
-    );
+    const response = await fetch('/api/product?ean=' + barcode, {
+      signal: controller.signal,
+      credentials: 'omit',
+      cache: 'no-store',
+      redirect: 'error',
+      referrerPolicy: 'no-referrer',
+    });
     if (response.status === 429) {
       const retry = response.headers.get('Retry-After')?.trim();
       const next =

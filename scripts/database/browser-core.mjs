@@ -26,8 +26,12 @@ export async function coreInventory({ a, b, step, layout, origin }) {
     );
   const screenshot = async (p, name) => {
     if (process.env.ZAEME_SCREENSHOTS !== '1') return;
-    await mkdir('docs/review/task008', { recursive: true });
-    await p.screenshot({ path: 'docs/review/task008/' + name + '.png' });
+    const dir =
+      process.env.ZAEME_RELEASE_REVIEW === '1'
+        ? 'docs/review/task011b/task008'
+        : 'docs/review/task008';
+    await mkdir(dir, { recursive: true });
+    await p.screenshot({ path: dir + '/' + name + '.png' });
   };
   const count = () =>
     Number(sql('select count(*) from public.inventory_items where ' + where));
@@ -358,10 +362,18 @@ export async function coreInventory({ a, b, step, layout, origin }) {
             elapsed +
             ' ms',
         );
+        const searchStart = performance.now();
         await label(a, 'Produktname suchen').fill('Prüfcharge ' + end);
         await a
           .locator('.stock-list strong', { hasText: 'Prüfcharge ' + end })
           .waitFor();
+        console.log(
+          'Namenssuche bei ' +
+            active +
+            ' Chargen · ' +
+            Math.round(performance.now() - searchStart) +
+            ' ms',
+        );
       }
       await go(a, '/');
       await a.locator('.stock-list strong').first().waitFor();

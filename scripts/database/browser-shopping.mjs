@@ -15,9 +15,11 @@ export async function shoppingSync({
   report = 'messungen',
 }) {
   const dir =
-    process.env.ZAEME_009B_REVIEW === '1'
-      ? 'docs/review/task009b'
-      : 'test-results/task009b';
+    process.env.ZAEME_RELEASE_REVIEW === '1'
+      ? 'docs/review/task011b/task009b'
+      : process.env.ZAEME_009B_REVIEW === '1'
+        ? 'docs/review/task009b'
+        : 'test-results/task009b';
   await mkdir(dir, { recursive: true });
   const samples = [];
   const signals = new Map();

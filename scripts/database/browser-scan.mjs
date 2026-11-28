@@ -20,12 +20,16 @@ export async function scanCapture({ page, step, layout, origin, signOut }) {
     );
   const screenshot = async (file) => {
     if (process.env.ZAEME_SCAN_SCREENSHOTS !== '1') return;
-    await mkdir('docs/review/task010b', { recursive: true });
+    const dir =
+      process.env.ZAEME_RELEASE_REVIEW === '1'
+        ? 'docs/review/task011b/task010b'
+        : 'docs/review/task010b';
+    await mkdir(dir, { recursive: true });
     const original = page.viewportSize();
     const form = ['produktpruefung', 'unbekannt'].includes(file);
     if (form) await page.setViewportSize({ width: 390, height: 1180 });
     try {
-      await page.screenshot({ path: 'docs/review/task010b/' + file + '.png' });
+      await page.screenshot({ path: dir + '/' + file + '.png' });
     } finally {
       if (form && original) await page.setViewportSize(original);
     }
@@ -53,15 +57,10 @@ export async function scanCapture({ page, step, layout, origin, signOut }) {
       ops.push(req.postDataJSON().op);
   });
   let held;
-  await page.route('https://world.openfoodfacts.org/**', async (route) => {
+  await page.route('**/api/product?ean=*', async (route) => {
     const request = route.request();
     assert.equal(request.method(), 'GET');
-    assert.equal(
-      request.url(),
-      'https://world.openfoodfacts.org/api/v3/product/' +
-        barcode +
-        '.json?fields=product_name_de,product_name',
-    );
+    assert.equal(request.url(), origin + '/api/product?ean=' + barcode);
     const headers = await request.allHeaders();
     for (const key of ['authorization', 'apikey', 'cookie', 'referer'])
       assert.equal(headers[key], undefined);
