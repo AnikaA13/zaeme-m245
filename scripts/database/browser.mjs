@@ -6,6 +6,8 @@ import { chromium } from 'playwright';
 import { createServer } from 'vite';
 import { layout } from './browser-layout.mjs';
 import { shoppingSync } from './browser-shopping.mjs';
+import { cameraFixture } from '../scanner/camera-fixture.mjs';
+import { scanCapture } from './browser-scan.mjs';
 import { coreInventory } from './browser-core.mjs';
 import { householdInventory } from './browser-inventory.mjs';
 import {
@@ -140,7 +142,7 @@ async function confirm(p, action, accept = true) {
   p.once('dialog', (d) => (accept ? d.accept() : d.dismiss()));
   await button(p, action).click();
 }
-let a, b, c, d, invitation;
+let a, b, c, d, invitation, fixture;
 try {
   server = await createServer({
     logLevel: 'silent',
@@ -153,7 +155,11 @@ try {
   });
   await server.listen();
   assert.ok(server.resolvedUrls.local.includes(origin + '/'));
-  browser = await chromium.launch();
+  fixture = await cameraFixture(20);
+  browser = await chromium.launch({
+    channel: 'chromium',
+    args: fixture.args,
+  });
   console.log(
     'Chromium ' +
       browser.version() +
@@ -267,6 +273,11 @@ try {
   });
   await shoppingSync({ a, b, c, d, origin, layout, step });
   await coreInventory({ a, b, step, layout, origin });
+  const scanTab = await page();
+  await login(scanTab, 'Anna');
+  await heading(scanTab, 'Haltbarkeitsdaten prüfen');
+  await scanCapture({ page: scanTab, step, layout, origin, signOut });
+  await scanTab.context().close();
   const verifyDissolution = await householdInventory({
     a,
     b,
@@ -656,7 +667,7 @@ try {
   // Playwright-Fehler können URLs und Eingabewerte enthalten. Nur sichere Diagnose ausgeben.
   const lines = [
     ...String(error.stack).matchAll(
-      /browser(?:-core|-inventory|-shopping)?\.mjs:(\d+):\d+/g,
+      /browser(?:-core|-inventory|-shopping|-scan)?\.mjs:(\d+):\d+/g,
     ),
   ].map((m) => m[1]);
   console.error(
@@ -672,6 +683,7 @@ try {
 } finally {
   await mobileBrowser?.close();
   await browser?.close();
+  await fixture?.close();
   await server?.close();
   localStatus();
   checkBindings();

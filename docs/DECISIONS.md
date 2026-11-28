@@ -10,6 +10,16 @@ Fachzeilen invalidieren den Haushalt in derselben Transaktion. Die Haushaltsanla
 
 Der Integrationstest setzt vor dem Kanalbeitritt das Benutzer-JWT explizit und wartet auf die PostgreSQL-Registrierung. Dadurch kann der erste Refetch die Lücke beim Anmelden des Kanals schliessen. Die Auslieferung prüft den aktuellen RLS-Lesezugriff je Signal. [Supabase Postgres Changes](https://supabase.com/docs/guides/realtime/postgres-changes) · [Kanalimplementierung v2.147.1](https://github.com/supabase/realtime/blob/v2.147.1/lib/realtime_web/channels/realtime_channel.ex)
 
+## Task 010B · Scanversuch und geprüfte Formularvorbelegung
+
+Die geschützte Route lädt die Scanansicht beim Öffnen. Erst «Kamera starten» fordert Video an. Ein Abbruchsignal begrenzt Kamera und anschliessende Einzelabfrage auf denselben Versuch innerhalb der aktuellen Mitgliedschaft. Die EAN und der Vorschlag bleiben bis zur Formulareingabe im Arbeitsspeicher der Ansicht. Der Browser-Verlauf enthält nur die Route. Ein neuer Routeneintrag erzeugt nach bestätigtem Speichern eine frische Erfassung. Der Decoder wird separat nach Kamerafreigabe geladen. Vite legt die Drittanbieter-Lizenztexte im Build ab.
+
+## Task 010A · Decoder, Kamera und Datenquelle
+
+Für F06 verwenden wir den gezielten EAN-13-Leser von `@zxing/library` 0.23.0 (Apache-2.0, Node ≥24). `@zxing/browser` 0.2.1 (MIT) verwendet denselben Core als Peer. Direkter Zugriff auf den Reader erlaubt die eigene Track-Freigabe auch während verzögerter Browserprompts. Das Paket ist im beitragsbasierten Wartungsmodus. Der kleine Funktionsumfang, der vorhandene Node-24-Stack, die optisch getestete EAN-13-Erkennung und der separate Ladechunk begründen den Einsatz. Die schmalen ESM-Importpfade sind an die gesperrte Version gebunden. Bei Upgrades den optischen Test und den Modulgraphen wiederholen. Ein plattformabhängiger nativer Detector ist keine Voraussetzung. [ZXing Core](https://github.com/zxing-js/library) · [Browseradapter](https://github.com/zxing-js/browser)
+
+Der Anbieterzugriff verwendet ausschliesslich die v3-Einzelabfrage für den Produktnamen. Die Browser-Schicht kennt keine Sitzung, Haushalte oder Schreiboperationen. Der Aufrufer verwaltet den Kontext über ein Abbruchsignal. Herkunft, Browserkennung, Grenzen und Zustände sind im [Integrationsvertrag](TASK_010B_VERTRAG.md) beschrieben.
+
 ## Task 008 · Vollständige Liste und bewusste Konfliktauflösung
 
 Die Implementierung lädt die aktive Sicht in 100er-Seiten, bevor sie nach Datum sortiert oder nach Namen sucht. Damit wirken Suchsonderzeichen wörtlich und späte ID-Seiten können die dringendste Charge enthalten. Die Anzeige begrenzt zunächst die gerenderten Treffer. Reservierungen werden je sichtbarer Gruppe geladen. Ein Versionskonflikt erfordert einen erneuten Entscheid. Eine fehlende Antwort hält den ursprünglichen Auftrag im Sitzungskontext. Die bestehende Navigationsentscheidung platziert die manuelle Erfassung zentral. Der Einkauf zeigt seinen aktuellen Entwicklungsstand. Alphabetische Sortierung bleibt mit den zusätzlichen P1-Filtern zurückgestellt.

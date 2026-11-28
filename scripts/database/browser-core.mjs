@@ -77,6 +77,7 @@ export async function coreInventory({ a, b, step, layout, origin }) {
   await step('008 B · Validierung und Erfassung ohne Datum', async () => {
     await button(a, 'Hinzufügen').click();
     await heading(a, 'Lebensmittel hinzufügen');
+    await button(a, 'Manuell hinzufügen').click();
     await screenshot(a, 'erfassung');
     await layout(a);
     await label(a, 'Menge').fill('1,5');

@@ -8,6 +8,14 @@ Der separate lokale Integrationsbranch verbindet die abgenommene Vorratsoberflä
 
 Der separate Backend-Branch ergänzt Einkauf, transaktionale Haushaltssignale und eine UPDATE-Publikation. Das lokale WebSocket-Szenario verifiziert Mitgliedschaftsentzug mit einem weiterhin gültigen JWT und den Zugriff nach Wiederbeitritt. Task 008 integriert den Vorratsclient unabhängig. Einkauf, Warnfrist-Bedienung und sichtbare Synchronisation auf zwei Geräten folgen in Task 009B. [Prüfbericht](TEST_REPORT.md) · [Integrationsvertrag](TASK_009B_VERTRAG.md)
 
+## Task 010B · Scanner im geschützten Erfassungsablauf
+
+Auf dem lokalen Branch `feature/m6-scanner-integration` führt ein echter Kameratreffer zur Produktprüfung und nach Bestätigung über den vorhandenen RPC in den Vorrat. Der Chromium-Test verwendet synthetisches Video, kontrollierte Anbieterantworten und einen eigenen Supabase-Stack. Die gesonderte Live-Abfrage ist im Review protokolliert. Ein freigegebener HTTPS-Ursprung, beide physischen Geräte und die Erhebung mit Haushalten stehen aus. Die Zusammenführung gehört zu 011B. [Prüfbericht](../REVIEW_HANDOFF.md) · [Messblatt](TASK_010A_GERAETETEST.md)
+
+## Task 010A · isolierter F06-Kern
+
+Der separate Branch `feature/m6-barcode-lookup-core` enthält die optische EAN-13-Erkennung, den Kameralebenszyklus, die abbrechbare Produktabfrage und einen lokalen Prüfstand. Chromium hat die Videofixture zweimal gelesen. Zwei separate Live-Abfragen bestätigten einen Namen und eine unbekannte EAN. Android Chrome und iOS Safari physisch **NOT RUN**. F06 bleibt bis zur Einbindung in F05 und zur Geräteabnahme offen. [Prüfnachweis 010A](TASK_010A_PRUEFBERICHT.md) · [Vertrag für 010B](TASK_010B_VERTRAG.md)
+
 ## Task 008 · Vorratsoberfläche
 
 Im authentifizierten Haushalt sind Start, Vorrat, manuelle Erfassung, Bearbeitung, Verbrauch und eigene Reservierungen an die bestehende Datenbank angeschlossen. Einkauf zeigt einen Entwicklungshinweis. Die nächsten fachlichen Schritte sind Einkauf und Synchronisierung in 009 sowie Kamera und Produktsuche in 010. Geräteabnahme und Haushaltstests stehen aus. Umfang, Prüfstand und technische Anschlussstellen sind separat dokumentiert. [Anforderungsmatrix](IMPLEMENTATION_STATUS.md) · [Prüfbericht](TEST_REPORT.md) · [Anschlussvertrag](TASK_008_ANSCHLUSS.md)

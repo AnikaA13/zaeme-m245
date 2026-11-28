@@ -28,14 +28,17 @@ export function Icon({ name }: { name: keyof typeof paths }) {
 }
 const origins = new WeakMap<AbortSignal, { path: string; id: string }>();
 export function useCapture() {
-  const { pathname } = useLocation(),
+  const { pathname, search } = useLocation(),
     navigate = useNavigate(),
     signal = activeScope().signal;
   return {
-    open(id: string) {
+    open(
+      id: string,
+      to: '/capture' | '/capture/scan' | '/capture/manual' = '/capture',
+    ) {
       if (!pathname.startsWith('/capture'))
-        origins.set(signal, { path: pathname, id });
-      void navigate('/capture/manual');
+        origins.set(signal, { path: pathname + search, id });
+      void navigate(to);
     },
     cancel() {
       const previous = origins.get(signal);

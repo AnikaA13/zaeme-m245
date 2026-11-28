@@ -1,3 +1,4 @@
+import { ProductSource } from '../capture/ProductSource';
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Confirm } from '../../components/ui/Confirm';
@@ -317,6 +318,7 @@ export function Detail({
         <h1>{item.name}</h1>
       </div>
       <Status item={item} days={days} day={day} />
+      {item.barcode && <ProductSource barcode={item.barcode} />}
       {item.location && <p>Lagerort · {item.location}</p>}
       {remove && (
         <p className="safety">
