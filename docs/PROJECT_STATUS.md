@@ -1,5 +1,11 @@
 # Projektstand
 
+## Task 011B · Kandidat für den Haushaltstest
+
+009B und 010B enthalten ihre jeweiligen Backend- und Scannergrundlagen. Sie sind zusammen mit der 011A-Vorprüfung auf Basis von PR #4 integriert. Der neue Funktionsstand umfasst Warnfrist, gemeinsamen Einkauf und Vorrat, privilegienarmen Produktabruf, Kamera, Installationssymbole und Offline-Hinweis. [Freigabe, Eintritt und offene Geräteprüfungen](USER_TEST_RELEASE.md) · [Prüfbericht](TEST_REPORT.md)
+
+Die lokalen Datenbank-Upgrades ab Version 00200 und 00400 erhielten die bestehenden Testdaten. Die Hosted-Identität, E-Mail-Zustellung und Abnahme auf Android und iPhone sind offen. Die Testzielgruppe wurde nicht einbezogen. Der 1. Dezember ist ein Planungstermin.
+
 ## Task 009B · Gemeinsamer Einkauf und Warnfrist
 
 Der separate lokale Integrationsbranch verbindet die abgenommene Vorratsoberfläche aus Task 008 mit dem Einkaufs- und Signalbackend aus 009A. Die Einkaufsliste, der Namensvorschlag aus dem Vorrat und die Warnfrist für den Haushalt sind implementiert. Die lokalen Prüfergebnisse, Messpunkte und Grenzen stehen in der [Übergabe für Task 011B](../REVIEW_HANDOFF.md). Die Releaseintegration bleibt bei Task 011B.

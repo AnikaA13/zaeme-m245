@@ -1,5 +1,13 @@
 # Technische Entscheidungen
 
+## 011B · Installation und Produktsuche
+
+Das App-Symbol verwendet das vollständige quadratische Originalzeichen auf dem cremefarbenen Markenhintergrund. Die gewöhnlichen PNGs zeigen es mit 90 Prozent Kantenlänge, die maskierbare Variante mit 55 Prozent. Damit liegt sogar das umschliessende Quadrat innerhalb des zentralen Sicherheitskreises mit 40 Prozent Radius. Die Originale bleiben erhalten. Eine eigenständige Logo-Neugestaltung oder zusätzliche Gruppenfreigabe ist damit nicht verbunden.
+
+Für die Menüinstallation kann Chromium auf einen Service Worker verzichten. Der kleine Worker liefert den Offline-Hinweis beim erneuten Start. Es gibt keine Installationstaste mit vorausgesetztem Browser-Prompt. Die Hinweise für Safari und Chrome stehen in der [Testanleitung](USER_TEST_RELEASE.md). [MDN zur Installation](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable) · [Apple für iPhone](https://support.apple.com/de-ch/guide/iphone/iphea86e5236/ios)
+
+Der Browser kann keine verlässliche eigene User-Agent-Kennung für die externe Produktabfrage setzen. Der feste Lese-Endpunkt übernimmt dies für die App. Die fünf Sekunden im Client schliessen die Antwortverarbeitung ein. [Anbietervorgaben](https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/)
+
 ## Task 009B · Einkauf und Synchronisation
 
 Ein Kanal je aktivem Haushalt genügt für Vorrat, Einkauf und Einstellungen. Die UI sammelt Ereignisse für 45 ms und merkt während einer laufenden Prüfung einen weiteren Durchlauf vor. Ein ausbleibendes Signal kann auch auf einen Mitgliedschaftsentzug zurückgehen. Deshalb liest der Client bei bestehender Netzwerkverbindung alle 1,5 Sekunden zusätzlich die autorisierte Revision. Eine fehlende Zeile löst sofort die Mitgliedschaftsprüfung aus. Eine verpasste Revision löst denselben Abgleich wie ein Kanalsignal aus. Die bestehende Sitzungsinvalidierung räumt Requests, offene Aufträge, Formulare und Kanal bei einem Kontextwechsel auf.

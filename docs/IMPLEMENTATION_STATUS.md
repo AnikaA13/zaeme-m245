@@ -1,5 +1,28 @@
 # Nachweis je Anforderung
 
+## Task 011B · Integrierter Funktionsstand
+
+Die nachfolgenden älteren Tabellen dokumentieren den jeweiligen Meilenstein. Für die Freigabe gilt diese Übersicht mit dem [Prüfbericht](TEST_REPORT.md) und dem [Releaseblatt](USER_TEST_RELEASE.md).
+
+| ID  | Implementiert im Kandidaten                                                                                     | Ausstehender Freigabenachweis                                                         |
+| --- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| F01 | E-Mail/Passwort, Bestätigung, PKCE-Recovery, Sitzungswechsel und Logout                                         | Hosted-Zustellung und Wiederherstellung                                               |
+| F02 | Haushalt erstellen, Einladung prüfen und widerrufen, Beitritt, Mitglieder entfernen, Austritt und Auflösung     | Hosted-Haushalte und echte Rückwege                                                   |
+| F03 | Gemeinsame Chargen, Suche, vollständiges seitenweises Lesen und Mengen                                          | Persistenz und Ladezeit am Hosted-Ziel                                                |
+| F04 | Haushaltsgebundener Revisionskanal, autorisiertes Neuladen, Entzug, Reconnect                                   | Sichtbare Latenz über Geräte                                                          |
+| F05 | Manuelle Erfassung mit explizitem Speichern, optionalem Datum und Feldprüfung                                   | Gerätebedienung                                                                       |
+| F06 | Lokaler optischer EAN-13-Decoder, identifizierte Namensabfrage, editierbare Vorbelegung und manueller Ersatzweg | 20 echte Packungen pro Plattform, Anbieteranmeldung                                   |
+| F07 | Ändern, Teilverbrauch, bestätigter Vollverbrauch, geschütztes Löschen                                           | Hosted-Mehrpersonenlauf                                                               |
+| F08 | Getrennte Datumsarten, Zürcher Kalendertage, konkrete dringende Chargen                                         | Geräteübergreifende Einstufung am Hosted-Ziel                                         |
+| F09 | Gemeinsame offene und erledigte Einkaufseinträge, Übernahme des Namens aus dem Detail                           | Hosted-Persistenz und Synchronisierung                                                |
+| F10 | Feldprüfung, Datenbankgrenzen, Konfliktmeldungen und bewusste Wiederholung                                      | Verständnis bei der Zielgruppe                                                        |
+| F11 | Vier dauerhafte Ziele und die zentrale Aktion «Hinzufügen», Rückkehr und Fokus                                  | Reale Safe Areas, Tastatur und Bedienhilfen                                           |
+| F15 | Standalone-Manifest, Originalzeichen, Plattformhilfe und Offline-Startseite                                     | Android- und iOS-Installation, Sitzung, Aktualisierung und Kamera im Standalone-Modus |
+| F17 | Eigene Reservation, Freigabe, geschützte Fremdmenge und Entzug beim Austritt                                    | Hosted-Isolation und Bedienung                                                        |
+| F19 | Verantwortliche Person ändert Warnfrist, Realtime aktualisiert die Einstufung                                   | Hosted- und Geräteabnahme                                                             |
+
+NF01, NF08, NF09 und NF13 stützen sich auf die SQL-, API-, Typ- und CI-Prüfungen mit dem jeweils ausgewiesenen Stand. NF02 und NF11 betreffen App-Speicher, API und Kamera, NF03 die Messung mit mindestens 200 Chargen, NF04, NF06 und NF07 Geometrie, Fokus und Kontrast. NF10 verwendet de-CH und Europe/Zurich. NF05, NF12 und NF14 benötigen eine echte Geräte- bzw. Hosted-Abnahme. F12–F14, F16 und F18 bleiben P1. G01–G08 und der formelle Gruppenentscheid sind offen.
+
 ## Task 009B · Einkauf, Warnfrist und gemeinsamer Stand
 
 | ID   | Implementierung und Nachweis                                                                                                                                                                                                                                                                                       |

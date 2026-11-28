@@ -1,5 +1,11 @@
 # Architektur
 
+## Integration 011B
+
+Der Produktionsbuild registriert `/sw.js` im Scope `/`. Gewöhnliche Navigationen laden das Dokument aus dem Netz. Scheitert die Verbindung, erzeugt der Worker eine deutschsprachige 503-Seite ohne Fachdaten. Er benutzt keinen Datencache und keine Offline-Warteschlange. Login, Recovery, Beitritt, URL-Abfragen und API-Verkehr durchlaufen keinen Worker-Fallback. Neue Worker übernehmen die Tabs und räumen nur den eigenen reservierten Cache-Präfix `zaeme-public-shell-` auf. Der Browser prüft das Worker-Skript ohne HTTP-Cache. Bestätigte Daten bleiben in PostgreSQL.
+
+Die Produktsuche sendet eine EAN ohne Cookies und Referrer an `/api/product`. Vite und die Vercel-Funktion verwenden denselben Handler. Dieser erlaubt GET für eine gültige EAN-13, fordert nur zwei Namensfelder bei einem festen HTTPS-Ziel an und sendet seine eigene App-Kennung. Weder eingehende Header noch Haushalt, Foto oder Benutzer-ID gehen an den Anbieter. Die Antwort enthält nur Ergebniskennung, Code, Status und Namensfelder. Der öffentliche Handler verwendet keine Anbieter- oder Supabase-Schlüssel. Die Nutzungsanmeldung und der Betrieb vom tatsächlichen Hostingstandort sind vor der Teilnehmerfreigabe zu bestätigen.
+
 ## Task 009B · Einkauf und Synchronisation
 
 Die bestehende Sitzung bindet einen gefilterten UPDATE-Kanal an die Haushalts-ID und die Mitgliedschaftsgeneration. Das Abonnement wartet auf die PostgreSQL-Registrierung. Beim Beitritt zum Kanal, bei Fokus und nach Netzrückkehr werden Mitgliedschaft und Revision erneut gelesen. Bei Ereignissen werden die montierten Vorrats- und Einkaufsansichten invalidiert. Autorisierte Fachabfragen lesen den Revisionszähler vor und nach den Seiten. Ändert er sich, wird das Teilergebnis verworfen. Alle Einträge und Formulare liegen im Arbeitsspeicher. Die Anmeldung stellt das aktualisierte JWT für neue Requests und den Kanal bereit.

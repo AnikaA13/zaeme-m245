@@ -2,6 +2,12 @@
 
 **Freigabe für Haushaltstests: BLOCKIERT.** Stand der Vorbereitung am 27.11.2026. Die lokale Baseline lässt sich bauen und ihr Gast-Routing funktioniert. Es gibt in diesem Lauf keinen Nachweis für ein dediziertes Hosted-Projekt, eine HTTPS-Auslieferung oder eine zugestellte E-Mail.
 
+## Ergänzung 011B · 28. November 2026
+
+Das geprüfte lokale Schema enthält zusätzlich `20261127000500_shopping_signals.sql` und `20261127000600_shopping_rpc.sql`. Vor einem Hosted-Upgrade die Publikation lesen. 00500 verlangt eine noch leere Tabellenliste und stellt die Publikation auf UPDATE um. Bestehende Veröffentlichung anderer Tabellen blockiert diese Migration. Vorhandene Profile, Haushalte, Mitgliedschaften, Chargen und Reservationen vor und nach dem Upgrade datensparsam zählen bzw. im autorisierten Projekt vergleichen. Alle sechs Versionen und den Rücksicherungsweg prüfen, bevor der erste schreibende Remote-Befehl ausgeführt wird. Der lokale Upgradeversuch enthält eine Charge mit Reservation.
+
+Im 011B-Lauf meldete die CLI fehlende Anmeldung. Auch die Anbieterintegrationen waren nicht verbunden. Projekt-Ref, Vercel-Team und -Projekt, reale Testpostfächer, Sender und HTTPS-Callback-Ziele bleiben unbestätigt. Es wurde keine Hosted-Migration angestossen. Die folgenden Abschnitte dokumentieren die ursprüngliche 011A-Vorprüfung.
+
 ## Identität und Ist-Stand
 
 | Gegenstand                         | Tatsächlich festgestellt                                                                                                                                                                                                                                                                            |

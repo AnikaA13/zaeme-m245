@@ -1,5 +1,9 @@
 # Änderungsprotokoll
 
+## Task 011B · Releasekandidat
+
+Einkauf, Warnfrist, Realtime und Scan sind gemeinsam mit der Vorratsoberfläche erreichbar. Manifest, vier PNG-Exporte des Originalzeichens, Offline-Start und die identifizierte Produktabfrage ergänzen den Produktionsbuild. Die drei separaten Übergaben und ihre bisherigen Testergebnisse bleiben erhalten. [Freigabe und Nachweise](USER_TEST_RELEASE.md)
+
 ## Task 009B · Einkauf und Synchronisation
 
 Der vierte Navigationseintrag öffnet die gemeinsame Einkaufsliste. Einträge lassen sich mit optionaler Menge und Einheit erfassen, bearbeiten, abhaken, wieder öffnen und nach Bestätigung entfernen. Im Produktdetail öffnet «Auf Einkaufsliste setzen» das mit dem Produktnamen vorbelegte Formular. Eigentümerinnen und Eigentümer können die gemeinsame Warnfrist zwischen 0 und 30 Tagen ändern. Haushaltssignale aktualisieren Vorrat, Einkauf und Haushaltseinstellungen.

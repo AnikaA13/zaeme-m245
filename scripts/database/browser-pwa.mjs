@@ -11,7 +11,7 @@ import { api, browserPort, localStatus } from './local.mjs';
 
 test('011B · Produktionsbuild, private Sitzung, Offline-Start und Workerwechsel', async (t) => {
   const f = apiFixture(t);
-  const user = await f.profiled('PWA-Prüfung');
+  const user = await f.profiled('PWA-Test');
   f.success(
     await f.rpc(user, 'create_household', {
       op: operationId(),
@@ -149,11 +149,37 @@ test('011B · Produktionsbuild, private Sitzung, Offline-Start und Workerwechsel
   );
   await page.evaluate(async () => {
     const registration = await navigator.serviceWorker.ready;
-    await registration.update();
+    const changed = new Promise((resolve, reject) => {
+      const timeout = setTimeout(
+        () => reject(new Error('Workerwechsel blieb aus')),
+        20000,
+      );
+      navigator.serviceWorker.addEventListener(
+        'controllerchange',
+        () => {
+          clearTimeout(timeout);
+          resolve();
+        },
+        { once: true },
+      );
+    });
+    await Promise.all([changed, registration.update()]);
+    const worker = navigator.serviceWorker.controller;
+    if (worker.state !== 'activated') {
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(
+          () => reject(new Error('Aktivierung blieb aus')),
+          20000,
+        );
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'activated') {
+            clearTimeout(timer);
+            resolve();
+          }
+        });
+      });
+    }
   });
-  await page.waitForFunction(
-    async () => !(await caches.has('zaeme-public-shell-veraltet')),
-  );
   assert.deepEqual(await storage(), { caches: ['anderer-test'], dbs: [] });
   await page.context().setOffline(true);
   const offline = await page.goto(origin + '/inventory');

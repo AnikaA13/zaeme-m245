@@ -1,0 +1,102 @@
+[
+  {
+    "aktion": "Vorrat anlegen",
+    "ms": 786
+  },
+  {
+    "aktion": "Vorrat anlegen",
+    "ms": 785
+  },
+  {
+    "aktion": "Vorrat bearbeiten",
+    "ms": 802
+  },
+  {
+    "aktion": "Teilverbrauch",
+    "ms": 766
+  },
+  {
+    "aktion": "Reservieren",
+    "ms": 803
+  },
+  {
+    "aktion": "Reservierung freigeben",
+    "ms": 790
+  },
+  {
+    "aktion": "Warnfrist 0",
+    "ms": 721
+  },
+  {
+    "aktion": "Warnfrist 7",
+    "ms": 724
+  },
+  {
+    "aktion": "Warnfrist 7",
+    "ms": 722
+  },
+  {
+    "aktion": "Warnfrist 30",
+    "ms": 1253
+  },
+  {
+    "aktion": "Warnfrist 3",
+    "ms": 226
+  },
+  {
+    "aktion": "Warnfrist 3",
+    "ms": 224
+  },
+  {
+    "aktion": "Anzeigename",
+    "ms": 788
+  },
+  {
+    "aktion": "Einkauf anlegen",
+    "ms": 785
+  },
+  {
+    "aktion": "Einkauf anlegen",
+    "ms": 787
+  },
+  {
+    "aktion": "Abhaken",
+    "ms": 1214
+  },
+  {
+    "aktion": "Abhaken",
+    "ms": 1212
+  },
+  {
+    "aktion": "Wieder öffnen",
+    "ms": 668
+  },
+  {
+    "aktion": "Wieder öffnen",
+    "ms": 667
+  },
+  {
+    "aktion": "Einkauf bearbeiten",
+    "ms": 745
+  },
+  {
+    "aktion": "Einkauf entfernen",
+    "ms": 1270
+  },
+  {
+    "aktion": "Netzrückkehr",
+    "ms": 902
+  },
+  {
+    "aktion": "Vorratscharge löschen",
+    "ms": 262
+  },
+  {
+    "aktion": "Reservierung ändern nach Folgeaufträgen",
+    "ms": 789
+  },
+  {
+    "aktion": "Vollverbrauch",
+    "ms": 793
+  }
+]

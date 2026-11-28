@@ -1,5 +1,11 @@
 # Testplan
 
+## Task 011B · Technische Freigabe
+
+Im eigens gewählten lokalen Stack sollen Neuinstallation, beide Upgrades, Typen, SQL, API, echte lokale Realtime-Verbindungen und kombinierte Browserregression bestehen. Der PWA-Test baut mit der öffentlichen Konfiguration des ausgewählten Stacks, prüft Manifest und PNG-Abmessungen, echten Login, gespeicherte Charge, Workerwechsel, Offline-Navigation sowie Cache Storage und IndexedDB. Die Geometrieprüfung umfasst zusätzlich 1440 CSS-px. Kandidat erst nach grüner lokaler Prüfung und erforderlicher GitHub-CI zusammenführen.
+
+Hosted gesondert mit vier synthetischen Identitäten und drei Mitgliedern prüfen. Die Abnahmefolge, Gerätetests und Freigabefelder stehen im [Releaseblatt](USER_TEST_RELEASE.md) und im [Gerätetestblatt](TASK_010A_GERAETETEST.md).
+
 ## Task 009B · Einkauf und Synchronisation
 
 Der kombinierte Browserlauf ergänzt die bisherigen Fälle um echte Haushaltsänderungen mit drei angemeldeten Mitgliedern und einem zweiten Haushalt. Er erfasst die Zeit vom Empfang der erfolgreichen RPC-Antwort bis Playwright den neuen sichtbaren Zustand im anderen Kontext beobachtet. Die Netzrückkehr hat einen eigenen Startpunkt beim Einschalten der Verbindung. Jede Beobachtung wird einzeln gegen die Grenze von 3000 ms geprüft. Die RLS-, Quittungs-, Konkurrenz- und WebSocket-Tests aus 009A bleiben Teil der Regression.
