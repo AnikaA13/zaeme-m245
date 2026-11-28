@@ -1,5 +1,7 @@
 # Vorratsoberfläche und Anschluss für 009–011
 
+**Anschlussstand 010B.** Die zentrale Aktion öffnet jetzt die Auswahl unter `/capture`, der Scanner liegt unter `/capture/scan`. Die folgende Tabelle dokumentiert den Stand von 008. Das manuelle Formular und sein Eingabevertrag gelten weiter. [Scannervertrag](TASK_010B_VERTRAG.md)
+
 ## Wege durch die App
 
 Ein bestätigtes Konto mit Profil und aktueller Mitgliedschaft erreicht die Startseite unter `/`. Die drei dringendsten datierten Chargen führen ins Detail. Der Link zu allen Hinweisen öffnet `/inventory?ablauf`. `/inventory` sucht Produktnamen inklusive Sonderzeichen als wörtlichen Text im vollständig geladenen Vorrat. Die Liste blendet zunächst 30 Treffer ein. Gleiche Namen bleiben getrennte Chargen. Beim Zurückkehren bleiben Suchbegriff, Filter und Scrollposition innerhalb des Mitgliedschaftskontexts im RAM.

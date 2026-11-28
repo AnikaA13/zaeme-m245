@@ -1,8 +1,36 @@
 # Projektstand
 
+GitHub hat beim Stand cc7bd29 den Scannerlauf bestanden. Der PWA-Lauf erreichte das erwartete Ereignis beim Workerwechsel nicht. Der Nachtest vergleicht die tatsächlich ausgelieferte zweite Datei und die Identität des aktivierten Controllers.
+
+## Task 011B · Kandidat für den Haushaltstest
+
+009B und 010B enthalten ihre jeweiligen Backend- und Scannergrundlagen. Sie sind zusammen mit der 011A-Vorprüfung auf Basis von PR #4 integriert. Der neue Funktionsstand umfasst Warnfrist, gemeinsamen Einkauf und Vorrat, privilegienarmen Produktabruf, Kamera, Installationssymbole und Offline-Hinweis. [Freigabe, Eintritt und offene Geräteprüfungen](USER_TEST_RELEASE.md) · [Prüfbericht](TEST_REPORT.md)
+
+Die lokalen Datenbank-Upgrades ab Version 00200 und 00400 erhielten die bestehenden Testdaten. Die PO hat die externen Testprojekte benannt. Beide Anbieterzugänge und Projekt-IDs sind administrativ geprüft. Die Hosted-Datenbank ist fachlich leer, sechs Migrationen stehen laut Dry Run aus. Das vorhandene Git-Deployment ist Production. Migration, autorisierte Preview, SMTP-Zustellung und beide physischen Plattformen stehen aus. Die Testzielgruppe wurde nicht einbezogen. Der 1. Dezember ist ein Planungstermin.
+
+## Task 009B · Gemeinsamer Einkauf und Warnfrist
+
+Der separate lokale Integrationsbranch verbindet die abgenommene Vorratsoberfläche aus Task 008 mit dem Einkaufs- und Signalbackend aus 009A. Die Einkaufsliste, der Namensvorschlag aus dem Vorrat und die Warnfrist für den Haushalt sind implementiert. Die lokalen Prüfergebnisse, Messpunkte und Grenzen stehen in der [Übergabe für Task 011B](../REVIEW_HANDOFF.md). Die Releaseintegration bleibt bei Task 011B.
+
+## Task 009A · Lokales Backend für Einkauf und Synchronisation
+
+Der separate Backend-Branch ergänzt Einkauf, transaktionale Haushaltssignale und eine UPDATE-Publikation. Das lokale WebSocket-Szenario verifiziert Mitgliedschaftsentzug mit einem weiterhin gültigen JWT und den Zugriff nach Wiederbeitritt. Task 008 integriert den Vorratsclient unabhängig. Einkauf, Warnfrist-Bedienung und sichtbare Synchronisation auf zwei Geräten folgen in Task 009B. [Prüfbericht](TEST_REPORT.md) · [Integrationsvertrag](TASK_009B_VERTRAG.md)
+
+## Task 010B · Scanner im geschützten Erfassungsablauf
+
+Auf dem lokalen Branch `feature/m6-scanner-integration` führt ein echter Kameratreffer zur Produktprüfung und nach Bestätigung über den vorhandenen RPC in den Vorrat. Der Chromium-Test verwendet synthetisches Video, kontrollierte Anbieterantworten und einen eigenen Supabase-Stack. Die gesonderte Live-Abfrage ist im Review protokolliert. Ein freigegebener HTTPS-Ursprung, beide physischen Geräte und die Erhebung mit Haushalten stehen aus. Die Zusammenführung gehört zu 011B. [Prüfbericht](../REVIEW_HANDOFF.md) · [Messblatt](TASK_010A_GERAETETEST.md)
+
+## Task 010A · isolierter F06-Kern
+
+Der separate Branch `feature/m6-barcode-lookup-core` enthält die optische EAN-13-Erkennung, den Kameralebenszyklus, die abbrechbare Produktabfrage und einen lokalen Prüfstand. Chromium hat die Videofixture zweimal gelesen. Zwei separate Live-Abfragen bestätigten einen Namen und eine unbekannte EAN. Android Chrome und iOS Safari physisch **NOT RUN**. F06 bleibt bis zur Einbindung in F05 und zur Geräteabnahme offen. [Prüfnachweis 010A](TASK_010A_PRUEFBERICHT.md) · [Vertrag für 010B](TASK_010B_VERTRAG.md)
+
 ## Task 008 · Vorratsoberfläche
 
 Im authentifizierten Haushalt sind Start, Vorrat, manuelle Erfassung, Bearbeitung, Verbrauch und eigene Reservierungen an die bestehende Datenbank angeschlossen. Einkauf zeigt einen Entwicklungshinweis. Die nächsten fachlichen Schritte sind Einkauf und Synchronisierung in 009 sowie Kamera und Produktsuche in 010. Geräteabnahme und Haushaltstests stehen aus. Umfang, Prüfstand und technische Anschlussstellen sind separat dokumentiert. [Anforderungsmatrix](IMPLEMENTATION_STATUS.md) · [Prüfbericht](TEST_REPORT.md) · [Anschlussvertrag](TASK_008_ANSCHLUSS.md)
+
+## Task 011A · Hosted-Testumgebung blockiert
+
+Die Baseline b229f93 ist mit GitHub abgeglichen. Acht Gast-Routen und der SQL-Vorprüfer wurden lokal geprüft. Ein bestätigter Providerzugang, eine ausgelieferte HTTPS-Preview, gewöhnliche Hosted-API-Sitzungen und der externe E-Mail-Nachweis fehlen. Die Freigabe für Haushaltstests bleibt offen. [Hosted-Testvertrag](HOSTED_TEST_VERTRAG.md)
 
 ## Task 007.2 · Freigabeprüfung
 

@@ -1,5 +1,27 @@
 # Testplan
 
+## Task 011B · Technische Freigabe
+
+Im eigens gewählten lokalen Stack sollen Neuinstallation, beide Upgrades, Typen, SQL, API, echte lokale Realtime-Verbindungen und kombinierte Browserregression bestehen. Der PWA-Test baut mit der öffentlichen Konfiguration des ausgewählten Stacks, prüft Manifest und PNG-Abmessungen, echten Login, gespeicherte Charge, Workerwechsel, Offline-Navigation sowie Cache Storage und IndexedDB. Die Geometrieprüfung umfasst zusätzlich 1440 CSS-px. Kandidat erst nach grüner lokaler Prüfung und erforderlicher GitHub-CI zusammenführen.
+
+Hosted gesondert mit vier synthetischen Identitäten und drei Mitgliedern prüfen. Die Abnahmefolge, Gerätetests und Freigabefelder stehen im [Releaseblatt](USER_TEST_RELEASE.md) und im [Gerätetestblatt](TASK_010A_GERAETETEST.md).
+
+## Task 009B · Einkauf und Synchronisation
+
+Der kombinierte Browserlauf ergänzt die bisherigen Fälle um echte Haushaltsänderungen mit drei angemeldeten Mitgliedern und einem zweiten Haushalt. Er erfasst die Zeit vom Empfang der erfolgreichen RPC-Antwort bis Playwright den neuen sichtbaren Zustand im anderen Kontext beobachtet. Die Netzrückkehr hat einen eigenen Startpunkt beim Einschalten der Verbindung. Jede Beobachtung wird einzeln gegen die Grenze von 3000 ms geprüft. Die RLS-, Quittungs-, Konkurrenz- und WebSocket-Tests aus 009A bleiben Teil der Regression.
+
+## Regression 009A
+
+Einen separaten lokalen Stack über `ZAEME_TEST_STACK=task009` auswählen. Vor einer Neuinstallation oder einem Upgrade Projektlabel, DB-Port, lokale CLI-Konfiguration und Hostlistener prüfen. Nach frischem Start `db:upgrade:check` für die frühere Basis und `db:upgrade:shopping` für vier Migrationen ausführen. Anschliessend `db:test`, `db:test:api`, `db:test:shopping`, `db:test:realtime`, Typvergleich und Chromium ausführen. Der Rennprüfer blockiert die Haushaltszeile, weist zwei wartende PostgreSQL-Sitzungen nach und gibt beide frei. Die Realtime-Prüfung enthält positive Vergleichskanäle sowie begrenzte Beobachtungsfenster nach Rechteentzug.
+
+009B prüft zwei gleichzeitig sichtbare Clients, Fokus/Reconnect bei laufender Abfrage, Markierung, Konfliktanzeige, Namensvorbelegung und Owner-Warnfrist. Auf dem Hosted-Stack Publikation, Rechteentzug und Latenz mit öffentlichem Projektschlüssel erneut messen.
+
+## Task 010B · Abnahme der Erfassung
+
+Die App-Browsersuite prüft die beiden Einstiege und die Herkunft bei Abbruch, verspätete Kamerazusage, verweigerte Freigabe, optische EAN aus Video, korrigierten Produktnamen, explizite Anlage, verlorene Quittung, echten Retry und weitere Erfassung. Die Providerantworten bleiben kontrolliert. Unabhängige Datenbankabfragen prüfen Anzahl und Inhalte der Chargen. Der getrennte 010A-Prüfstand und die Lebenszyklustests bleiben Bestandteil der Regression.
+
+Android Chrome und iOS Safari jeweils auf dem freigegebenen HTTPS-Build mit dem 20er-Blatt prüfen. Modell, Versionen, Ursprung und Revision vor Beginn eintragen. Für NF06 und NF07 zusätzlich mit offener Tastatur, Vergrösserung und aktivem TalkBack beziehungsweise VoiceOver Feldfehler, Fokus, Abbruch und Rückkehr prüfen. [Gerätetestblatt](TASK_010A_GERAETETEST.md)
+
 ## Regression 008 · Vorratsoberfläche
 
 `npm run test` prüft die geteilten Grenzfälle, lokale Datumsklassifizierung, Leseinvalidierung, mehrere Reservierungsseiten und offene Aufträge isoliert. `npm run test:browser` führt die bestehenden Mailpit-, Auth- und Haushaltsszenarien sowie `browser-core.mjs` aus. Eine echte verlorene Antwort wird erst nach der Serverquittung verworfen. SQL prüft gespeicherte Mengen, Versionen, NULL-Werte und Löschungen unabhängig von der UI. Zwei Browserkontexte ändern dieselbe Charge. Separate Haushalte und verspätete Antworten prüfen die Sichtgrenze. Für den Leistungstest werden 200 und anschliessend insgesamt 1005 zusätzliche synthetische Chargen eingefügt. Die Zeitmessung umfasst eine echte Navigation bis zur ersten sichtbaren Listenzeile. `ZAEME_SCREENSHOTS=1` aktiviert repräsentative PNG-Aufnahmen des synthetischen Haushalts. Geräte- und Nutzertests erfolgen getrennt.

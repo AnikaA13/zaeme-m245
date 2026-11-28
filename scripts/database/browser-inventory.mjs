@@ -1,5 +1,6 @@
-/* global window -- Fokusereignis im Browserkontext. */
 import assert from 'node:assert/strict';
+import { performance } from 'node:perf_hooks';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { api, sql } from './local.mjs';
 import { operationId } from './fixtures.mjs';
 
@@ -11,7 +12,7 @@ async function actor(page) {
   });
 }
 
-async function write(page, name, args) {
+export async function write(page, name, args) {
   return page.evaluate(
     async ({ name, args }) => {
       const { mutate } = await import('/src/lib/operations/rpc.ts');
@@ -150,7 +151,37 @@ export async function householdInventory({
       ]);
       await c.goto(new URL('/inventory/' + items[1], c.url()).href);
       await heading(c, 'Birnen');
+      const removed = a
+        .waitForResponse(
+          (r) =>
+            r.url().endsWith('/rpc/remove_member') &&
+            r.request().method() === 'POST',
+        )
+        .then(async (r) => {
+          const stamp = performance.now();
+          assert.equal((await r.json()).ok, true);
+          return stamp;
+        });
+      const detected = heading(c, 'Dein Haushalt').then(() =>
+        performance.now(),
+      );
       await confirm(a, 'Cora entfernen');
+      const elapsed = Math.ceil((await detected) - (await removed));
+      assert.ok(
+        elapsed >= 0 && elapsed <= 3000,
+        'Entzug nach ' + elapsed + ' ms',
+      );
+      const dir =
+        process.env.ZAEME_RELEASE_REVIEW === '1'
+          ? 'docs/review/task011b/task009b'
+          : process.env.ZAEME_009B_REVIEW === '1'
+            ? 'docs/review/task009b'
+            : 'test-results/task009b';
+      await mkdir(dir, { recursive: true });
+      await writeFile(
+        dir + '/entzug.json',
+        JSON.stringify({ aktion: 'Mitgliedschaftsentzug', ms: elapsed }) + '\n',
+      );
       await a.getByText('Cora', { exact: true }).waitFor({ state: 'detached' });
       assert.deepEqual(
         items.map(stock),
@@ -161,10 +192,22 @@ export async function householdInventory({
         })),
       );
       await denied(cora, items[1]);
-      await c.evaluate(() => window.dispatchEvent(new Event('focus')));
       await heading(c, 'Dein Haushalt');
       assert.equal(await c.getByText('Birnen', { exact: true }).count(), 0);
       assert.equal(await c.getByText('WG A', { exact: true }).count(), 0);
+      await c.waitForFunction(
+        async () =>
+          (await import('/src/lib/supabase/client.ts')).backend().getChannels()
+            .length === 0,
+      );
+      assert.deepEqual(
+        await rest(cora, 'household_signals?select=revision&id=eq.' + cora.h),
+        [],
+      );
+      assert.deepEqual(
+        await rest(cora, 'shopping_items?select=id&household_id=eq.' + cora.h),
+        [],
+      );
     },
   );
   await step(

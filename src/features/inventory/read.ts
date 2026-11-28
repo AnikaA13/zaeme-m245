@@ -21,7 +21,7 @@ export function isCurrent(s: Scope) {
     now.user === s.user
   );
 }
-function checked<T>(
+export function checked<T>(
   s: Scope,
   result: { data: T | null; error: unknown; status?: number },
 ): T {
@@ -84,7 +84,7 @@ export async function pages<T extends { id: string }>(
     last = next;
   }
 }
-const signal = (s: Scope) =>
+export const requestSignal = (s: Scope) =>
   AbortSignal.any([
     s.signal,
     s.requestSignal ?? s.signal,
@@ -100,7 +100,7 @@ export async function readInventory(s: Scope) {
         .order('id')
         .limit(100)
         .setHeader('Authorization', 'Bearer ' + s.jwt)
-        .abortSignal(signal(s)),
+        .abortSignal(requestSignal(s)),
     ).map((r) => item(s, r));
   });
 }
@@ -112,7 +112,7 @@ export async function readItem(s: Scope, id: string) {
       .eq('id', id)
       .limit(1)
       .setHeader('Authorization', 'Bearer ' + s.jwt)
-      .abortSignal(signal(s)),
+      .abortSignal(requestSignal(s)),
   );
   return rows.length ? item(s, rows[0]) : null;
 }
@@ -143,7 +143,7 @@ export async function readOwners(s: Scope, items: Item[]) {
         .order('id')
         .limit(100)
         .setHeader('Authorization', 'Bearer ' + s.jwt)
-        .abortSignal(signal(s)),
+        .abortSignal(requestSignal(s)),
     );
   });
   const users = [...new Set(rows.map((r) => r.user_id))],
@@ -156,7 +156,7 @@ export async function readOwners(s: Scope, items: Item[]) {
         .select('id,display_name')
         .in('id', users.slice(i, i + 100))
         .setHeader('Authorization', 'Bearer ' + s.jwt)
-        .abortSignal(signal(s)),
+        .abortSignal(requestSignal(s)),
     );
     for (const p of profiles) names.set(p.id, p.display_name);
   }
@@ -168,7 +168,7 @@ export async function readOwners(s: Scope, items: Item[]) {
       .eq('household_id', s.household)
       .in('id', ids)
       .setHeader('Authorization', 'Bearer ' + s.jwt)
-      .abortSignal(signal(s)),
+      .abortSignal(requestSignal(s)),
   );
   if (
     ids.some(

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de-CH">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>zäme · Scannerprüfung</title>
+    <style>
+      body {
+        font: 1rem system-ui;
+        max-width: 36rem;
+        margin: 1rem auto;
+        padding: 0 1rem;
+        color: #25203b;
+      }
+      video {
+        display: block;
+        width: 100%;
+        max-height: 45vh;
+        background: #272432;
+      }
+      button,
+      input {
+        min-height: 44px;
+        font: inherit;
+      }
+      button {
+        margin: 0.5rem 0.2rem 0.5rem 0;
+      }
+      label {
+        display: block;
+        margin-top: 0.6rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Scanner prüfen</h1>
+      <p>Halte den Barcode mit senkrechten Strichen mittig vor die Kamera.</p>
+      <video muted playsinline aria-label="Kameravorschau"></video>
+      <button id="start">Kamera starten</button
+      ><button id="stop" disabled>Abbrechen</button
+      ><button id="manual">Manuell erfassen</button>
+      <p id="state" role="status">Bereit.</p>
+      <p id="lookup" role="status"></p>
+      <section id="review" hidden>
+        <h2>Angaben prüfen</h2>
+        <label>Barcode <input id="barcode" inputmode="numeric" /></label
+        ><label>Produktname <input id="name" maxlength="100" /></label>
+        <p id="source" hidden>
+          Produktdaten von
+          <a rel="noreferrer" href="https://world.openfoodfacts.org/"
+            >Open Food Facts</a
+          >
+          (<a
+            rel="noreferrer"
+            href="https://opendatacommons.org/licenses/odbl/1-0/"
+            >ODbL</a
+          >).
+        </p>
+      </section>
+    </main>
+    <script type="module" src="./scanner.ts"></script>
+  </body>
+</html>

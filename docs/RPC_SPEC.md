@@ -1,5 +1,9 @@
 # RPC-Verträge und Transaktionsgrenzen
 
+## Implementierte Einkaufsschnittstelle 009A
+
+Anlage und Bearbeitung akzeptieren `name`, `quantity` und `unit`. Beim Abhaken erzwingt der SQL-Parameter `checked jsonb` ein echtes JSON-Boolean vor jeder Umwandlung. Identische Zielwerte bei aktueller Version quittieren den bestehenden Stand. Die vier vollständigen Signaturen und die Typabbildung stehen im [Vertrag für 009B](TASK_009B_VERTRAG.md).
+
 ## Clientbindung ab 007.1
 
 Die fünf implementierten Vorratssignaturen im Abschnitt 007 gelten unverändert. Der Client verwaltet die UUIDv7 pro Benutzerabsicht und Zielressource bis zu einer geklärten Antwort. Ein geänderter Auftrag kann eine ungeklärte ID erst nach ausdrücklicher Auflösung ersetzen. Die Quittung wird mit der Ziel-ID und dem Versionsvertrag verglichen. [Client-API, Zustandsabgleich und Wiederholung](TASK_008_VERTRAG.md)

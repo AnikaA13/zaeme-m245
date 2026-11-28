@@ -8,6 +8,7 @@
     "npm": "11.x"
   },
   "scripts": {
+    "test:browser:shopping": "node --test scripts/database/browser-shopping-standalone.mjs",
     "test:browser": "node scripts/database/browser.mjs",
     "db:start": "node scripts/database/command.mjs start",
     "db:reset": "node scripts/database/command.mjs reset",
@@ -15,6 +16,9 @@
     "db:upgrade:check": "node scripts/database/command.mjs upgrade-check",
     "db:test": "node scripts/database/command.mjs sql",
     "db:test:api": "node --test scripts/database/api.mjs",
+    "db:test:shopping": "node --test scripts/database/shopping-api.mjs",
+    "db:test:realtime": "node --test scripts/database/realtime.mjs",
+    "db:upgrade:shopping": "node scripts/database/command.mjs upgrade-shopping",
     "db:types": "node scripts/database/command.mjs types",
     "db:types:check": "node scripts/database/command.mjs types-check",
     "db:stop": "node scripts/database/command.mjs stop",
@@ -26,10 +30,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:scanner:browser": "node scripts/scanner/browser.mjs",
+    "test:pwa": "node --test scripts/database/browser-pwa.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.119.2",
+    "@zxing/library": "0.23.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router": "^7.9.0"

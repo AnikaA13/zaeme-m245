@@ -1,8 +1,34 @@
 # Änderungsprotokoll
 
+Der PWA-Test beobachtet die Controller-Identität über den gesamten Revisionswechsel und vergleicht die vom Server ausgelieferten Bytes.
+
+## Task 011B · Releasekandidat
+
+Einkauf, Warnfrist, Realtime und Scan sind gemeinsam mit der Vorratsoberfläche erreichbar. Manifest, vier PNG-Exporte des Originalzeichens, Offline-Start und die identifizierte Produktabfrage ergänzen den Produktionsbuild. Die Vercel-Konfiguration deaktiviert Git-Deployments für alle Branches und legt die vereinbarten Buildbefehle fest. Die drei separaten Übergaben und ihre bisherigen Testergebnisse bleiben erhalten. [Freigabe und Nachweise](USER_TEST_RELEASE.md)
+
+## Task 009B · Einkauf und Synchronisation
+
+Der vierte Navigationseintrag öffnet die gemeinsame Einkaufsliste. Einträge lassen sich mit optionaler Menge und Einheit erfassen, bearbeiten, abhaken, wieder öffnen und nach Bestätigung entfernen. Im Produktdetail öffnet «Auf Einkaufsliste setzen» das mit dem Produktnamen vorbelegte Formular. Eigentümerinnen und Eigentümer können die gemeinsame Warnfrist zwischen 0 und 30 Tagen ändern. Haushaltssignale aktualisieren Vorrat, Einkauf und Haushaltseinstellungen.
+
+## Task 009A · Gemeinsamer Einkauf und Haushaltssignale
+
+Vier geschützte Einkaufs-RPCs und ein haushaltsbezogener Revisionszähler ergänzen die vier bisherigen Migrationen. Änderungen an Haushalt, Profil, Vorrat, Reservierung, Einkauf und Warnfrist invalidieren den gemeinsamen Stand im selben Commit. Der lokale Datenbankworkflow startet Realtime und prüft auch authentifizierte WebSockets. Parallele Stacks erhalten eigene Browser- und Auth-Rückkehrports. [Vertrag für 009B](TASK_009B_VERTRAG.md)
+
+## Task 010B · Scannen im Haushalt
+
+Start und die zentrale Erfassung bieten Scannen und manuelles Hinzufügen an. Ein gültiger EAN-13 führt nach der Produktsuche ins gemeinsame Formular. Bei unbekanntem Produkt, Suchabbruch und Anbieterfehler bleibt die EAN erhalten. Nach bestätigtem Speichern kann die Person weiterscannen, manuell erfassen oder den Vorrat öffnen. [Prüfbericht und Geräteabnahme](../REVIEW_HANDOFF.md)
+
+## Task 010A · EAN-13 und Produktabfrage
+
+Scanner liest Kamerabilder lokal und beendet die Vorschau nach einem Treffer, Abbruch oder Kontextverlust. Die Einzelabfrage bei Open Food Facts liefert den geprüften Barcode und gegebenenfalls einen editierbaren Namen. Fehler und unvollständige Daten erlauben die manuelle Weiterarbeit. Neu sind der Entwicklungsprüfstand, die optische Chromium-Fixture, Modulprüfungen und das [Testblatt für die physischen Geräte](TASK_010A_GERAETETEST.md).
+
 ## Task 008 · Gemeinsamen Vorrat bedienen
 
 Start, Vorrat, manuelle Erfassung, Detail, Bearbeitung, Verbrauch und eigene Reservierungen verwenden die vorhandene Datenbank. Lade- und Konfliktzustände, Datumsprüfung, Navigation und Abgleich offener Anfragen sind integriert. Gemeinsame Validierungsfälle und Browserabläufe mit PostgreSQL-Gegenprüfung ergänzen die bisherigen Regressionen. Alle vier Migrationen und die generierten Datenbanktypen bleiben auf dem Stand von 007.2.
+
+## Task 011A · Hosting-Vorbereitung
+
+Ein lesender SQL-Vorprüfer erfasst die tatsächlichen Migrationsrechte. Ein Chromium-Prüfer kontrolliert Gast-Routen, Manifest, sicheren Kontext und wirksame Kamerarichtlinie. Der [Hosted-Testvertrag](HOSTED_TEST_VERTRAG.md) hält tatsächliche Befunde, erforderliche Anbieterfreigaben und den Ablauf für 011B fest.
 
 ## Task 007.2 · Registrierung im Browserlauf
 

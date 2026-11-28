@@ -1,5 +1,7 @@
 # Umsetzung bis zur stabilen Testversion
 
+Task 009 ist in Backend (009A) und Oberflächenintegration (009B) aufgeteilt. Die unabhängige Vorratsoberfläche 008 verwendet weiter ihren bestehenden Vertrag. Vor der Produktabnahme die Zweigeräteprüfung, den Entzug während einer geöffneten Sitzung und den Hosted-Stack prüfen. [Vertrag für 009B](TASK_009B_VERTRAG.md)
+
 Vorschlag für die Architekturprüfung vom 25.11.2026. Der 01.12. ist das Projektziel für Nutzertests. Der Schulauftrag verlangt einen testbaren Prototyp, Tests mit der Zielgruppe und dokumentierte Erkenntnisse. Die Präsentationsmappe ist am 07.12.2026 um 23:59 Uhr fällig, Pitch-Woche 14.–18.12.2026. Quelle: «Aufgabenstellung Die Höhle der Löwen V2026-02», Abschnitt 1.2 und Terminübersicht.
 
 | Task                             | Abhängigkeit und kleine Lieferabschnitte                                                                                                                                                                                                                 | Abnahmetor                                                                                                                                                                                                       |

@@ -1,8 +1,40 @@
 # Technische Entscheidungen
 
+## 011B · Installation und Produktsuche
+
+Das App-Symbol verwendet das vollständige quadratische Originalzeichen auf dem cremefarbenen Markenhintergrund. Die gewöhnlichen PNGs zeigen es mit 90 Prozent Kantenlänge, die maskierbare Variante mit 55 Prozent. Damit liegt sogar das umschliessende Quadrat innerhalb des zentralen Sicherheitskreises mit 40 Prozent Radius. Die Originale bleiben erhalten. Eine eigenständige Logo-Neugestaltung oder zusätzliche Gruppenfreigabe ist damit nicht verbunden.
+
+Für die Menüinstallation kann Chromium auf einen Service Worker verzichten. Der kleine Worker liefert den Offline-Hinweis beim erneuten Start. Es gibt keine Installationstaste mit vorausgesetztem Browser-Prompt. Die Hinweise für Safari und Chrome stehen in der [Testanleitung](USER_TEST_RELEASE.md). [Chrome zur Menüinstallation](https://developer.chrome.com/blog/update-install-criteria) · [MDN zur Installation](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable) · [Apple für iPhone](https://support.apple.com/de-ch/guide/iphone/iphea86e5236/ios)
+
+Der Browser kann keine verlässliche eigene User-Agent-Kennung für die externe Produktabfrage setzen. Der feste Lese-Endpunkt übernimmt dies für die App. Die fünf Sekunden im Client schliessen die Antwortverarbeitung ein. [Anbietervorgaben](https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/)
+
+## Task 009B · Einkauf und Synchronisation
+
+Ein Kanal je aktivem Haushalt genügt für Vorrat, Einkauf und Einstellungen. Die UI sammelt Ereignisse für 45 ms und merkt während einer laufenden Prüfung einen weiteren Durchlauf vor. Ein ausbleibendes Signal kann auch auf einen Mitgliedschaftsentzug zurückgehen. Deshalb liest der Client bei bestehender Netzwerkverbindung alle 1,5 Sekunden zusätzlich die autorisierte Revision. Eine fehlende Zeile löst sofort die Mitgliedschaftsprüfung aus. Eine verpasste Revision löst denselben Abgleich wie ein Kanalsignal aus. Die bestehende Sitzungsinvalidierung räumt Requests, offene Aufträge, Formulare und Kanal bei einem Kontextwechsel auf.
+
+## 009A · Revisionszähler und Kanalbeitritt
+
+Fachzeilen invalidieren den Haushalt in derselben Transaktion. Die Haushaltsanlage reserviert die Signal-ID inklusive erster Mitgliedschaft mit Revision 1. Bei der Auflösung bleiben nur ID und letzte Revision erhalten. Einladungsanlage, Vorschau, Widerruf, Ablauf und interne Bereinigung betreffen den privaten Einladungsablauf. Erst der wirksame Beitritt invalidiert die gemeinsame Ansicht. Die Warnfrist und das Profil melden auch eine neue Fachversion bei erneutem Speichern desselben Werts. Identische Quittungswiederholungen und unveränderte Reservierungen schreiben keine Fachzeile.
+
+Der Integrationstest setzt vor dem Kanalbeitritt das Benutzer-JWT explizit und wartet auf die PostgreSQL-Registrierung. Dadurch kann der erste Refetch die Lücke beim Anmelden des Kanals schliessen. Die Auslieferung prüft den aktuellen RLS-Lesezugriff je Signal. [Supabase Postgres Changes](https://supabase.com/docs/guides/realtime/postgres-changes) · [Kanalimplementierung v2.147.1](https://github.com/supabase/realtime/blob/v2.147.1/lib/realtime_web/channels/realtime_channel.ex)
+
+## Task 010B · Scanversuch und geprüfte Formularvorbelegung
+
+Die geschützte Route lädt die Scanansicht beim Öffnen. Erst «Kamera starten» fordert Video an. Ein Abbruchsignal begrenzt Kamera und anschliessende Einzelabfrage auf denselben Versuch innerhalb der aktuellen Mitgliedschaft. Die EAN und der Vorschlag bleiben bis zur Formulareingabe im Arbeitsspeicher der Ansicht. Der Browser-Verlauf enthält nur die Route. Ein neuer Routeneintrag erzeugt nach bestätigtem Speichern eine frische Erfassung. Der Decoder wird separat nach Kamerafreigabe geladen. Vite legt die Drittanbieter-Lizenztexte im Build ab.
+
+## Task 010A · Decoder, Kamera und Datenquelle
+
+Für F06 verwenden wir den gezielten EAN-13-Leser von `@zxing/library` 0.23.0 (Apache-2.0, Node ≥24). `@zxing/browser` 0.2.1 (MIT) verwendet denselben Core als Peer. Direkter Zugriff auf den Reader erlaubt die eigene Track-Freigabe auch während verzögerter Browserprompts. Das Paket ist im beitragsbasierten Wartungsmodus. Der kleine Funktionsumfang, der vorhandene Node-24-Stack, die optisch getestete EAN-13-Erkennung und der separate Ladechunk begründen den Einsatz. Die schmalen ESM-Importpfade sind an die gesperrte Version gebunden. Bei Upgrades den optischen Test und den Modulgraphen wiederholen. Ein plattformabhängiger nativer Detector ist keine Voraussetzung. [ZXing Core](https://github.com/zxing-js/library) · [Browseradapter](https://github.com/zxing-js/browser)
+
+Der Anbieterzugriff verwendet ausschliesslich die v3-Einzelabfrage für den Produktnamen. Die Browser-Schicht kennt keine Sitzung, Haushalte oder Schreiboperationen. Der Aufrufer verwaltet den Kontext über ein Abbruchsignal. Herkunft, Browserkennung, Grenzen und Zustände sind im [Integrationsvertrag](TASK_010B_VERTRAG.md) beschrieben.
+
 ## Task 008 · Vollständige Liste und bewusste Konfliktauflösung
 
 Die Implementierung lädt die aktive Sicht in 100er-Seiten, bevor sie nach Datum sortiert oder nach Namen sucht. Damit wirken Suchsonderzeichen wörtlich und späte ID-Seiten können die dringendste Charge enthalten. Die Anzeige begrenzt zunächst die gerenderten Treffer. Reservierungen werden je sichtbarer Gruppe geladen. Ein Versionskonflikt erfordert einen erneuten Entscheid. Eine fehlende Antwort hält den ursprünglichen Auftrag im Sitzungskontext. Die bestehende Navigationsentscheidung platziert die manuelle Erfassung zentral. Der Einkauf zeigt seinen aktuellen Entwicklungsstand. Alphabetische Sortierung bleibt mit den zusätzlichen P1-Filtern zurückgestellt.
+
+## Task 011A · Kontrollierte Testversion
+
+Für die Schulabnahme ist eine manuelle Vercel-Preview mit fester Quellrevision und eigenem Supabase-Testprojekt vorgesehen. Auth-Rückwege binden an die konkrete Deployment-URL. Migrationen laufen einzeln nachvollziehbar als ausstehende geprüfte Historie. Die Katalogabfrage im lokalen Stack ergab für postgres SELECT WITH GRANT OPTION auf auth.users. Das weicht von der historischen Angabe unter 005 ab. Die effektiven Hosted-Rechte müssen gesondert geprüft werden. [Hosted-Testvertrag](HOSTED_TEST_VERTRAG.md)
 
 ## 007.1 · Wiederholen und Kontext prüfen
 

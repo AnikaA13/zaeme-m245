@@ -1,3 +1,4 @@
+import { isEan13 } from '../barcode/ean';
 import { FormError, nameValue } from '../../lib/operations/protocol';
 
 export const categories = [
@@ -168,13 +169,7 @@ export function validate(
       'Wähle eine passende Einheit für diese Kategorie und prüfe die Menge.';
   if (d.location && !locations.some((v) => v === d.location))
     errors.location = 'Wähle einen Lagerort aus der Liste.';
-  if (
-    d.barcode &&
-    (!/^\d{13}$/.test(d.barcode) ||
-      [...d.barcode].reduce((a, c, i) => a + Number(c) * (i % 2 ? 3 : 1), 0) %
-        10 !==
-        0)
-  )
+  if (d.barcode && !isEan13(d.barcode))
     errors.barcode = 'Gib 13 Ziffern mit gültiger EAN-Prüfziffer ein.';
   if (
     d.expiry_date &&

@@ -26,8 +26,12 @@ export async function coreInventory({ a, b, step, layout, origin }) {
     );
   const screenshot = async (p, name) => {
     if (process.env.ZAEME_SCREENSHOTS !== '1') return;
-    await mkdir('docs/review/task008', { recursive: true });
-    await p.screenshot({ path: 'docs/review/task008/' + name + '.png' });
+    const dir =
+      process.env.ZAEME_RELEASE_REVIEW === '1'
+        ? 'docs/review/task011b/task008'
+        : 'docs/review/task008';
+    await mkdir(dir, { recursive: true });
+    await p.screenshot({ path: dir + '/' + name + '.png' });
   };
   const count = () =>
     Number(sql('select count(*) from public.inventory_items where ' + where));
@@ -62,7 +66,8 @@ export async function coreInventory({ a, b, step, layout, origin }) {
     await screenshot(a, 'leer');
     await layout(a);
     await link(a, 'Einkauf').click();
-    await a.getByText(/Einkaufsliste ist noch nicht/).waitFor();
+    await a.getByText('Keine offenen Einkaufseinträge.').waitFor();
+    await link(a, 'Eintrag hinzufügen').waitFor();
     await button(a, 'Hinzufügen').click();
     await heading(a, 'Lebensmittel hinzufügen');
     assert.equal(await a.locator('nav [aria-current]').count(), 0);
@@ -76,6 +81,7 @@ export async function coreInventory({ a, b, step, layout, origin }) {
   await step('008 B · Validierung und Erfassung ohne Datum', async () => {
     await button(a, 'Hinzufügen').click();
     await heading(a, 'Lebensmittel hinzufügen');
+    await button(a, 'Manuell hinzufügen').click();
     await screenshot(a, 'erfassung');
     await layout(a);
     await label(a, 'Menge').fill('1,5');
@@ -150,8 +156,12 @@ export async function coreInventory({ a, b, step, layout, origin }) {
     await label(b, 'Lagerort (optional)').selectOption('Vorratsschrank');
     await button(b, 'Änderungen speichern').click();
     await link(b, 'Bearbeiten').waitFor();
-    await button(a, 'Änderungen speichern').click();
     await button(a, 'Aktuellen Stand als Grundlage übernehmen').waitFor();
+    assert.ok(await button(a, 'Änderungen speichern').isDisabled());
+    assert.equal(
+      await label(a, 'Produktname').inputValue(),
+      'Haferflocken fein',
+    );
     await screenshot(a, 'konflikt');
     assert.equal(stored().name, 'Haferflocken');
     await button(a, 'Aktuellen Stand als Grundlage übernehmen').click();
@@ -226,8 +236,10 @@ export async function coreInventory({ a, b, step, layout, origin }) {
       await label(b, 'Menge').fill('3');
       await button(b, 'Änderungen speichern').click();
       await heading(b, 'Haferflocken fein');
-      await button(a, 'Vollständig entfernen').click();
+      await button(a, 'Vollständig entfernen').waitFor({ state: 'detached' });
       await a.getByText('3 Stück', { exact: true }).first().waitFor();
+      assert.ok(await button(a, 'Gesamten Bestand entfernen').isDisabled());
+      await button(a, 'Aktuellen Stand übernehmen').click();
       assert.equal(stored().quantity, 3);
       await button(a, 'Gesamten Bestand entfernen').click();
       await button(a, 'Vollständig entfernen').click();
@@ -350,10 +362,18 @@ export async function coreInventory({ a, b, step, layout, origin }) {
             elapsed +
             ' ms',
         );
+        const searchStart = performance.now();
         await label(a, 'Produktname suchen').fill('Prüfcharge ' + end);
         await a
           .locator('.stock-list strong', { hasText: 'Prüfcharge ' + end })
           .waitFor();
+        console.log(
+          'Namenssuche bei ' +
+            active +
+            ' Chargen · ' +
+            Math.round(performance.now() - searchStart) +
+            ' ms',
+        );
       }
       await go(a, '/');
       await a.locator('.stock-list strong').first().waitFor();

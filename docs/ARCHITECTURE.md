@@ -1,5 +1,19 @@
 # Architektur
 
+## Integration 011B
+
+Der Produktionsbuild registriert `/sw.js` im Scope `/`. Gewöhnliche Navigationen laden das Dokument aus dem Netz. Scheitert die Verbindung, erzeugt der Worker eine deutschsprachige 503-Seite ohne Fachdaten. Er benutzt keinen Datencache und keine Offline-Warteschlange. Login, Recovery, Beitritt, URL-Abfragen und API-Verkehr durchlaufen keinen Worker-Fallback. Neue Worker übernehmen die Tabs und räumen nur den eigenen reservierten Cache-Präfix `zaeme-public-shell-` auf. Der Browser prüft das Worker-Skript ohne HTTP-Cache. Bestätigte Daten bleiben in PostgreSQL.
+
+Die Produktsuche sendet eine EAN ohne Cookies und Referrer an `/api/product`. Vite und die Vercel-Funktion verwenden denselben Handler. Dieser erlaubt GET für eine gültige EAN-13, fordert nur zwei Namensfelder bei einem festen HTTPS-Ziel an und sendet seine eigene App-Kennung. Weder eingehende Header noch Haushalt, Foto oder Benutzer-ID gehen an den Anbieter. Die Antwort enthält nur Ergebniskennung, Code, Status und Namensfelder. Der öffentliche Handler verwendet keine Anbieter- oder Supabase-Schlüssel. Die Nutzungsanmeldung und der Betrieb vom tatsächlichen Hostingstandort sind vor der Teilnehmerfreigabe zu bestätigen.
+
+## Task 009B · Einkauf und Synchronisation
+
+Die bestehende Sitzung bindet einen gefilterten UPDATE-Kanal an die Haushalts-ID und die Mitgliedschaftsgeneration. Das Abonnement wartet auf die PostgreSQL-Registrierung. Beim Beitritt zum Kanal, bei Fokus und nach Netzrückkehr werden Mitgliedschaft und Revision erneut gelesen. Bei Ereignissen werden die montierten Vorrats- und Einkaufsansichten invalidiert. Autorisierte Fachabfragen lesen den Revisionszähler vor und nach den Seiten. Ändert er sich, wird das Teilergebnis verworfen. Alle Einträge und Formulare liegen im Arbeitsspeicher. Die Anmeldung stellt das aktualisierte JWT für neue Requests und den Kanal bereit.
+
+## Synchronisation 009A
+
+Die einzige Tabelle in `supabase_realtime` ist `public.household_signals`, mit Publikationsoption `publish='update'`. Standard-Replica-Identity genügt für den Primärschlüssel. Eine bereits belegte Publikation bricht die Migration zur Prüfung ab. Initialisierung und Invalidierung erfolgen über tabellengebundene Trigger. Die vorhandenen Vorrats-RPCs erhöhen bei jeder wirksamen Reservierung die Chargenversion. Damit erfasst der Chargentrigger auch Erhöhung, Verringerung und Freigabe. Ein Austritt mit mehreren Freigaben kann mehrere Revisionen auslösen. Eine Auflösung lässt den Zähler beim letzten Wert stehen. [PostgreSQL-Publikationen](https://www.postgresql.org/docs/17/sql-createpublication.html) · [Clientvertrag](TASK_009B_VERTRAG.md)
+
 ## Task 008 · Vorrat im Browser
 
 Die vorhandene Sitzung begrenzt alle privaten Reads und offenen Aufträge. Listen und Details halten autorisierte Ergebnisse im RAM. `read.ts` übernimmt Cursor und Versionsprüfung, `domain.ts` die Dezimaltexte und Zürcher Kalendertage. Die Formulare verwenden die fünf bestehenden RPCs über `mutate`. Fokus, Reconnect und bestätigte Änderungen aktualisieren die Ansichten. [Datenfluss und Erweiterungspunkte](TASK_008_ANSCHLUSS.md)

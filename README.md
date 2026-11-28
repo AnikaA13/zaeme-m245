@@ -5,6 +5,8 @@ für die GBS-Höhle der Löwen in der Schweiz. Die App soll den gemeinsamen
 Lebensmittelvorrat, Ablaufdaten und Einkäufe im Haushalt leichter koordinierbar
 machen.
 
+**Testfreigabe:** Der Haushaltstest wartet auf die Hosted- und Geräteabnahme. [Freigabestand und Anleitung](docs/USER_TEST_RELEASE.md)
+
 ## Technik
 
 React, TypeScript im Strict-Modus, Vite und React Router bilden das Frontend.
@@ -56,7 +58,7 @@ blockiert, verwende dort `npm.cmd`. `npm ci` installiert die in
 
 ## Umgebung und aktueller Umfang
 
-Vite verwendet `http://127.0.0.1:5173` mit festem Port. Bestätigung und Passwortreset kehren auf genau diesen Ursprung zurück. Auth-Sitzung, Profil, Einladungen und Haushaltsverwaltung sind angeschlossen. Die Warnfrist ist lesbar. Haushaltsmitglieder sehen die dringendsten Daten auf Start, suchen im gemeinsamen Vorrat und erfassen separate Chargen. Im Detail können sie Mengen verbrauchen und für sich reservieren. Bearbeiten enthält die Korrektur fehlerhafter Einträge. Einkauf, Kamera, Realtime und Installation stehen noch aus. [Routen und Integrationsvertrag](docs/TASK_008_ANSCHLUSS.md)
+Vite verwendet `http://127.0.0.1:5173` mit festem Port. Bestätigung und Passwortreset kehren auf genau diesen Ursprung zurück. Auth-Sitzung, Profil, Einladungen und Haushaltsverwaltung sind angeschlossen. Die verantwortliche Person kann die Warnfrist ändern. Haushaltsmitglieder sehen die dringendsten Daten auf Start, suchen im gemeinsamen Vorrat und erfassen separate Chargen. Im Detail können sie Mengen verbrauchen und für sich reservieren. Bearbeiten enthält die Korrektur fehlerhafter Einträge. Die gemeinsame Einkaufsliste, authentifizierte Synchronisierung und EAN-13-Erfassung mit manueller Alternative sind integriert. Installationsdateien und Offline-Hinweis sind im Produktionsbuild enthalten. [Routen und Integrationsvertrag](docs/TASK_008_ANSCHLUSS.md)
 
 Für die Browserprüfung den Entwicklungsserver beenden, den lokalen Datenbankstack laufen lassen und `npx playwright install chromium` sowie `npm run test:browser` ausführen. Der Test startet Vite selbst auf Port 5173, verwendet Mailpit und räumt seine synthetischen Konten auf. Unit-Tests mit `npm run test` benötigen keinen laufenden Stack. [Prüfstand](docs/TEST_REPORT.md) · [Hosting-Voraussetzungen](docs/ARCHITECTURE.md)
 
@@ -68,7 +70,7 @@ GitHub Actions verwendet die Node-Version aus `package.json`, installiert mit
 
 ## Integration 007.1 reproduzieren
 
-Für den separaten Wegwerfstack in PowerShell `$env:ZAEME_TEST_STACK = 'integration'` setzen. Unter Linux `export ZAEME_TEST_STACK=integration` verwenden. Alle Befehle im selben Terminal ausführen. Der Stack verwendet das Projekt `zaeme-integration-0071`, den Container und das Volume `supabase_db_zaeme-integration-0071` sowie API 55821, PostgreSQL 55822 und Mailpit 55824 auf Loopback. Vite verwendet für die Auth-Rückkehr weiterhin Port 5173.
+Für den separaten Wegwerfstack in PowerShell `$env:ZAEME_TEST_STACK = 'integration'` setzen. Unter Linux `export ZAEME_TEST_STACK=integration` verwenden. Alle Befehle im selben Terminal ausführen. Der Stack verwendet das Projekt `zaeme-integration-0071`, den Container und das Volume `supabase_db_zaeme-integration-0071` sowie API 55821, PostgreSQL 55822 und Mailpit 55824 auf Loopback. Der Browserlauf verwendet in diesem Stack Port 6673, einschliesslich Auth-Rückkehr.
 
 ```sh
 npm ci

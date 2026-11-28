@@ -7,5 +7,25 @@
   "scope": "/",
   "display": "standalone",
   "theme_color": "#1C1840",
-  "background_color": "#FBF9F1"
+  "background_color": "#FBF9F1",
+  "icons": [
+    {
+      "src": "/icons/zaeme-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/zaeme-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/zaeme-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }

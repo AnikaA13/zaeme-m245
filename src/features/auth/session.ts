@@ -82,12 +82,14 @@ export function refresh(afterWrite = false): Promise<void> {
       : waiting;
   }
   const user = session.user.id,
+    jwt = session.access_token,
     controller = reads;
   const work = async () => {
     try {
       const account = await loadAccount(
         user,
         AbortSignal.any([controller.signal, AbortSignal.timeout(12000)]),
+        jwt,
       );
       if (controller.signal.aborted || state.user !== user) return;
       const next = account.home?.g ?? null;
@@ -122,10 +124,31 @@ export function refresh(afterWrite = false): Promise<void> {
   flight = pending;
   return pending;
 }
+// Die GoTrue-Sitzungs-ID bleibt bei Tokenrotation gleich. Sie dient hier nur
+// zum Verwerfen lokaler Arbeit bei einer anderen Sitzung desselben Kontos.
+function sessionId(value: Session | null) {
+  if (!value) return null;
+  try {
+    const payload = value.access_token
+      .split('.')[1]
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    const claims = JSON.parse(atob(payload));
+    return typeof claims.session_id === 'string'
+      ? claims.session_id
+      : value.access_token;
+  } catch {
+    return value.access_token;
+  }
+}
 function accept(next: Session | null) {
   if (loggingOut) return;
   const id = next?.user.email_confirmed_at ? next.user.id : null;
-  if (state.user === id && state.phase !== 'initial') {
+  if (
+    state.user === id &&
+    state.phase !== 'initial' &&
+    sessionId(session) === sessionId(id ? next : null)
+  ) {
     session = id ? next : null;
     return;
   }
@@ -233,7 +256,11 @@ export async function startSession() {
       update({ callbackError: true });
     }
   }
-  const { data } = client.auth.onAuthStateChange((_event, s) => accept(s));
+  const { data } = client.auth.onAuthStateChange((event, s) => {
+    accept(s);
+    if (event === 'TOKEN_REFRESHED')
+      setTimeout(() => window.dispatchEvent(new Event('zaeme-token')), 0);
+  });
   const reload = () => {
     if (navigator.onLine && document.visibilityState === 'visible')
       void refresh();
@@ -252,8 +279,23 @@ export async function startSession() {
   const reconnect = async () => {
     const identity = reads.signal;
     update({ checkingConnection: true });
+    if (!session) {
+      update({ checkingConnection: false });
+      return;
+    }
+    const { data, error } = await backend().auth.getUser();
+    if (identity.aborted) return;
+    if (error || data.user?.id !== state.user) {
+      if (error?.status === 401 || error?.status === 403 || !error)
+        await logout();
+      else update({ account: null, phase: 'error', checkingConnection: false });
+      return;
+    }
     await refresh(true);
-    if (!identity.aborted) update({ checkingConnection: false });
+    if (!identity.aborted) {
+      update({ checkingConnection: false });
+      window.dispatchEvent(new Event('zaeme-reconnected'));
+    }
   };
   window.addEventListener('online', reconnect);
   document.addEventListener('visibilitychange', reload);
